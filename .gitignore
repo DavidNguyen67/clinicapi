@@ -38,6 +38,10 @@ build/
 .env.production
 *.env
 
+### RSA Keys ###
+keys/
+*.pem
+
 ### Deployment ###
 deployment-logs/
 *.pem

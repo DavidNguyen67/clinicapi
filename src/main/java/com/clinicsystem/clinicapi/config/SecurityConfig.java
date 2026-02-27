@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.config;
 
+import com.clinicsystem.clinicapi.filter.ApiKeyAuthenticationFilter;
 import com.clinicsystem.clinicapi.filter.JwtAuthenticationFilter;
 import com.clinicsystem.clinicapi.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +34,9 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final ApiKeyAuthenticationFilter apiKeyAuthenticationFilter;
 
-    @Value("${cors.allowed-origins:http://localhost:3000,http://localhost:4200,http://localhost:5173}")
+    @Value("${cors.allowed-origins}")
     private String[] allowedOrigins;
 
     @Bean
@@ -79,6 +81,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
+                .addFilterBefore(apiKeyAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

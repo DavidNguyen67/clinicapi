@@ -25,6 +25,10 @@ public class MessageCode {
     public static final String AUTH_TOKEN_INVALID = "auth.token.invalid";
     public static final String AUTH_TOKEN_EXPIRED = "auth.token.expired";
 
+    // API Key messages
+    public static final String API_KEY_MISSING = "api.key.missing";
+    public static final String API_KEY_INVALID = "api.key.invalid";
+
     // User messages
     public static final String USER_NOT_FOUND = "user.not_found";
     public static final String USER_ALREADY_EXISTS = "user.already_exists";

@@ -21,6 +21,18 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+        @ExceptionHandler(InvalidApiKeyException.class)
+        public ResponseEntity<ApiResponse<Object>> handleInvalidApiKeyException(
+                        InvalidApiKeyException ex, WebRequest request) {
+                log.error("Invalid API key: {}", ex.getMessage());
+                String messageCode = ex.getMessage().contains("missing")
+                                ? MessageCode.API_KEY_MISSING
+                                : MessageCode.API_KEY_INVALID;
+                return ResponseEntity
+                                .status(HttpStatus.UNAUTHORIZED)
+                                .body(ApiResponse.error(messageCode));
+        }
+
         @ExceptionHandler(ResourceNotFoundException.class)
         public ResponseEntity<ApiResponse<Object>> handleResourceNotFoundException(
                         ResourceNotFoundException ex, WebRequest request) {

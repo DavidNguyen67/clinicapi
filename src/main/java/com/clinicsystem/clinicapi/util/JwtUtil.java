@@ -1,23 +1,31 @@
 package com.clinicsystem.clinicapi.util;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 import java.util.Date;
 
 @Slf4j
 @Component
 public class JwtUtil {
 
-    @Value("${jwt.secret}")
-    private String jwtSecret;
+    @Value("${jwt.private-key-path}")
+    private Resource privateKeyResource;
+
+    @Value("${jwt.public-key-path}")
+    private Resource publicKeyResource;
 
     @Value("${jwt.expiration}")
     private long jwtExpiration;
@@ -25,8 +33,49 @@ public class JwtUtil {
     @Value("${jwt.refresh-expiration}")
     private long refreshExpiration;
 
-    private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+    private PrivateKey privateKey;
+    private PublicKey publicKey;
+
+    private PrivateKey getPrivateKey() {
+        if (privateKey == null) {
+            try {
+                String key = new String(Files.readAllBytes(privateKeyResource.getFile().toPath()));
+                String privateKeyPEM = key
+                        .replace("-----BEGIN PRIVATE KEY-----", "")
+                        .replace("-----END PRIVATE KEY-----", "")
+                        .replaceAll("\\s", "");
+
+                byte[] encoded = Base64.getDecoder().decode(privateKeyPEM);
+                KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+                PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
+                privateKey = keyFactory.generatePrivate(keySpec);
+            } catch (Exception e) {
+                log.error("Error loading private key", e);
+                throw new RuntimeException("Failed to load private key", e);
+            }
+        }
+        return privateKey;
+    }
+
+    private PublicKey getPublicKey() {
+        if (publicKey == null) {
+            try {
+                String key = new String(Files.readAllBytes(publicKeyResource.getFile().toPath()));
+                String publicKeyPEM = key
+                        .replace("-----BEGIN PUBLIC KEY-----", "")
+                        .replace("-----END PUBLIC KEY-----", "")
+                        .replaceAll("\\s", "");
+
+                byte[] encoded = Base64.getDecoder().decode(publicKeyPEM);
+                KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+                X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encoded);
+                publicKey = keyFactory.generatePublic(keySpec);
+            } catch (Exception e) {
+                log.error("Error loading public key", e);
+                throw new RuntimeException("Failed to load public key", e);
+            }
+        }
+        return publicKey;
     }
 
     public String generateToken(Authentication authentication) {
@@ -42,7 +91,7 @@ public class JwtUtil {
                 .subject(username)
                 .issuedAt(now)
                 .expiration(expiryDate)
-                .signWith(getSigningKey())
+                .signWith(getPrivateKey(), Jwts.SIG.RS256)
                 .compact();
     }
 
@@ -54,13 +103,13 @@ public class JwtUtil {
                 .subject(username)
                 .issuedAt(now)
                 .expiration(expiryDate)
-                .signWith(getSigningKey())
+                .signWith(getPrivateKey(), Jwts.SIG.RS256)
                 .compact();
     }
 
     public String getUsernameFromToken(String token) {
         Claims claims = Jwts.parser()
-                .verifyWith(getSigningKey())
+                .verifyWith(getPublicKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
@@ -71,7 +120,7 @@ public class JwtUtil {
     public boolean validateToken(String token) {
         try {
             Jwts.parser()
-                    .verifyWith(getSigningKey())
+                    .verifyWith(getPublicKey())
                     .build()
                     .parseSignedClaims(token);
             return true;
