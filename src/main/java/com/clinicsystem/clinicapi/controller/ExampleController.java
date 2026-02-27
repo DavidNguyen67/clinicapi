@@ -2,8 +2,11 @@ package com.clinicsystem.clinicapi.controller;
 
 import com.clinicsystem.clinicapi.constant.MessageCode;
 import com.clinicsystem.clinicapi.dto.ApiResponse;
+import com.clinicsystem.clinicapi.dto.LoginResponse;
 import com.clinicsystem.clinicapi.dto.PageResponse;
 import com.clinicsystem.clinicapi.dto.SampleUserDto;
+import com.clinicsystem.clinicapi.util.JwtUtil;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,8 +26,51 @@ import java.util.List;
 @Tag(name = "Examples", description = "Example endpoints showing standardized patterns")
 public class ExampleController {
 
+    private final JwtUtil jwtUtil;
+
+    private ExampleController(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
+
     // Fake data for demonstration
     private static final List<SampleUserDto> FAKE_USERS = generateFakeUsers();
+
+    @PostMapping("/login")
+    @Operation(summary = "Login example (fake authentication)", description = "Demo login endpoint. Use any username from fake users with password 'password123'")
+    public ResponseEntity<ApiResponse<LoginResponse>> getAccessToken(
+            @RequestParam String username,
+            @RequestParam String password) {
+
+        SampleUserDto user = FAKE_USERS.stream()
+                .filter(u -> u.getUsername().equals(username))
+                .findFirst()
+                .orElse(null);
+
+        if (user == null || !password.equals("password123")) {
+            return ResponseEntity.status(401)
+                    .body(ApiResponse.error(MessageCode.ERROR_BAD_CREDENTIALS));
+        }
+
+        // Generate tokens using RSA
+        String accessToken = jwtUtil.generateTokenFromUsername(username);
+        String refreshToken = jwtUtil.generateRefreshToken(username);
+
+        // Build response
+        LoginResponse loginResponse = LoginResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .tokenType("Bearer")
+                .expiresIn(jwtUtil.getJwtExpiration())
+                .user(LoginResponse.UserInfo.builder()
+                        .id(user.getId())
+                        .username(user.getUsername())
+                        .email(user.getEmail())
+                        .fullName(user.getFullName())
+                        .build())
+                .build();
+
+        return ResponseEntity.ok(ApiResponse.success(MessageCode.AUTH_LOGIN_SUCCESS, loginResponse));
+    }
 
     @GetMapping("/users")
     @Operation(summary = "Get paginated users (fake data)", description = "Example of cursor-based pagination with fake data. Use cursor from response for next page.")
@@ -105,6 +151,13 @@ public class ExampleController {
                     .createdAt(LocalDateTime.now().minusDays(50 - i))
                     .build());
         }
+        users.add(SampleUserDto.builder()
+                .id((long) 51)
+                .username("user51")
+                .email("user51@example.com")
+                .fullName("User Number 51")
+                .createdAt(LocalDateTime.now().minusDays(1))
+                .build());
         return users;
     }
 }

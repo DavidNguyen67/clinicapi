@@ -3,12 +3,14 @@ package com.clinicsystem.clinicapi.util;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -22,10 +24,10 @@ import java.util.Date;
 public class JwtUtil {
 
     @Value("${jwt.private-key-path}")
-    private Resource privateKeyResource;
+    private String privateKeyPath;
 
     @Value("${jwt.public-key-path}")
-    private Resource publicKeyResource;
+    private String publicKeyPath;
 
     @Value("${jwt.expiration}")
     private long jwtExpiration;
@@ -39,7 +41,18 @@ public class JwtUtil {
     private PrivateKey getPrivateKey() {
         if (privateKey == null) {
             try {
-                String key = new String(Files.readAllBytes(privateKeyResource.getFile().toPath()));
+                // Get project root directory
+                Path keyPath = Paths.get(privateKeyPath);
+
+                // If path is relative, resolve it from project root
+                if (!keyPath.isAbsolute()) {
+                    String projectRoot = new File("").getAbsolutePath();
+                    keyPath = Paths.get(projectRoot, privateKeyPath);
+                }
+
+                log.debug("Loading private key from: {}", keyPath.toAbsolutePath());
+
+                String key = new String(Files.readAllBytes(keyPath));
                 String privateKeyPEM = key
                         .replace("-----BEGIN PRIVATE KEY-----", "")
                         .replace("-----END PRIVATE KEY-----", "")
@@ -49,9 +62,11 @@ public class JwtUtil {
                 KeyFactory keyFactory = KeyFactory.getInstance("RSA");
                 PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
                 privateKey = keyFactory.generatePrivate(keySpec);
+
+                log.info("Successfully loaded private key");
             } catch (Exception e) {
-                log.error("Error loading private key", e);
-                throw new RuntimeException("Failed to load private key", e);
+                log.error("Error loading private key from path: {}", privateKeyPath, e);
+                throw new RuntimeException("Failed to load private key. Make sure to run KeyGenerator first.", e);
             }
         }
         return privateKey;
@@ -60,7 +75,18 @@ public class JwtUtil {
     private PublicKey getPublicKey() {
         if (publicKey == null) {
             try {
-                String key = new String(Files.readAllBytes(publicKeyResource.getFile().toPath()));
+                // Get project root directory
+                Path keyPath = Paths.get(publicKeyPath);
+
+                // If path is relative, resolve it from project root
+                if (!keyPath.isAbsolute()) {
+                    String projectRoot = new File("").getAbsolutePath();
+                    keyPath = Paths.get(projectRoot, publicKeyPath);
+                }
+
+                log.debug("Loading public key from: {}", keyPath.toAbsolutePath());
+
+                String key = new String(Files.readAllBytes(keyPath));
                 String publicKeyPEM = key
                         .replace("-----BEGIN PUBLIC KEY-----", "")
                         .replace("-----END PUBLIC KEY-----", "")
@@ -70,12 +96,22 @@ public class JwtUtil {
                 KeyFactory keyFactory = KeyFactory.getInstance("RSA");
                 X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encoded);
                 publicKey = keyFactory.generatePublic(keySpec);
+
+                log.info("Successfully loaded public key");
             } catch (Exception e) {
-                log.error("Error loading public key", e);
-                throw new RuntimeException("Failed to load public key", e);
+                log.error("Error loading public key from path: {}", publicKeyPath, e);
+                throw new RuntimeException("Failed to load public key. Make sure to run KeyGenerator first.", e);
             }
         }
         return publicKey;
+    }
+
+    public long getJwtExpiration() {
+        return jwtExpiration;
+    }
+
+    public long getRefreshExpiration() {
+        return refreshExpiration;
     }
 
     public String generateToken(Authentication authentication) {

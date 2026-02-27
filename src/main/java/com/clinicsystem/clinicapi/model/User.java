@@ -25,18 +25,18 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Username không được để trống")
-    @Size(min = 3, max = 50, message = "Username phải từ 3-50 ký tự")
+    @NotBlank(message = "{validation.username.required}")
+    @Size(min = 3, max = 50, message = "{validation.username.size}")
     @Column(unique = true, nullable = false)
     private String username;
 
-    @NotBlank(message = "Email không được để trống")
-    @Email(message = "Email không đúng định dạng")
+    @NotBlank(message = "{validation.email.required}")
+    @Email(message = "{validation.email.invalid}")
     @Column(unique = true, nullable = false)
     private String email;
 
-    @NotBlank(message = "Password không được để trống")
-    @Size(min = 6, message = "Password phải có ít nhất 6 ký tự")
+    @NotBlank(message = "{validation.password.required}")
+    @Size(min = 6, message = "{validation.password.size}")
     @Column(nullable = false)
     private String password;
 

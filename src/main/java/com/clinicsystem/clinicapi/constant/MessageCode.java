@@ -36,6 +36,17 @@ public class MessageCode {
     public static final String USER_UPDATED = "user.updated";
     public static final String USER_DELETED = "user.deleted";
 
+    // Validation messages
+    public static final String VALIDATION_USERNAME_REQUIRED = "validation.username.required";
+    public static final String VALIDATION_USERNAME_SIZE = "validation.username.size";
+    public static final String VALIDATION_EMAIL_REQUIRED = "validation.email.required";
+    public static final String VALIDATION_EMAIL_INVALID = "validation.email.invalid";
+    public static final String VALIDATION_PASSWORD_REQUIRED = "validation.password.required";
+    public static final String VALIDATION_PASSWORD_SIZE = "validation.password.size";
+
+    // Resource not found messages
+    public static final String RESOURCE_NOT_FOUND = "resource.not_found";
+
     private MessageCode() {
         // Private constructor to prevent instantiation
     }

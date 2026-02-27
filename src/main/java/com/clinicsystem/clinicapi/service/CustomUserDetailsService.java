@@ -18,26 +18,29 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+        private final UserRepository userRepository;
 
-    @Override
-    @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy user: " + username));
+        @Override
+        @Transactional(readOnly = true)
+        public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+                // User user = userRepository.findByUsername(username)
+                // .orElseThrow(() -> new UsernameNotFoundException("User not found: " +
+                // username));
 
-        Set<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
-                .collect(Collectors.toSet());
+                // Set<GrantedAuthority> authorities = user.getRoles().stream()
+                // .map(role -> new SimpleGrantedAuthority(role.getName().name()))
+                // .collect(Collectors.toSet());
 
-        return org.springframework.security.core.userdetails.User
-                .withUsername(user.getUsername())
-                .password(user.getPassword())
-                .authorities(authorities)
-                .accountExpired(false)
-                .accountLocked(false)
-                .credentialsExpired(false)
-                .disabled(!user.getEnabled())
-                .build();
-    }
+                Set<GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority("ROLE_USER"));
+
+                return org.springframework.security.core.userdetails.User
+                                .withUsername(username)
+                                .password("dummyPassword")
+                                .authorities(authorities)
+                                .accountExpired(false)
+                                .accountLocked(false)
+                                .credentialsExpired(false)
+                                .disabled(false)
+                                .build();
+        }
 }

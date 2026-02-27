@@ -2,7 +2,9 @@ package com.clinicsystem.clinicapi.exception;
 
 import com.clinicsystem.clinicapi.constant.MessageCode;
 import com.clinicsystem.clinicapi.dto.ApiResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -19,7 +21,11 @@ import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+
+        @SuppressWarnings("unused")
+        private final MessageSource messageSource;
 
         @ExceptionHandler(InvalidApiKeyException.class)
         public ResponseEntity<ApiResponse<Object>> handleInvalidApiKeyException(
@@ -37,18 +43,31 @@ public class GlobalExceptionHandler {
         public ResponseEntity<ApiResponse<Object>> handleResourceNotFoundException(
                         ResourceNotFoundException ex, WebRequest request) {
                 log.error("Resource not found: {}", ex.getMessage());
+
+                String messageCode = ex.getMessageCode() != null ? ex.getMessageCode() : MessageCode.ERROR_NOT_FOUND;
+
+                // If has resource details, create formatted message
+                Object data = null;
+                if (ex.getResourceName() != null) {
+                        data = Map.of(
+                                        "resource", ex.getResourceName(),
+                                        "field", ex.getFieldName(),
+                                        "value", ex.getFieldValue());
+                }
+
                 return ResponseEntity
                                 .status(HttpStatus.NOT_FOUND)
-                                .body(ApiResponse.error(MessageCode.ERROR_NOT_FOUND));
+                                .body(ApiResponse.error(messageCode, data));
         }
 
         @ExceptionHandler(BadRequestException.class)
         public ResponseEntity<ApiResponse<Object>> handleBadRequestException(
                         BadRequestException ex, WebRequest request) {
                 log.error("Bad request: {}", ex.getMessage());
+                String messageCode = ex.getMessageCode() != null ? ex.getMessageCode() : MessageCode.ERROR_BAD_REQUEST;
                 return ResponseEntity
                                 .status(HttpStatus.BAD_REQUEST)
-                                .body(ApiResponse.error(MessageCode.ERROR_BAD_REQUEST));
+                                .body(ApiResponse.error(messageCode));
         }
 
         @ExceptionHandler(MethodArgumentNotValidException.class)
