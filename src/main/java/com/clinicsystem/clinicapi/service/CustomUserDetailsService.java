@@ -11,9 +11,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
@@ -22,25 +19,20 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         @Override
         @Transactional(readOnly = true)
-        public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-                // User user = userRepository.findByUsername(username)
-                // .orElseThrow(() -> new UsernameNotFoundException("User not found: " +
-                // username));
+        public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+                User user = userRepository.findByEmail(email)
+                                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
 
-                // Set<GrantedAuthority> authorities = user.getRoles().stream()
-                // .map(role -> new SimpleGrantedAuthority(role.getName().name()))
-                // .collect(Collectors.toSet());
-
-                Set<GrantedAuthority> authorities = Set.of(new SimpleGrantedAuthority("ROLE_USER"));
+                GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().name());
 
                 return org.springframework.security.core.userdetails.User
-                                .withUsername(username)
-                                .password("dummyPassword")
-                                .authorities(authorities)
+                                .withUsername(user.getEmail())
+                                .password(user.getPasswordHash())
+                                .authorities(authority)
                                 .accountExpired(false)
-                                .accountLocked(false)
+                                .accountLocked(user.getStatus() != User.UserStatus.active)
                                 .credentialsExpired(false)
-                                .disabled(false)
+                                .disabled(user.getStatus() != User.UserStatus.active)
                                 .build();
         }
 }

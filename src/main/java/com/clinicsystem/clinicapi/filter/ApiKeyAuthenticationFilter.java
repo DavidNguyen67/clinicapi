@@ -47,7 +47,8 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
             "/swagger-resources/**",
             "/webjars/**",
             "/api/v1/swagger-ui/**",
-            "/api/v1/swagger-ui.html");
+            "/api/v1/swagger-ui.html",
+            "/h2-console/**"); // H2 Database Console
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
