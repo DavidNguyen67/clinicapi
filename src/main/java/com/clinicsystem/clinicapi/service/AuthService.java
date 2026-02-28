@@ -44,12 +44,12 @@ public class AuthService {
                 log.info("Registering new user with email: {}", request.getEmail());
 
                 if (userRepository.existsByEmail(request.getEmail())) {
-                        throw new BadRequestException(MessageCode.EMAIL_ALREADY_EXISTS,
+                        throw new BadRequestException(MessageCode.USER_EMAIL_ALREADY_EXISTS,
                                         "Email already exists: " + request.getEmail());
                 }
 
                 if (userRepository.existsByPhone(request.getPhone())) {
-                        throw new BadRequestException(MessageCode.PHONE_ALREADY_EXISTS,
+                        throw new BadRequestException(MessageCode.USER_PHONE_ALREADY_EXISTS,
                                         "Phone already exists: " + request.getPhone());
                 }
 
@@ -95,12 +95,12 @@ public class AuthService {
 
                 // Get user from database
                 User user = userRepository.findByEmail(request.getEmail())
-                                .orElseThrow(() -> new BadRequestException(MessageCode.INVALID_CREDENTIALS,
+                                .orElseThrow(() -> new BadRequestException(MessageCode.USER_INVALID_CREDENTIALS,
                                                 "Invalid email or password"));
 
                 // Check if user is active
                 if (user.getStatus() != User.UserStatus.active) {
-                        throw new BadRequestException(MessageCode.ACCOUNT_INACTIVE,
+                        throw new BadRequestException(MessageCode.USER_ACCOUNT_INACTIVE,
                                         "Account is not active");
                 }
 
@@ -144,7 +144,7 @@ public class AuthService {
 
                 // Check if user is active
                 if (user.getStatus() != User.UserStatus.active) {
-                        throw new BadRequestException(MessageCode.ACCOUNT_INACTIVE,
+                        throw new BadRequestException(MessageCode.USER_ACCOUNT_INACTIVE,
                                         "Account is not active");
                 }
 

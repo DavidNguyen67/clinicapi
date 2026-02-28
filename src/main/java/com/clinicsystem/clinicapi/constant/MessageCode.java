@@ -1,68 +1,67 @@
 package com.clinicsystem.clinicapi.constant;
 
 public class MessageCode {
-
     // General messages
-    public static final String SUCCESS = "general.success";
-    public static final String ERROR = "general.error";
-    public static final String CREATED = "general.created";
-    public static final String UPDATED = "general.updated";
-    public static final String DELETED = "general.deleted";
+    public static final String GENERAL_SUCCESS = "GENERAL_SUCCESS";
+    public static final String GENERAL_ERROR = "GENERAL_ERROR";
+    public static final String GENERAL_CREATED = "GENERAL_CREATED";
+    public static final String GENERAL_UPDATED = "GENERAL_UPDATED";
+    public static final String GENERAL_DELETED = "GENERAL_DELETED";
 
     // Error messages
-    public static final String ERROR_VALIDATION = "error.validation";
-    public static final String ERROR_NOT_FOUND = "error.not_found";
-    public static final String ERROR_BAD_REQUEST = "error.bad_request";
-    public static final String ERROR_UNAUTHORIZED = "error.unauthorized";
-    public static final String ERROR_FORBIDDEN = "error.forbidden";
-    public static final String ERROR_INTERNAL = "error.internal";
-    public static final String ERROR_BAD_CREDENTIALS = "error.bad_credentials";
+    public static final String ERROR_VALIDATION = "ERROR_VALIDATION";
+    public static final String ERROR_NOT_FOUND = "ERROR_NOT_FOUND";
+    public static final String ERROR_BAD_REQUEST = "ERROR_BAD_REQUEST";
+    public static final String ERROR_UNAUTHORIZED = "ERROR_UNAUTHORIZED";
+    public static final String ERROR_FORBIDDEN = "ERROR_FORBIDDEN";
+    public static final String ERROR_INTERNAL = "ERROR_INTERNAL";
+    public static final String ERROR_BAD_CREDENTIALS = "ERROR_BAD_CREDENTIALS";
 
     // Authentication & Authorization
-    public static final String AUTH_LOGIN_SUCCESS = "auth.login.success";
-    public static final String AUTH_LOGOUT_SUCCESS = "auth.logout.success";
-    public static final String AUTH_REGISTER_SUCCESS = "auth.register.success";
-    public static final String AUTH_TOKEN_INVALID = "auth.token.invalid";
-    public static final String AUTH_TOKEN_EXPIRED = "auth.token.expired";
-    public static final String AUTH_REFRESH_SUCCESS = "auth.refresh.success";
-    public static final String AUTH_REFRESH_TOKEN_INVALID = "auth.refresh_token.invalid";
-    public static final String AUTH_REFRESH_TOKEN_EXPIRED = "auth.refresh_token.expired";
+    public static final String AUTH_LOGIN_SUCCESS = "AUTH_LOGIN_SUCCESS";
+    public static final String AUTH_LOGOUT_SUCCESS = "AUTH_LOGOUT_SUCCESS";
+    public static final String AUTH_REGISTER_SUCCESS = "AUTH_REGISTER_SUCCESS";
+    public static final String AUTH_TOKEN_INVALID = "AUTH_TOKEN_INVALID";
+    public static final String AUTH_TOKEN_EXPIRED = "AUTH_TOKEN_EXPIRED";
+    public static final String AUTH_REFRESH_SUCCESS = "AUTH_REFRESH_SUCCESS";
+    public static final String AUTH_REFRESH_TOKEN_INVALID = "AUTH_REFRESH_TOKEN_INVALID";
+    public static final String AUTH_REFRESH_TOKEN_EXPIRED = "AUTH_REFRESH_TOKEN_EXPIRED";
 
     // API Key messages
-    public static final String API_KEY_MISSING = "api.key.missing";
-    public static final String API_KEY_INVALID = "api.key.invalid";
+    public static final String API_KEY_MISSING = "API_KEY_MISSING";
+    public static final String API_KEY_INVALID = "API_KEY_INVALID";
 
     // User messages
-    public static final String USER_NOT_FOUND = "user.not_found";
-    public static final String USER_ALREADY_EXISTS = "user.already_exists";
-    public static final String USER_CREATED = "user.created";
-    public static final String USER_UPDATED = "user.updated";
-    public static final String USER_DELETED = "user.deleted";
-    public static final String EMAIL_ALREADY_EXISTS = "user.email.already_exists";
-    public static final String PHONE_ALREADY_EXISTS = "user.phone.already_exists";
-    public static final String INVALID_CREDENTIALS = "user.invalid_credentials";
-    public static final String ACCOUNT_INACTIVE = "user.account.inactive";
+    public static final String USER_NOT_FOUND = "USER_NOT_FOUND";
+    public static final String USER_ALREADY_EXISTS = "USER_ALREADY_EXISTS";
+    public static final String USER_CREATED = "USER_CREATED";
+    public static final String USER_UPDATED = "USER_UPDATED";
+    public static final String USER_DELETED = "USER_DELETED";
+    public static final String USER_EMAIL_ALREADY_EXISTS = "USER_EMAIL_ALREADY_EXISTS";
+    public static final String USER_PHONE_ALREADY_EXISTS = "USER_PHONE_ALREADY_EXISTS";
+    public static final String USER_INVALID_CREDENTIALS = "USER_INVALID_CREDENTIALS";
+    public static final String USER_ACCOUNT_INACTIVE = "USER_ACCOUNT_INACTIVE";
 
     // Password messages
-    public static final String PASSWORD_CHANGED_SUCCESS = "password.changed.success";
-    public static final String PASSWORD_CURRENT_INCORRECT = "password.current.incorrect";
-    public static final String PASSWORD_MISMATCH = "password.mismatch";
-    public static final String PASSWORD_RESET_EMAIL_SENT = "password.reset.email_sent";
-    public static final String PASSWORD_RESET_SUCCESS = "password.reset.success";
-    public static final String PASSWORD_RESET_TOKEN_INVALID = "password.reset.token.invalid";
-    public static final String PASSWORD_RESET_TOKEN_EXPIRED = "password.reset.token.expired";
-    public static final String PASSWORD_RESET_TOKEN_USED = "password.reset.token.used";
+    public static final String PASSWORD_CHANGED_SUCCESS = "PASSWORD_CHANGED_SUCCESS";
+    public static final String PASSWORD_CURRENT_INCORRECT = "PASSWORD_CURRENT_INCORRECT";
+    public static final String PASSWORD_MISMATCH = "PASSWORD_MISMATCH";
+    public static final String PASSWORD_RESET_EMAIL_SENT = "PASSWORD_RESET_EMAIL_SENT";
+    public static final String PASSWORD_RESET_SUCCESS = "PASSWORD_RESET_SUCCESS";
+    public static final String PASSWORD_RESET_TOKEN_INVALID = "PASSWORD_RESET_TOKEN_INVALID";
+    public static final String PASSWORD_RESET_TOKEN_EXPIRED = "PASSWORD_RESET_TOKEN_EXPIRED";
+    public static final String PASSWORD_RESET_TOKEN_USED = "PASSWORD_RESET_TOKEN_USED";
 
     // Validation messages
-    public static final String VALIDATION_USERNAME_REQUIRED = "validation.username.required";
-    public static final String VALIDATION_USERNAME_SIZE = "validation.username.size";
-    public static final String VALIDATION_EMAIL_REQUIRED = "validation.email.required";
-    public static final String VALIDATION_EMAIL_INVALID = "validation.email.invalid";
-    public static final String VALIDATION_PASSWORD_REQUIRED = "validation.password.required";
-    public static final String VALIDATION_PASSWORD_SIZE = "validation.password.size";
+    public static final String VALIDATION_USERNAME_REQUIRED = "VALIDATION_USERNAME_REQUIRED";
+    public static final String VALIDATION_USERNAME_SIZE = "VALIDATION_USERNAME_SIZE";
+    public static final String VALIDATION_EMAIL_REQUIRED = "VALIDATION_EMAIL_REQUIRED";
+    public static final String VALIDATION_EMAIL_INVALID = "VALIDATION_EMAIL_INVALID";
+    public static final String VALIDATION_PASSWORD_REQUIRED = "VALIDATION_PASSWORD_REQUIRED";
+    public static final String VALIDATION_PASSWORD_SIZE = "VALIDATION_PASSWORD_SIZE";
 
-    // Resource not found messages
-    public static final String RESOURCE_NOT_FOUND = "resource.not_found";
+    // Resource messages
+    public static final String RESOURCE_NOT_FOUND = "RESOURCE_NOT_FOUND";
 
     private MessageCode() {
         // Private constructor to prevent instantiation
