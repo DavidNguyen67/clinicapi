@@ -38,6 +38,7 @@ public class AuthService {
         private final PasswordEncoder passwordEncoder;
         private final JwtUtil jwtUtil;
         private final AuthenticationManager authenticationManager;
+        private final EmailService emailService;
 
         @Transactional
         public LoginResponse register(RegisterRequest request) {
@@ -71,6 +72,8 @@ public class AuthService {
                 String accessToken = jwtUtil.generateToken(
                                 user);
                 String refreshToken = jwtUtil.generateRefreshToken(user.getId());
+
+                emailService.sendWelcomeEmail(user.getEmail(), user.getFullName());
 
                 return LoginResponse.builder()
                                 .accessToken(accessToken)
