@@ -28,7 +28,6 @@ public class DotenvConfig implements ApplicationContextInitializer<ConfigurableA
             environment.getPropertySources()
                     .addFirst(new MapPropertySource("dotenvProperties", dotenvProperties));
         } catch (Exception e) {
-            // .env file not found or error reading it, continue without it
             System.out.println("Warning: .env file not found or could not be loaded");
         }
     }

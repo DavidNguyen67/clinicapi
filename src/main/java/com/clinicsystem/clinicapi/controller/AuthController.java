@@ -30,7 +30,6 @@ import java.util.Arrays;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
-
         private final AuthService authService;
         private final JwtUtil jwtUtil;
 
