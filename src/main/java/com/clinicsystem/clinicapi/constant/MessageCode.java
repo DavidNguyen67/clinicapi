@@ -24,6 +24,9 @@ public class MessageCode {
     public static final String AUTH_REGISTER_SUCCESS = "auth.register.success";
     public static final String AUTH_TOKEN_INVALID = "auth.token.invalid";
     public static final String AUTH_TOKEN_EXPIRED = "auth.token.expired";
+    public static final String AUTH_REFRESH_SUCCESS = "auth.refresh.success";
+    public static final String AUTH_REFRESH_TOKEN_INVALID = "auth.refresh_token.invalid";
+    public static final String AUTH_REFRESH_TOKEN_EXPIRED = "auth.refresh_token.expired";
 
     // API Key messages
     public static final String API_KEY_MISSING = "api.key.missing";
@@ -39,6 +42,16 @@ public class MessageCode {
     public static final String PHONE_ALREADY_EXISTS = "user.phone.already_exists";
     public static final String INVALID_CREDENTIALS = "user.invalid_credentials";
     public static final String ACCOUNT_INACTIVE = "user.account.inactive";
+
+    // Password messages
+    public static final String PASSWORD_CHANGED_SUCCESS = "password.changed.success";
+    public static final String PASSWORD_CURRENT_INCORRECT = "password.current.incorrect";
+    public static final String PASSWORD_MISMATCH = "password.mismatch";
+    public static final String PASSWORD_RESET_EMAIL_SENT = "password.reset.email_sent";
+    public static final String PASSWORD_RESET_SUCCESS = "password.reset.success";
+    public static final String PASSWORD_RESET_TOKEN_INVALID = "password.reset.token.invalid";
+    public static final String PASSWORD_RESET_TOKEN_EXPIRED = "password.reset.token.expired";
+    public static final String PASSWORD_RESET_TOKEN_USED = "password.reset.token.used";
 
     // Validation messages
     public static final String VALIDATION_USERNAME_REQUIRED = "validation.username.required";

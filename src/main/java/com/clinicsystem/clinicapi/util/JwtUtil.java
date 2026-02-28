@@ -36,6 +36,9 @@ public class JwtUtil {
     @Value("${jwt.refresh-expiration}")
     private long refreshExpiration;
 
+    @Value("${jwt.refresh-cookie-name}")
+    private String refreshCookieName;
+
     private PrivateKey privateKey;
     private PublicKey publicKey;
 
@@ -115,6 +118,10 @@ public class JwtUtil {
         return refreshExpiration;
     }
 
+    public String getRefreshCookieName() {
+        return refreshCookieName;
+    }
+
     public String generateToken(User user) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpiration);
@@ -173,6 +180,31 @@ public class JwtUtil {
         return claims.get("role", String.class);
     }
 
+    public String getTokenType(String token) {
+        Claims claims = getClaimsFromToken(token);
+        return claims.get("type", String.class);
+    }
+
+    public boolean isRefreshToken(String token) {
+        try {
+            String type = getTokenType(token);
+            return "REFRESH".equals(type);
+        } catch (Exception e) {
+            log.error("Error checking token type", e);
+            return false;
+        }
+    }
+
+    public boolean isAccessToken(String token) {
+        try {
+            String type = getTokenType(token);
+            return "ACCESS".equals(type);
+        } catch (Exception e) {
+            log.error("Error checking token type", e);
+            return false;
+        }
+    }
+
     public boolean validateToken(String token) {
         try {
             Jwts.parser()
@@ -192,5 +224,9 @@ public class JwtUtil {
             log.error("JWT claims string is empty");
         }
         return false;
+    }
+
+    public boolean validateRefreshToken(String token) {
+        return validateToken(token) && isRefreshToken(token);
     }
 }

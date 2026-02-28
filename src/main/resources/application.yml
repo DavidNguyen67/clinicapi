@@ -69,6 +69,7 @@ jwt:
   public-key-path: ${JWT_PUBLIC_KEY_PATH}
   expiration: ${JWT_EXPIRATION}
   refresh-expiration: ${JWT_REFRESH_EXPIRATION}
+  refresh-cookie-name: ${JWT_REFRESH_COOKIE_NAME}
 
 api:
   security:
