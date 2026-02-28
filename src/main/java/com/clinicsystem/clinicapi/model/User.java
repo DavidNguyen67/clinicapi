@@ -3,54 +3,72 @@ package com.clinicsystem.clinicapi.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.clinicsystem.clinicapi.model.Role.RoleName;
+
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
-@Table(name = "users")
-@Data
+@Table(name = "users", indexes = {
+        @Index(name = "idx_email", columnList = "email"),
+        @Index(name = "idx_phone", columnList = "phone")
+})
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @NotBlank(message = "{validation.username.required}")
-    @Size(min = 3, max = 50, message = "{validation.username.size}")
-    @Column(unique = true, nullable = false)
-    private String username;
-
-    @NotBlank(message = "{validation.email.required}")
-    @Email(message = "{validation.email.invalid}")
-    @Column(unique = true, nullable = false)
+@Setter
+@Getter
+public class User extends SoftDeletableEntity {
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email is invalid")
+    @Column(unique = true, nullable = false, length = 255)
     private String email;
 
-    @NotBlank(message = "{validation.password.required}")
-    @Size(min = 6, message = "{validation.password.size}")
-    @Column(nullable = false)
-    private String password;
+    @NotBlank(message = "Password is required")
+    @Column(name = "password_hash", nullable = false, length = 255)
+    private String passwordHash;
 
-    @Column(nullable = false)
-    private Boolean enabled = true;
+    @NotBlank(message = "Phone is required")
+    @Column(unique = true, nullable = false, length = 20)
+    private String phone;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    @NotBlank(message = "Full name is required")
+    @Column(name = "full_name", nullable = false, length = 255)
+    private String fullName;
 
-    @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
+    @Column(length = 500)
+    private String avatar;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private RoleName role = RoleName.ROLE_PATIENT;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private UserStatus status = UserStatus.active;
+
+    @Column(name = "email_verified", nullable = false)
+    private Boolean emailVerified = false;
+
+    @Column(name = "phone_verified", nullable = false)
+    private Boolean phoneVerified = false;
+
+    @Column(name = "last_login")
+    private LocalDateTime lastLogin;
 
     @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    public enum UserStatus {
+        active, inactive, suspended
+    }
 }

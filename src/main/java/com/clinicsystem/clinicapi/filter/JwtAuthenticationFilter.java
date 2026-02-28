@@ -30,23 +30,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-        try {
-            String jwt = getJwtFromRequest(request);
+        // try {
+        // String jwt = getJwtFromRequest(request);
 
-            if (StringUtils.hasText(jwt) && jwtUtil.validateToken(jwt)) {
-                String username = jwtUtil.getUsernameFromToken(jwt);
+        // if (StringUtils.hasText(jwt) && jwtUtil.validateToken(jwt)) {
+        // String username = jwtUtil.getUsernameFromToken(jwt);
 
-                UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        // UserDetails userDetails =
+        // customUserDetailsService.loadUserByUsername(username);
+        // UsernamePasswordAuthenticationToken authentication = new
+        // UsernamePasswordAuthenticationToken(
+        // userDetails, null, userDetails.getAuthorities());
+        // authentication.setDetails(new
+        // WebAuthenticationDetailsSource().buildDetails(request));
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                log.debug("Set authentication for user: {}", username);
-            }
-        } catch (Exception ex) {
-            log.error("Could not set user authentication in security context", ex);
-        }
+        // SecurityContextHolder.getContext().setAuthentication(authentication);
+        // log.debug("Set authentication for user: {}", username);
+        // }
+        // } catch (Exception ex) {
+        // log.error("Could not set user authentication in security context", ex);
+        // }
 
         filterChain.doFilter(request, response);
     }

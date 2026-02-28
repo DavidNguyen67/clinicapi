@@ -35,6 +35,10 @@ public class MessageCode {
     public static final String USER_CREATED = "user.created";
     public static final String USER_UPDATED = "user.updated";
     public static final String USER_DELETED = "user.deleted";
+    public static final String EMAIL_ALREADY_EXISTS = "user.email.already_exists";
+    public static final String PHONE_ALREADY_EXISTS = "user.phone.already_exists";
+    public static final String INVALID_CREDENTIALS = "user.invalid_credentials";
+    public static final String ACCOUNT_INACTIVE = "user.account.inactive";
 
     // Validation messages
     public static final String VALIDATION_USERNAME_REQUIRED = "validation.username.required";
