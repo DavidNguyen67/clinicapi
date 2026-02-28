@@ -1,9 +1,5 @@
 package com.clinicsystem.clinicapi.config;
 
-import com.clinicsystem.clinicapi.filter.ApiKeyAuthenticationFilter;
-import com.clinicsystem.clinicapi.filter.JwtAuthenticationFilter;
-import com.clinicsystem.clinicapi.service.CustomUserDetailsService;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +20,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import com.clinicsystem.clinicapi.filter.ApiKeyAuthenticationFilter;
+import com.clinicsystem.clinicapi.filter.JwtAuthenticationFilter;
+import com.clinicsystem.clinicapi.service.CustomUserDetailsService;
 
 import java.util.Arrays;
 

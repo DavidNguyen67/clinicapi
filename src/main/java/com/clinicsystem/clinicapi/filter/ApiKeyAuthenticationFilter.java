@@ -31,10 +31,10 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
     private final ObjectMapper objectMapper;
 
-    @Value("${api.security.keys:}")
+    @Value("${api.security.keys}")
     private String[] validApiKeys;
 
-    @Value("${api.security.enabled:true}")
+    @Value("${api.security.enabled}")
     private boolean apiKeyEnabled;
 
     // Public endpoints that don't require API key
