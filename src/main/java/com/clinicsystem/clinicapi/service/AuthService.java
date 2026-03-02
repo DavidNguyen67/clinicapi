@@ -45,16 +45,6 @@ public class AuthService {
         public LoginResponse register(RegisterRequest request) {
                 log.info("Registering new user with email: {}", request.getEmail());
 
-                if (userRepository.existsByEmail(request.getEmail())) {
-                        throw new BadRequestException(MessageCode.USER_EMAIL_ALREADY_EXISTS,
-                                        "Email already exists: " + request.getEmail());
-                }
-
-                if (userRepository.existsByPhone(request.getPhone())) {
-                        throw new BadRequestException(MessageCode.USER_PHONE_ALREADY_EXISTS,
-                                        "Phone already exists: " + request.getPhone());
-                }
-
                 User user = new User();
                 user.setEmail(request.getEmail());
                 user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
@@ -187,12 +177,6 @@ public class AuthService {
         public void changePassword(String email, ChangePasswordRequest request) {
                 log.info("Change password request for user: {}", email);
 
-                // Validate password confirmation
-                if (!request.getNewPassword().equals(request.getConfirmPassword())) {
-                        throw new BadRequestException(MessageCode.PASSWORD_MISMATCH,
-                                        "New password and confirm password do not match");
-                }
-
                 // Get user from database
                 User user = userRepository.findByEmail(email)
                                 .orElseThrow(() -> new BadRequestException(MessageCode.USER_NOT_FOUND,
@@ -255,12 +239,6 @@ public class AuthService {
         @Transactional
         public void resetPassword(ResetPasswordRequest request) {
                 log.info("Reset password request with token");
-
-                // Validate password confirmation
-                if (!request.getNewPassword().equals(request.getConfirmPassword())) {
-                        throw new BadRequestException(MessageCode.PASSWORD_MISMATCH,
-                                        "New password and confirm password do not match");
-                }
 
                 // Find token
                 PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(request.getToken())

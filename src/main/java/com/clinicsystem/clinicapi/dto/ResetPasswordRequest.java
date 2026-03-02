@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.dto;
 
+import com.clinicsystem.clinicapi.validation.PasswordMatch;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@PasswordMatch(password = "newPassword", confirmPassword = "confirmPassword", message = "Passwords do not match")
 public class ResetPasswordRequest {
 
     @NotBlank(message = "Token is required")
