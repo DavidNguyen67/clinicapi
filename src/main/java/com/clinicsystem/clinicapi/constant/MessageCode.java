@@ -63,6 +63,34 @@ public class MessageCode {
     // Resource messages
     public static final String RESOURCE_NOT_FOUND = "RESOURCE_NOT_FOUND";
 
+    // Patient messages
+    public static final String PATIENT_NOT_FOUND = "PATIENT_NOT_FOUND";
+    public static final String PATIENT_ALREADY_EXISTS = "PATIENT_ALREADY_EXISTS";
+    public static final String PATIENT_CREATED = "PATIENT_CREATED";
+    public static final String PATIENT_UPDATED = "PATIENT_UPDATED";
+    public static final String PATIENT_DELETED = "PATIENT_DELETED";
+
+    // Doctor messages
+    public static final String DOCTOR_NOT_FOUND = "DOCTOR_NOT_FOUND";
+    public static final String DOCTOR_CREATED = "DOCTOR_CREATED";
+    public static final String DOCTOR_UPDATED = "DOCTOR_UPDATED";
+    public static final String DOCTOR_DELETED = "DOCTOR_DELETED";
+
+    // Service messages
+    public static final String SERVICE_NOT_FOUND = "SERVICE_NOT_FOUND";
+    public static final String SERVICE_CREATED = "SERVICE_CREATED";
+    public static final String SERVICE_UPDATED = "SERVICE_UPDATED";
+    public static final String SERVICE_DELETED = "SERVICE_DELETED";
+
+    // Specialty messages
+    public static final String SPECIALTY_NOT_FOUND = "SPECIALTY_NOT_FOUND";
+    public static final String SPECIALTY_CREATED = "SPECIALTY_CREATED";
+    public static final String SPECIALTY_UPDATED = "SPECIALTY_UPDATED";
+    public static final String SPECIALTY_DELETED = "SPECIALTY_DELETED";
+
+    // System messages
+    public static final String SYSTEM_ERROR = "SYSTEM_ERROR";
+
     private MessageCode() {
         // Private constructor to prevent instantiation
     }

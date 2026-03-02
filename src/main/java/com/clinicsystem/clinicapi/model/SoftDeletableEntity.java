@@ -6,7 +6,7 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 @MappedSuperclass
 @SQLDelete(sql = "UPDATE #{#entityName} SET deleted_at = NOW(), deleted_by = ? WHERE id = ?")
-@Where(clause = "deleted_at IS NULL")
+@SQLRestriction("deleted_at IS NULL")
 @EntityListeners(AuditingEntityListener.class)
 public abstract class SoftDeletableEntity extends BaseEntity {
 

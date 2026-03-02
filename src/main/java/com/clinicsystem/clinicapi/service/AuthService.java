@@ -39,6 +39,7 @@ public class AuthService {
         private final JwtUtil jwtUtil;
         private final AuthenticationManager authenticationManager;
         private final EmailService emailService;
+        private final PatientService patientService;
 
         @Transactional
         public LoginResponse register(RegisterRequest request) {
@@ -67,6 +68,10 @@ public class AuthService {
 
                 user = userRepository.save(user);
                 log.info("Successfully registered user with ID: {}", user.getId());
+
+                // Automatically create Patient for new user
+                patientService.createPatient(user);
+                log.info("Successfully created patient for user: {}", user.getEmail());
 
                 // Generate tokens with full user information
                 String accessToken = jwtUtil.generateToken(

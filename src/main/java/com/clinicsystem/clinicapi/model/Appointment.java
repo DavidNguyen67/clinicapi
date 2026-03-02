@@ -1,0 +1,91 @@
+package com.clinicsystem.clinicapi.model;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+@Entity
+@Table(name = "appointments", indexes = {
+        @Index(name = "idx_appointment_code", columnList = "appointment_code"),
+        @Index(name = "idx_patient_id", columnList = "patient_id"),
+        @Index(name = "idx_doctor_id", columnList = "doctor_id"),
+        @Index(name = "idx_date", columnList = "appointment_date"),
+        @Index(name = "idx_status", columnList = "status"),
+        // Composite indexes for common queries
+        @Index(name = "idx_doctor_date_status", columnList = "doctor_id, appointment_date, status"),
+        @Index(name = "idx_patient_status_date", columnList = "patient_id, status, appointment_date"),
+        @Index(name = "idx_date_status", columnList = "appointment_date, status")
+})
+@EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
+public class Appointment extends SoftDeletableEntity {
+
+    @NotBlank(message = "Appointment code is required")
+    @Column(name = "appointment_code", unique = true, nullable = false, length = 20)
+    private String appointmentCode;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "patient_id", nullable = false, foreignKey = @ForeignKey(name = "fk_appointment_patient"))
+    @NotNull(message = "Patient is required")
+    private Patient patient;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "doctor_id", nullable = false, foreignKey = @ForeignKey(name = "fk_appointment_doctor"))
+    @NotNull(message = "Doctor is required")
+    private Doctor doctor;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "service_id", foreignKey = @ForeignKey(name = "fk_appointment_service"))
+    private Service service;
+
+    @NotNull(message = "Appointment date is required")
+    @Column(name = "appointment_date", nullable = false)
+    private LocalDate appointmentDate;
+
+    @NotNull(message = "Start time is required")
+    @Column(name = "start_time", nullable = false)
+    private LocalTime startTime;
+
+    @NotNull(message = "End time is required")
+    @Column(name = "end_time", nullable = false)
+    private LocalTime endTime;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private AppointmentStatus status = AppointmentStatus.pending;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "booking_type", nullable = false, length = 20)
+    private BookingType bookingType = BookingType.online;
+
+    @Column(columnDefinition = "TEXT")
+    private String reason;
+
+    @Column(columnDefinition = "TEXT")
+    private String symptoms;
+
+    @Column(columnDefinition = "TEXT")
+    private String notes;
+
+    @Column(name = "queue_number")
+    private Integer queueNumber;
+
+    public enum AppointmentStatus {
+        pending, confirmed, checked_in, in_progress, completed, cancelled, no_show
+    }
+
+    public enum BookingType {
+        online, phone, walk_in
+    }
+}

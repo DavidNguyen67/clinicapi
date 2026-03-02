@@ -16,6 +16,8 @@ public class PageResponse<T> {
     private String nextCursor;
     private boolean hasMore;
     private int pageSize;
+    private int pageNumber;
+    private int totalPages;
     private long totalElements;
 
     public static <T> PageResponse<T> of(List<T> records, String nextCursor, boolean hasMore, int pageSize,

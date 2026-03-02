@@ -9,9 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import com.clinicsystem.clinicapi.model.Role.RoleName;
 
 import java.time.LocalDateTime;
@@ -63,10 +60,6 @@ public class User extends SoftDeletableEntity {
 
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 
     public enum UserStatus {
         active, inactive, suspended
