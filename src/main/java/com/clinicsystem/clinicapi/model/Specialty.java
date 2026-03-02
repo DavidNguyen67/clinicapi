@@ -1,7 +1,10 @@
 package com.clinicsystem.clinicapi.model;
 
+import com.clinicsystem.clinicapi.model.Role.RoleName;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -31,9 +34,6 @@ public class Specialty extends SoftDeletableEntity {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(length = 255)
-    private String icon;
-
     @Column(length = 500)
     private String image;
 
@@ -42,4 +42,22 @@ public class Specialty extends SoftDeletableEntity {
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
+
+    @NotNull
+    @Column(nullable = false, columnDefinition = "VARCHAR(50) DEFAULT 'GENERAL'")
+    @Enumerated(EnumType.STRING)
+    private SpecialtyType specialtyType;
+
+    public enum SpecialtyType {
+        GENERAL,
+        SURGERY,
+        PEDIATRICS,
+        DERMATOLOGY,
+        CARDIOLOGY,
+        ORTHOPEDICS,
+        NEUROLOGY,
+        PSYCHIATRY,
+        GYNECOLOGY,
+        ENDOCRINOLOGY
+    }
 }

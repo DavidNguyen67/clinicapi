@@ -123,7 +123,6 @@ public class DoctorService {
                     .name(doctor.getSpecialty().getName())
                     .slug(doctor.getSpecialty().getSlug())
                     .description(doctor.getSpecialty().getDescription())
-                    .icon(doctor.getSpecialty().getIcon())
                     .image(doctor.getSpecialty().getImage())
                     .build();
         }
@@ -147,5 +146,15 @@ public class DoctorService {
                 .isFeatured(doctor.getIsFeatured())
                 .status(doctor.getStatus().name())
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Doctor> getTopDoctors() {
+        return doctorRepository.getTopDoctors();
+    }
+
+    @Transactional(readOnly = true)
+    public int getTotalDoctors() {
+        return doctorRepository.countByStatus(Doctor.DoctorStatus.active);
     }
 }

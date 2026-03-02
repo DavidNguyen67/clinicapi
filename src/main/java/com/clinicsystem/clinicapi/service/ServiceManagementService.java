@@ -87,7 +87,6 @@ public class ServiceManagementService {
                     .name(service.getSpecialty().getName())
                     .slug(service.getSpecialty().getSlug())
                     .description(service.getSpecialty().getDescription())
-                    .icon(service.getSpecialty().getIcon())
                     .image(service.getSpecialty().getImage())
                     .build();
         }

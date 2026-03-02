@@ -7,6 +7,7 @@ import com.clinicsystem.clinicapi.model.User;
 import com.clinicsystem.clinicapi.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +45,12 @@ public class PatientService {
         return patient;
     }
 
+    @Transactional(readOnly = true)
+    public int getTotalPatients() {
+        long count = patientRepository.count();
+        return count > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) count;
+    }
+
     private String generatePatientCode() {
         // Format: PT + YYYYMMDD + Random 3 digits
         // Example: PT20260302001
@@ -69,4 +76,5 @@ public class PatientService {
 
         return patientCode;
     }
+
 }
