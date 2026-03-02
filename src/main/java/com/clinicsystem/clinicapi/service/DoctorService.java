@@ -116,7 +116,12 @@ public class DoctorService {
     }
 
     private DoctorPublicDto convertToPublicDto(Doctor doctor) {
+        if (doctor == null) {
+            return null;
+        }
+
         SpecialtyDto specialtyDto = null;
+
         if (doctor.getSpecialty() != null) {
             specialtyDto = SpecialtyDto.builder()
                     .id(doctor.getSpecialty().getId())
@@ -133,7 +138,7 @@ public class DoctorService {
                 .fullName(doctor.getUser().getFullName())
                 .email(doctor.getUser().getEmail())
                 .phone(doctor.getUser().getPhone())
-                .avatar(doctor.getUser().getAvatar())
+                .pathAvatar(doctor.getUser().getPathAvatar())
                 .specialty(specialtyDto)
                 .degree(doctor.getDegree())
                 .experienceYears(doctor.getExperienceYears())

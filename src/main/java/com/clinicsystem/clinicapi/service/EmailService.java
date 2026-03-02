@@ -27,6 +27,9 @@ public class EmailService {
     @Value("${spring.application.name}")
     private String appName;
 
+    @Value("${frontend.url}")
+    private String frontendUrl;
+
     public void sendSimpleEmail(String to, String subject, String text) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
@@ -72,6 +75,7 @@ public class EmailService {
         context.setVariable("appName", appName);
         context.setVariable("resetToken", resetToken);
         context.setVariable("expiryHours", expiryHours);
+        context.setVariable("resetLink", frontendUrl + "/reset-password?token=" + resetToken);
 
         // Process template
         String htmlContent = templateEngine.process("email/password-reset", context);

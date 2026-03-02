@@ -59,7 +59,7 @@ VALUES
 ## 3. Users Table
 
 ```sql
-INSERT INTO users (id, email, password_hash, phone, full_name, avatar, role, status, email_verified, phone_verified, last_login, created_at, updated_at, deleted_at)
+INSERT INTO users (id, email, password_hash, phone, full_name, pathAvatar, role, status, email_verified, phone_verified, last_login, created_at, updated_at, deleted_at)
 VALUES
 -- Admin user
 ('10000000-0000-0000-0000-000000000001'::uuid, 'admin@clinic.com', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0901234567', 'Quản trị viên', 'https://i.pravatar.cc/150?img=1', 'ROLE_ADMIN', 'active', true, true, NOW(), NOW(), NOW(), NULL),

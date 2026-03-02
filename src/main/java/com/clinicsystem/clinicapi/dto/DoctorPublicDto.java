@@ -18,7 +18,7 @@ public class DoctorPublicDto {
     private String fullName;
     private String email;
     private String phone;
-    private String avatar;
+    private String pathAvatar;
     private SpecialtyDto specialty;
     private String degree;
     private Integer experienceYears;

@@ -60,9 +60,9 @@ public class AuthService {
                 user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
                 user.setPhone(request.getPhone());
                 user.setFullName(request.getFullName());
-                user.setAvatar(request.getAvatar());
+                user.setPathAvatar(request.getPathAvatar());
                 user.setRole(RoleName.ROLE_PATIENT);
-                user.setStatus(User.UserStatus.active);
+                user.setStatus(User.UserStatus.ACTIVE);
                 user.setEmailVerified(false);
                 user.setPhoneVerified(false);
 
@@ -107,7 +107,7 @@ public class AuthService {
                                                 "Invalid email or password"));
 
                 // Check if user is active
-                if (user.getStatus() != User.UserStatus.active) {
+                if (user.getStatus() != User.UserStatus.ACTIVE) {
                         throw new BadRequestException(MessageCode.USER_ACCOUNT_INACTIVE,
                                         "Account is not active");
                 }
@@ -151,7 +151,7 @@ public class AuthService {
                                                 "User not found"));
 
                 // Check if user is active
-                if (user.getStatus() != User.UserStatus.active) {
+                if (user.getStatus() != User.UserStatus.ACTIVE) {
                         throw new BadRequestException(MessageCode.USER_ACCOUNT_INACTIVE,
                                         "Account is not active");
                 }
@@ -177,7 +177,7 @@ public class AuthService {
                                 .email(user.getEmail())
                                 .phone(user.getPhone())
                                 .fullName(user.getFullName())
-                                .avatar(user.getAvatar())
+                                .pathAvatar(user.getPathAvatar())
                                 .role(user.getRole().name())
                                 .status(user.getStatus().name())
                                 .build();
@@ -232,19 +232,20 @@ public class AuthService {
                 // Generate reset token (6-digit random code or UUID)
                 String resetToken = UUID.randomUUID().toString();
 
+                int expiryHours = 1; // Token valid for 1 hour
+
                 // Create password reset token (valid for 1 hour)
                 PasswordResetToken passwordResetToken = PasswordResetToken.builder()
                                 .user(user)
                                 .token(resetToken)
-                                .expiryDate(LocalDateTime.now().plusHours(1))
+                                .expiryDate(LocalDateTime.now().plusHours(expiryHours))
                                 .used(false)
                                 .build();
 
                 passwordResetTokenRepository.save(passwordResetToken);
 
                 // TODO: Send email with reset token
-                // emailService.sendPasswordResetEmail(user.getEmail(), resetToken);
-                log.warn("TODO: Send password reset email to {} with token: {}", user.getEmail(), resetToken);
+                emailService.sendPasswordResetEmail(user.getEmail(), resetToken, expiryHours);
                 log.info("Password reset token generated for user: {}", user.getEmail());
 
                 // For development/testing purposes, log the token

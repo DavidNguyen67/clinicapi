@@ -29,6 +29,10 @@ public class User extends SoftDeletableEntity {
     @Column(unique = true, nullable = false, length = 255)
     private String email;
 
+    @NotBlank(message = "Dob is required")
+    @Column(name = "date_of_birth", nullable = false)
+    private String dateOfBirth;
+
     @NotBlank(message = "Password is required")
     @Column(name = "password_hash", nullable = false, length = 255)
     private String passwordHash;
@@ -41,16 +45,20 @@ public class User extends SoftDeletableEntity {
     @Column(name = "full_name", nullable = false, length = 255)
     private String fullName;
 
-    @Column(length = 500)
-    private String avatar;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private RoleName role = RoleName.ROLE_PATIENT;
 
+    @Column(length = 500)
+    private String pathAvatar;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private UserStatus status = UserStatus.active;
+    private UserStatus status = UserStatus.ACTIVE;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private Gender gender = Gender.OTHER;
 
     @Column(name = "email_verified", nullable = false)
     private Boolean emailVerified = false;
@@ -62,6 +70,10 @@ public class User extends SoftDeletableEntity {
     private LocalDateTime lastLogin;
 
     public enum UserStatus {
-        active, inactive, suspended
+        ACTIVE, INACTIVE, BANNED
+    }
+
+    public enum Gender {
+        MALE, FEMALE, OTHER
     }
 }
