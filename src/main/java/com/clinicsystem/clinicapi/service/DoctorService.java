@@ -77,7 +77,7 @@ public class DoctorService {
     @Transactional(readOnly = true)
     public DoctorPublicDto getDoctorById(UUID id) {
         log.info("Getting doctor by id: {}", id);
-        Doctor doctor = doctorRepository.findById(id)
+        Doctor doctor = doctorRepository.findByIdWithRelations(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         MessageCode.DOCTOR_NOT_FOUND,
                         "Doctor not found with id: " + id));
@@ -139,7 +139,6 @@ public class DoctorService {
                 .experienceYears(doctor.getExperienceYears())
                 .education(doctor.getEducation())
                 .bio(doctor.getBio())
-                .consultationFee(doctor.getConsultationFee())
                 .averageRating(doctor.getAverageRating())
                 .totalReviews(doctor.getTotalReviews())
                 .totalPatients(doctor.getTotalPatients())
@@ -149,8 +148,11 @@ public class DoctorService {
     }
 
     @Transactional(readOnly = true)
-    public List<Doctor> getTopDoctors() {
-        return doctorRepository.getTopDoctors();
+    public List<DoctorPublicDto> getTopDoctors() {
+        List<Doctor> doctors = doctorRepository.getTopDoctors();
+        return doctors.stream()
+                .map(this::convertToPublicDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

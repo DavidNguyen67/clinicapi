@@ -5,12 +5,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.clinicsystem.clinicapi.constant.MessageCode;
 import com.clinicsystem.clinicapi.dto.ApiResponse;
+import com.clinicsystem.clinicapi.dto.DoctorPublicDto;
 import com.clinicsystem.clinicapi.dto.HomePublicDto;
-import com.clinicsystem.clinicapi.dto.SpecialtyDto;
-import com.clinicsystem.clinicapi.model.Doctor;
 import com.clinicsystem.clinicapi.service.DoctorService;
 import com.clinicsystem.clinicapi.service.HomeService;
-import com.clinicsystem.clinicapi.service.PatientService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +17,6 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Slf4j
 @RestController
@@ -41,9 +38,9 @@ public class HomeController {
     }
 
     @GetMapping("/top-doctors")
-    public ResponseEntity<ApiResponse<List<Doctor>>> getTopDoctors(@RequestParam String param) {
-        List<Doctor> topDoctors = doctorService.getTopDoctors();
-        return ResponseEntity.ok(ApiResponse.<List<Doctor>>builder()
+    public ResponseEntity<ApiResponse<List<DoctorPublicDto>>> getTopDoctors() {
+        List<DoctorPublicDto> topDoctors = doctorService.getTopDoctors();
+        return ResponseEntity.ok(ApiResponse.<List<DoctorPublicDto>>builder()
                 .success(true)
                 .messageCode(MessageCode.GENERAL_SUCCESS)
                 .data(topDoctors)
