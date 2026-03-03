@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.model;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -31,23 +32,23 @@ import java.util.Map;
 @Getter
 public class MedicalRecord extends SoftDeletableEntity {
 
-    @NotBlank(message = "Record code is required")
+    @NotBlank(message = MessageCode.VALIDATION_RECORD_CODE_REQUIRED)
     @Column(name = "record_code", unique = true, nullable = false, length = 20)
     private String recordCode;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "appointment_id", unique = true, nullable = false, foreignKey = @ForeignKey(name = "fk_record_appointment"))
-    @NotNull(message = "Appointment is required")
+    @NotNull(message = MessageCode.VALIDATION_APPOINTMENT_REQUIRED)
     private Appointment appointment;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", nullable = false, foreignKey = @ForeignKey(name = "fk_record_patient"))
-    @NotNull(message = "Patient is required")
+    @NotNull(message = MessageCode.VALIDATION_PATIENT_REQUIRED)
     private Patient patient;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id", nullable = false, foreignKey = @ForeignKey(name = "fk_record_doctor"))
-    @NotNull(message = "Doctor is required")
+    @NotNull(message = MessageCode.VALIDATION_DOCTOR_REQUIRED)
     private Doctor doctor;
 
     @Column(name = "chief_complaint", columnDefinition = "TEXT")
@@ -57,7 +58,7 @@ public class MedicalRecord extends SoftDeletableEntity {
     @Column(name = "vital_signs", columnDefinition = "JSON")
     private Map<String, Object> vitalSigns;
 
-    @NotBlank(message = "Diagnosis is required")
+    @NotBlank(message = MessageCode.VALIDATION_DIAGNOSIS_REQUIRED)
     @Column(nullable = false, columnDefinition = "TEXT")
     private String diagnosis;
 

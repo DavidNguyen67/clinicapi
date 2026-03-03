@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.model;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -26,19 +27,19 @@ public class BlogPostDocument {
     private String categoryId; // Reference to BlogCategory
 
     @Indexed
-    @NotNull(message = "Author is required")
+    @NotNull(message = MessageCode.VALIDATION_AUTHOR_REQUIRED)
     private String authorId; // Reference to User UUID
 
-    @NotBlank(message = "Title is required")
+    @NotBlank(message = MessageCode.VALIDATION_TITLE_REQUIRED)
     private String title;
 
     @Indexed(unique = true)
-    @NotBlank(message = "Slug is required")
+    @NotBlank(message = MessageCode.VALIDATION_SLUG_REQUIRED)
     private String slug;
 
     private String excerpt;
 
-    @NotBlank(message = "Content is required")
+    @NotBlank(message = MessageCode.VALIDATION_CONTENT_REQUIRED)
     private String content;
 
     private String featuredImage;

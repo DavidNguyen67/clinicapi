@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.model;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,7 +25,7 @@ public class AuditLogDocument {
     @Indexed
     private String userId; // Reference to User UUID
 
-    @NotBlank(message = "Action is required")
+    @NotBlank(message = MessageCode.VALIDATION_ACTION_REQUIRED)
     private String action;
 
     @Indexed

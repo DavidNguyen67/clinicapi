@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.model;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -26,12 +27,12 @@ public class EquipmentMaintenance extends SoftDeletableEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "equipment_id", nullable = false, foreignKey = @ForeignKey(name = "fk_maintenance_equipment"))
-    @NotNull(message = "Equipment is required")
+    @NotNull(message = MessageCode.VALIDATION_EQUIPMENT_REQUIRED)
     private MedicalEquipment equipment;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "maintenance_type", nullable = false, length = 20)
-    @NotNull(message = "Maintenance type is required")
+    @NotNull(message = MessageCode.VALIDATION_MAINTENANCE_TYPE_REQUIRED)
     private MaintenanceType maintenanceType;
 
     @Column(name = "scheduled_date")

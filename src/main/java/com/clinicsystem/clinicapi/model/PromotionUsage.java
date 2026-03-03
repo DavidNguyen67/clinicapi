@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.model;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -26,19 +27,19 @@ public class PromotionUsage extends SoftDeletableEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "promotion_id", nullable = false, foreignKey = @ForeignKey(name = "fk_usage_promotion"))
-    @NotNull(message = "Promotion is required")
+    @NotNull(message = MessageCode.VALIDATION_PROMOTION_REQUIRED)
     private Promotion promotion;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(name = "fk_usage_user"))
-    @NotNull(message = "User is required")
+    @NotNull(message = MessageCode.VALIDATION_USER_REQUIRED)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "invoice_id", foreignKey = @ForeignKey(name = "fk_usage_invoice"))
     private Invoice invoice;
 
-    @NotNull(message = "Discount amount is required")
+    @NotNull(message = MessageCode.VALIDATION_DISCOUNT_AMOUNT_REQUIRED)
     @Column(name = "discount_amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal discountAmount;
 

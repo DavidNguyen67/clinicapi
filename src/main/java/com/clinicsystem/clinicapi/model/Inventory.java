@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.model;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -26,13 +27,13 @@ public class Inventory extends SoftDeletableEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "medication_id", nullable = false, foreignKey = @ForeignKey(name = "fk_inventory_medication"))
-    @NotNull(message = "Medication is required")
+    @NotNull(message = MessageCode.VALIDATION_MEDICATION_REQUIRED)
     private Medication medication;
 
     @Column(name = "batch_number", length = 100)
     private String batchNumber;
 
-    @NotNull(message = "Quantity is required")
+    @NotNull(message = MessageCode.VALIDATION_QUANTITY_REQUIRED)
     @Column(nullable = false)
     private Integer quantity = 0;
 

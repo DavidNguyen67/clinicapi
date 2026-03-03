@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.dto;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import com.clinicsystem.clinicapi.validation.UniqueEmail;
 import com.clinicsystem.clinicapi.validation.UniquePhone;
 import com.clinicsystem.clinicapi.validation.ValidPhoneNumber;
@@ -17,22 +18,22 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RegisterRequest {
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
+    @NotBlank(message = MessageCode.VALIDATION_EMAIL_REQUIRED)
+    @Email(message = MessageCode.VALIDATION_EMAIL_INVALID)
     @UniqueEmail
     private String email;
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 6, message = "Password must be at least 6 characters")
+    @NotBlank(message = MessageCode.VALIDATION_PASSWORD_REQUIRED)
+    @Size(min = 6, message = MessageCode.VALIDATION_PASSWORD_MIN_SIZE)
     private String password;
 
-    @NotBlank(message = "Phone is required")
+    @NotBlank(message = MessageCode.VALIDATION_PHONE_REQUIRED)
     @ValidPhoneNumber
     @UniquePhone
     private String phone;
 
-    @NotBlank(message = "Full name is required")
-    @Size(min = 2, max = 255, message = "Full name must be between 2 and 255 characters")
+    @NotBlank(message = MessageCode.VALIDATION_FULLNAME_REQUIRED)
+    @Size(min = 2, max = 255, message = MessageCode.VALIDATION_FULLNAME_SIZE)
     private String fullName;
 
     private String pathAvatar;

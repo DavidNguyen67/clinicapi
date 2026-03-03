@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.model;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -31,33 +32,33 @@ import java.time.LocalTime;
 @Getter
 public class Appointment extends SoftDeletableEntity {
 
-    @NotBlank(message = "Appointment code is required")
+    @NotBlank(message = MessageCode.VALIDATION_APPOINTMENT_CODE_REQUIRED)
     @Column(name = "appointment_code", unique = true, nullable = false, length = 20)
     private String appointmentCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", nullable = false, foreignKey = @ForeignKey(name = "fk_appointment_patient"))
-    @NotNull(message = "Patient is required")
+    @NotNull(message = MessageCode.VALIDATION_PATIENT_REQUIRED)
     private Patient patient;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id", nullable = false, foreignKey = @ForeignKey(name = "fk_appointment_doctor"))
-    @NotNull(message = "Doctor is required")
+    @NotNull(message = MessageCode.VALIDATION_DOCTOR_REQUIRED)
     private Doctor doctor;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service_id", foreignKey = @ForeignKey(name = "fk_appointment_service"))
     private Service service;
 
-    @NotNull(message = "Appointment date is required")
+    @NotNull(message = MessageCode.VALIDATION_APPOINTMENT_DATE_REQUIRED)
     @Column(name = "appointment_date", nullable = false)
     private LocalDate appointmentDate;
 
-    @NotNull(message = "Start time is required")
+    @NotNull(message = MessageCode.VALIDATION_START_TIME_REQUIRED)
     @Column(name = "start_time", nullable = false)
     private LocalTime startTime;
 
-    @NotNull(message = "End time is required")
+    @NotNull(message = MessageCode.VALIDATION_END_TIME_REQUIRED)
     @Column(name = "end_time", nullable = false)
     private LocalTime endTime;
 

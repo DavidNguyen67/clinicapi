@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.validation;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -10,7 +11,7 @@ import java.lang.annotation.*;
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UniquePhone {
-    String message() default "Phone number already exists";
+    String message() default MessageCode.VALIDATION_PHONE_EXISTS;
 
     Class<?>[] groups() default {};
 

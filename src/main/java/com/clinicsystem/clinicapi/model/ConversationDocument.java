@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.model;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,11 +25,11 @@ public class ConversationDocument {
     private String id;
 
     @Indexed
-    @NotNull(message = "Patient is required")
+    @NotNull(message = MessageCode.VALIDATION_PATIENT_REQUIRED)
     private String patientId; // Reference to Patient UUID
 
     @Indexed
-    @NotNull(message = "Doctor is required")
+    @NotNull(message = MessageCode.VALIDATION_DOCTOR_REQUIRED)
     private String doctorId; // Reference to Doctor UUID
 
     @Indexed

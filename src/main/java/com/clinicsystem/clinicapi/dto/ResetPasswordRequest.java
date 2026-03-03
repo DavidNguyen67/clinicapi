@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.dto;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import com.clinicsystem.clinicapi.validation.PasswordMatch;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -12,16 +13,16 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@PasswordMatch(password = "newPassword", confirmPassword = "confirmPassword", message = "Passwords do not match")
+@PasswordMatch(password = "newPassword", confirmPassword = "confirmPassword")
 public class ResetPasswordRequest {
 
-    @NotBlank(message = "Token is required")
+    @NotBlank(message = MessageCode.VALIDATION_TOKEN_REQUIRED)
     private String token;
 
-    @NotBlank(message = "New password is required")
-    @Size(min = 6, message = "New password must be at least 6 characters")
+    @NotBlank(message = MessageCode.VALIDATION_NEW_PASSWORD_REQUIRED)
+    @Size(min = 6, message = MessageCode.VALIDATION_PASSWORD_MIN_SIZE)
     private String newPassword;
 
-    @NotBlank(message = "Confirm password is required")
+    @NotBlank(message = MessageCode.VALIDATION_CONFIRM_PASSWORD_REQUIRED)
     private String confirmPassword;
 }

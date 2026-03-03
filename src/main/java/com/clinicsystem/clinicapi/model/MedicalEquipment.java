@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.model;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -24,11 +25,11 @@ import java.time.LocalDate;
 @Getter
 public class MedicalEquipment extends SoftDeletableEntity {
 
-    @NotBlank(message = "Equipment code is required")
+    @NotBlank(message = MessageCode.VALIDATION_EQUIPMENT_CODE_REQUIRED)
     @Column(name = "equipment_code", unique = true, nullable = false, length = 50)
     private String equipmentCode;
 
-    @NotBlank(message = "Name is required")
+    @NotBlank(message = MessageCode.VALIDATION_NAME_REQUIRED)
     @Column(nullable = false, length = 255)
     private String name;
 

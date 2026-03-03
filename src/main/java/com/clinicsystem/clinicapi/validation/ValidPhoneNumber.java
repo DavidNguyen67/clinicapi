@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.validation;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -7,12 +8,12 @@ import java.lang.annotation.*;
 
 @Documented
 @Constraint(validatedBy = ValidPhoneNumberValidator.class)
-@Target({ElementType.FIELD, ElementType.PARAMETER})
+@Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidPhoneNumber {
-    String message() default "Invalid Vietnamese phone number";
-    
+    String message() default MessageCode.VALIDATION_PHONE_INVALID;
+
     Class<?>[] groups() default {};
-    
+
     Class<? extends Payload>[] payload() default {};
 }

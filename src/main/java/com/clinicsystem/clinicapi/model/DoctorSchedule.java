@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.model;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -25,18 +26,18 @@ public class DoctorSchedule extends SoftDeletableEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id", nullable = false, foreignKey = @ForeignKey(name = "fk_schedule_doctor"))
-    @NotNull(message = "Doctor is required")
+    @NotNull(message = MessageCode.VALIDATION_DOCTOR_REQUIRED)
     private Doctor doctor;
 
-    @NotNull(message = "Day of week is required")
+    @NotNull(message = MessageCode.VALIDATION_DAY_OF_WEEK_REQUIRED)
     @Column(name = "day_of_week", nullable = false)
     private Integer dayOfWeek; // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
 
-    @NotNull(message = "Start time is required")
+    @NotNull(message = MessageCode.VALIDATION_START_TIME_REQUIRED)
     @Column(name = "start_time", nullable = false)
     private LocalTime startTime;
 
-    @NotNull(message = "End time is required")
+    @NotNull(message = MessageCode.VALIDATION_END_TIME_REQUIRED)
     @Column(name = "end_time", nullable = false)
     private LocalTime endTime;
 

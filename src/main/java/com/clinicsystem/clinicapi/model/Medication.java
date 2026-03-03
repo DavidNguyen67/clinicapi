@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.model;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,7 @@ import java.math.BigDecimal;
 @Getter
 public class Medication extends SoftDeletableEntity {
 
-    @NotBlank(message = "Name is required")
+    @NotBlank(message = MessageCode.VALIDATION_NAME_REQUIRED)
     @Column(nullable = false, length = 255)
     private String name;
 

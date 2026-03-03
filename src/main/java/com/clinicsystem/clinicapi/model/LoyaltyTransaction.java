@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.model;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -25,15 +26,15 @@ public class LoyaltyTransaction extends SoftDeletableEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", nullable = false, foreignKey = @ForeignKey(name = "fk_loyalty_patient"))
-    @NotNull(message = "Patient is required")
+    @NotNull(message = MessageCode.VALIDATION_PATIENT_REQUIRED)
     private Patient patient;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "transaction_type", nullable = false, length = 20)
-    @NotNull(message = "Transaction type is required")
+    @NotNull(message = MessageCode.VALIDATION_TRANSACTION_TYPE_REQUIRED)
     private TransactionType transactionType;
 
-    @NotNull(message = "Points is required")
+    @NotNull(message = MessageCode.VALIDATION_POINTS_REQUIRED)
     @Column(nullable = false)
     private Integer points;
 
@@ -46,7 +47,7 @@ public class LoyaltyTransaction extends SoftDeletableEntity {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @NotNull(message = "Balance after is required")
+    @NotNull(message = MessageCode.VALIDATION_BALANCE_AFTER_REQUIRED)
     @Column(name = "balance_after", nullable = false)
     private Integer balanceAfter;
 

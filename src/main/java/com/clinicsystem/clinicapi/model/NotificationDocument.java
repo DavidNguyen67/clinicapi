@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.model;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -25,17 +26,17 @@ public class NotificationDocument {
     private String id;
 
     @Indexed
-    @NotNull(message = "User is required")
+    @NotNull(message = MessageCode.VALIDATION_USER_REQUIRED)
     private String userId; // Reference to User UUID
 
-    @NotBlank(message = "Title is required")
+    @NotBlank(message = MessageCode.VALIDATION_TITLE_REQUIRED)
     private String title;
 
-    @NotBlank(message = "Message is required")
+    @NotBlank(message = MessageCode.VALIDATION_MESSAGE_REQUIRED)
     private String message;
 
     @Indexed
-    @NotNull(message = "Type is required")
+    @NotNull(message = MessageCode.VALIDATION_TYPE_REQUIRED)
     private NotificationType type;
 
     private String referenceType;

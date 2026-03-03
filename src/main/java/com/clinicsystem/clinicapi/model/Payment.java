@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.model;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -30,27 +31,27 @@ import java.time.LocalDateTime;
 @Getter
 public class Payment extends SoftDeletableEntity {
 
-    @NotBlank(message = "Payment code is required")
+    @NotBlank(message = MessageCode.VALIDATION_PAYMENT_CODE_REQUIRED)
     @Column(name = "payment_code", unique = true, nullable = false, length = 20)
     private String paymentCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "invoice_id", nullable = false, foreignKey = @ForeignKey(name = "fk_payment_invoice"))
-    @NotNull(message = "Invoice is required")
+    @NotNull(message = MessageCode.VALIDATION_INVOICE_REQUIRED)
     private Invoice invoice;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", nullable = false, foreignKey = @ForeignKey(name = "fk_payment_patient"))
-    @NotNull(message = "Patient is required")
+    @NotNull(message = MessageCode.VALIDATION_PATIENT_REQUIRED)
     private Patient patient;
 
-    @NotNull(message = "Amount is required")
+    @NotNull(message = MessageCode.VALIDATION_AMOUNT_REQUIRED)
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_method", nullable = false, length = 20)
-    @NotNull(message = "Payment method is required")
+    @NotNull(message = MessageCode.VALIDATION_PAYMENT_METHOD_REQUIRED)
     private PaymentMethod paymentMethod;
 
     @Column(name = "payment_date", nullable = false)

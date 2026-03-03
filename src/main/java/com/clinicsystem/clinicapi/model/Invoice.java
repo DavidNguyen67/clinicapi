@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.model;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -34,7 +35,7 @@ import java.util.List;
 @Getter
 public class Invoice extends SoftDeletableEntity {
 
-    @NotBlank(message = "Invoice code is required")
+    @NotBlank(message = MessageCode.VALIDATION_INVOICE_CODE_REQUIRED)
     @Column(name = "invoice_code", unique = true, nullable = false, length = 20)
     private String invoiceCode;
 
@@ -44,21 +45,21 @@ public class Invoice extends SoftDeletableEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", nullable = false, foreignKey = @ForeignKey(name = "fk_invoice_patient"))
-    @NotNull(message = "Patient is required")
+    @NotNull(message = MessageCode.VALIDATION_PATIENT_REQUIRED)
     private Patient patient;
 
-    @NotNull(message = "Invoice date is required")
+    @NotNull(message = MessageCode.VALIDATION_INVOICE_DATE_REQUIRED)
     @Column(name = "invoice_date", nullable = false)
     private LocalDate invoiceDate;
 
-    @NotNull(message = "Subtotal is required")
+    @NotNull(message = MessageCode.VALIDATION_SUBTOTAL_REQUIRED)
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal subtotal;
 
     @Column(name = "discount_amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal discountAmount = BigDecimal.ZERO;
 
-    @NotNull(message = "Total amount is required")
+    @NotNull(message = MessageCode.VALIDATION_TOTAL_AMOUNT_REQUIRED)
     @Column(name = "total_amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalAmount;
 

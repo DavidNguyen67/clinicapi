@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.validation;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -10,7 +11,7 @@ import java.lang.annotation.*;
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PasswordMatch {
-    String message() default "Password and confirm password do not match";
+    String message() default MessageCode.VALIDATION_PASSWORD_MISMATCH;
 
     String password();
 

@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.model;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -24,11 +25,11 @@ public class Faq extends SoftDeletableEntity {
     @Column(length = 100)
     private String category;
 
-    @NotBlank(message = "Question is required")
+    @NotBlank(message = MessageCode.VALIDATION_QUESTION_REQUIRED)
     @Column(nullable = false, columnDefinition = "TEXT")
     private String question;
 
-    @NotBlank(message = "Answer is required")
+    @NotBlank(message = MessageCode.VALIDATION_ANSWER_REQUIRED)
     @Column(nullable = false, columnDefinition = "TEXT")
     private String answer;
 

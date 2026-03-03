@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.model;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -27,7 +28,7 @@ public class Review extends SoftDeletableEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", nullable = false, foreignKey = @ForeignKey(name = "fk_review_patient"))
-    @NotNull(message = "Patient is required")
+    @NotNull(message = MessageCode.VALIDATION_PATIENT_REQUIRED)
     private Patient patient;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,9 +39,9 @@ public class Review extends SoftDeletableEntity {
     @JoinColumn(name = "appointment_id", foreignKey = @ForeignKey(name = "fk_review_appointment"))
     private Appointment appointment;
 
-    @NotNull(message = "Rating is required")
-    @Min(value = 1, message = "Rating must be at least 1")
-    @Max(value = 5, message = "Rating must be at most 5")
+    @NotNull(message = MessageCode.VALIDATION_RATING_REQUIRED)
+    @Min(value = 1, message = MessageCode.VALIDATION_RATING_MIN)
+    @Max(value = 5, message = MessageCode.VALIDATION_RATING_MAX)
     @Column(nullable = false)
     private Integer rating;
 

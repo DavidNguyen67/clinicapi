@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.model;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -28,11 +29,11 @@ import java.util.List;
 @Getter
 public class Promotion extends SoftDeletableEntity {
 
-    @NotBlank(message = "Code is required")
+    @NotBlank(message = MessageCode.VALIDATION_PROMOTION_CODE_REQUIRED)
     @Column(unique = true, nullable = false, length = 50)
     private String code;
 
-    @NotBlank(message = "Name is required")
+    @NotBlank(message = MessageCode.VALIDATION_NAME_REQUIRED)
     @Column(nullable = false, length = 255)
     private String name;
 
@@ -41,10 +42,10 @@ public class Promotion extends SoftDeletableEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "discount_type", nullable = false, length = 20)
-    @NotNull(message = "Discount type is required")
+    @NotNull(message = MessageCode.VALIDATION_DISCOUNT_TYPE_REQUIRED)
     private DiscountType discountType;
 
-    @NotNull(message = "Discount value is required")
+    @NotNull(message = MessageCode.VALIDATION_DISCOUNT_VALUE_REQUIRED)
     @Column(name = "discount_value", nullable = false, precision = 10, scale = 2)
     private BigDecimal discountValue;
 
@@ -67,11 +68,11 @@ public class Promotion extends SoftDeletableEntity {
     @Column(name = "applicable_services", columnDefinition = "JSON")
     private List<String> applicableServices;
 
-    @NotNull(message = "Start date is required")
+    @NotNull(message = MessageCode.VALIDATION_START_DATE_REQUIRED)
     @Column(name = "start_date", nullable = false)
     private LocalDateTime startDate;
 
-    @NotNull(message = "End date is required")
+    @NotNull(message = MessageCode.VALIDATION_END_DATE_REQUIRED)
     @Column(name = "end_date", nullable = false)
     private LocalDateTime endDate;
 

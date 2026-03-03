@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.dto;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RefreshTokenRequest {
 
-    @NotBlank(message = "Refresh token is required")
+    @NotBlank(message = MessageCode.VALIDATION_REFRESH_TOKEN_REQUIRED)
     private String refreshToken;
 }

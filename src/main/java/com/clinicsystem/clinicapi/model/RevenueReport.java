@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.model;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -25,18 +26,18 @@ public class RevenueReport extends SoftDeletableEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "report_type", nullable = false, length = 20)
-    @NotNull(message = "Report type is required")
+    @NotNull(message = MessageCode.VALIDATION_REPORT_TYPE_REQUIRED)
     private ReportType reportType;
 
-    @NotNull(message = "Report date is required")
+    @NotNull(message = MessageCode.VALIDATION_REPORT_DATE_REQUIRED)
     @Column(name = "report_date", nullable = false)
     private LocalDate reportDate;
 
-    @NotNull(message = "Start date is required")
+    @NotNull(message = MessageCode.VALIDATION_START_DATE_REQUIRED)
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-    @NotNull(message = "End date is required")
+    @NotNull(message = MessageCode.VALIDATION_END_DATE_REQUIRED)
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 

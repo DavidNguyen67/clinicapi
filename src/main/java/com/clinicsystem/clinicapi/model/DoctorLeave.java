@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.model;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -26,10 +27,10 @@ public class DoctorLeave extends SoftDeletableEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id", nullable = false, foreignKey = @ForeignKey(name = "fk_leave_doctor"))
-    @NotNull(message = "Doctor is required")
+    @NotNull(message = MessageCode.VALIDATION_DOCTOR_REQUIRED)
     private Doctor doctor;
 
-    @NotNull(message = "Leave date is required")
+    @NotNull(message = MessageCode.VALIDATION_LEAVE_DATE_REQUIRED)
     @Column(name = "leave_date", nullable = false)
     private LocalDate leaveDate;
 

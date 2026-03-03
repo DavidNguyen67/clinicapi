@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.model;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -23,13 +24,13 @@ public class PrescriptionItem extends SoftDeletableEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "prescription_id", nullable = false, foreignKey = @ForeignKey(name = "fk_item_prescription"))
-    @NotNull(message = "Prescription is required")
+    @NotNull(message = MessageCode.VALIDATION_PRESCRIPTION_REQUIRED)
     @JsonBackReference("prescription-items")
     private Prescription prescription;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "medication_id", nullable = false, foreignKey = @ForeignKey(name = "fk_item_medication"))
-    @NotNull(message = "Medication is required")
+    @NotNull(message = MessageCode.VALIDATION_MEDICATION_REQUIRED)
     private Medication medication;
 
     @Column(length = 100)
@@ -41,7 +42,7 @@ public class PrescriptionItem extends SoftDeletableEntity {
     @Column(length = 100)
     private String duration;
 
-    @NotNull(message = "Quantity is required")
+    @NotNull(message = MessageCode.VALIDATION_QUANTITY_REQUIRED)
     @Column(nullable = false)
     private Integer quantity;
 

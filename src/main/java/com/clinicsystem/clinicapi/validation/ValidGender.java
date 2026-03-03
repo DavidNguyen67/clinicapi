@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.validation;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -10,7 +11,7 @@ import java.lang.annotation.*;
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidGender {
-    String message() default "Gender must be MALE, FEMALE, or OTHER";
+    String message() default MessageCode.VALIDATION_GENDER_INVALID;
 
     Class<?>[] groups() default {};
 

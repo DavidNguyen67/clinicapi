@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.model;
 
+import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -22,7 +23,7 @@ import java.time.LocalDate;
 @Getter
 public class DailyReport extends SoftDeletableEntity {
 
-    @NotNull(message = "Report date is required")
+    @NotNull(message = MessageCode.VALIDATION_REPORT_DATE_REQUIRED)
     @Column(name = "report_date", unique = true, nullable = false)
     private LocalDate reportDate;
 
