@@ -1,0 +1,3 @@
+-- V1__initial_schema.sql
+-- Baseline migration (empty - actual schema is in V2)
+-- This file exists to maintain Flyway version history

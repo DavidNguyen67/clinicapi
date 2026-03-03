@@ -59,28 +59,28 @@ VALUES
 ## 3. Users Table
 
 ```sql
-INSERT INTO users (id, email, password_hash, phone, full_name, pathAvatar, role, status, email_verified, phone_verified, last_login, created_at, updated_at, deleted_at)
+INSERT INTO users (id, email, date_of_birth, password_hash, phone, full_name, path_avatar, role, status, gender, email_verified, phone_verified, last_login, created_at, updated_at, deleted_at)
 VALUES
 -- Admin user
-('10000000-0000-0000-0000-000000000001'::uuid, 'admin@clinic.com', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0901234567', 'Quản trị viên', 'https://i.pravatar.cc/150?img=1', 'ROLE_ADMIN', 'active', true, true, NOW(), NOW(), NOW(), NULL),
+('10000000-0000-0000-0000-000000000001'::uuid, 'admin@clinic.com', '1985-01-15', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0901234567', 'Quản trị viên', 'https://i.pravatar.cc/150?img=1', 'ROLE_ADMIN', 'ACTIVE', 'MALE', true, true, NOW(), NOW(), NOW(), NULL),
 
 -- Doctor users
-('10000000-0000-0000-0000-000000000002'::uuid, 'bs.nguyen@clinic.com', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0901234568', 'Bác sĩ Nguyễn Văn A', 'https://i.pravatar.cc/150?img=11', 'ROLE_DOCTOR', 'active', true, true, NOW(), NOW(), NOW(), NULL),
-('10000000-0000-0000-0000-000000000003'::uuid, 'bs.tran@clinic.com', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0901234569', 'Bác sĩ Trần Thị B', 'https://i.pravatar.cc/150?img=20', 'ROLE_DOCTOR', 'active', true, true, NOW(), NOW(), NOW(), NULL),
-('10000000-0000-0000-0000-000000000004'::uuid, 'bs.le@clinic.com', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0901234570', 'Bác sĩ Lê Văn C', 'https://i.pravatar.cc/150?img=12', 'ROLE_DOCTOR', 'active', true, true, NOW(), NOW(), NOW(), NULL),
-('10000000-0000-0000-0000-000000000005'::uuid, 'bs.pham@clinic.com', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0901234571', 'Bác sĩ Phạm Thị D', 'https://i.pravatar.cc/150?img=21', 'ROLE_DOCTOR', 'active', true, true, NOW(), NOW(), NOW(), NULL),
-('10000000-0000-0000-0000-000000000006'::uuid, 'bs.hoang@clinic.com', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0901234572', 'Bác sĩ Hoàng Văn E', 'https://i.pravatar.cc/150?img=13', 'ROLE_DOCTOR', 'active', true, true, NOW(), NOW(), NOW(), NULL),
+('10000000-0000-0000-0000-000000000002'::uuid, 'bs.nguyen@clinic.com', '1980-05-20', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0901234568', 'Bác sĩ Nguyễn Văn A', 'https://i.pravatar.cc/150?img=11', 'ROLE_DOCTOR', 'ACTIVE', 'MALE', true, true, NOW(), NOW(), NOW(), NULL),
+('10000000-0000-0000-0000-000000000003'::uuid, 'bs.tran@clinic.com', '1985-08-12', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0901234569', 'Bác sĩ Trần Thị B', 'https://i.pravatar.cc/150?img=20', 'ROLE_DOCTOR', 'ACTIVE', 'FEMALE', true, true, NOW(), NOW(), NOW(), NULL),
+('10000000-0000-0000-0000-000000000004'::uuid, 'bs.le@clinic.com', '1978-03-25', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0901234570', 'Bác sĩ Lê Văn C', 'https://i.pravatar.cc/150?img=12', 'ROLE_DOCTOR', 'ACTIVE', 'MALE', true, true, NOW(), NOW(), NOW(), NULL),
+('10000000-0000-0000-0000-000000000005'::uuid, 'bs.pham@clinic.com', '1982-11-08', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0901234571', 'Bác sĩ Phạm Thị D', 'https://i.pravatar.cc/150?img=21', 'ROLE_DOCTOR', 'ACTIVE', 'FEMALE', true, true, NOW(), NOW(), NOW(), NULL),
+('10000000-0000-0000-0000-000000000006'::uuid, 'bs.hoang@clinic.com', '1983-07-14', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0901234572', 'Bác sĩ Hoàng Văn E', 'https://i.pravatar.cc/150?img=13', 'ROLE_DOCTOR', 'ACTIVE', 'MALE', true, true, NOW(), NOW(), NOW(), NULL),
 
 -- Patient users
-('10000000-0000-0000-0000-000000000011'::uuid, 'patient1@email.com', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0912345678', 'Nguyễn Văn An', 'https://i.pravatar.cc/150?img=31', 'ROLE_PATIENT', 'active', true, true, NOW(), NOW(), NOW(), NULL),
-('10000000-0000-0000-0000-000000000012'::uuid, 'patient2@email.com', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0912345679', 'Trần Thị Bình', 'https://i.pravatar.cc/150?img=32', 'ROLE_PATIENT', 'active', true, true, NOW(), NOW(), NOW(), NULL),
-('10000000-0000-0000-0000-000000000013'::uuid, 'patient3@email.com', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0912345680', 'Lê Văn Cường', 'https://i.pravatar.cc/150?img=33', 'ROLE_PATIENT', 'active', true, true, NOW(), NOW(), NOW(), NULL),
-('10000000-0000-0000-0000-000000000014'::uuid, 'patient4@email.com', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0912345681', 'Phạm Thị Dung', 'https://i.pravatar.cc/150?img=34', 'ROLE_PATIENT', 'active', true, true, NOW(), NOW(), NOW(), NULL),
-('10000000-0000-0000-0000-000000000015'::uuid, 'patient5@email.com', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0912345682', 'Hoàng Văn Em', 'https://i.pravatar.cc/150?img=35', 'ROLE_PATIENT', 'active', true, false, NOW(), NOW(), NOW(), NULL),
+('10000000-0000-0000-0000-000000000011'::uuid, 'patient1@email.com', '1990-05-15', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0912345678', 'Nguyễn Văn An', 'https://i.pravatar.cc/150?img=31', 'ROLE_PATIENT', 'ACTIVE', 'MALE', true, true, NOW(), NOW(), NOW(), NULL),
+('10000000-0000-0000-0000-000000000012'::uuid, 'patient2@email.com', '1985-08-20', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0912345679', 'Trần Thị Bình', 'https://i.pravatar.cc/150?img=32', 'ROLE_PATIENT', 'ACTIVE', 'FEMALE', true, true, NOW(), NOW(), NOW(), NULL),
+('10000000-0000-0000-0000-000000000013'::uuid, 'patient3@email.com', '1995-03-10', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0912345680', 'Lê Văn Cường', 'https://i.pravatar.cc/150?img=33', 'ROLE_PATIENT', 'ACTIVE', 'MALE', true, true, NOW(), NOW(), NOW(), NULL),
+('10000000-0000-0000-0000-000000000014'::uuid, 'patient4@email.com', '1988-12-25', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0912345681', 'Phạm Thị Dung', 'https://i.pravatar.cc/150?img=34', 'ROLE_PATIENT', 'ACTIVE', 'FEMALE', true, true, NOW(), NOW(), NOW(), NULL),
+('10000000-0000-0000-0000-000000000015'::uuid, 'patient5@email.com', '2000-07-08', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0912345682', 'Hoàng Văn Em', 'https://i.pravatar.cc/150?img=35', 'ROLE_PATIENT', 'ACTIVE', 'MALE', true, false, NOW(), NOW(), NOW(), NULL),
 
 -- Staff users
-('10000000-0000-0000-0000-000000000021'::uuid, 'staff1@clinic.com', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0923456789', 'Võ Thị Phương', 'https://i.pravatar.cc/150?img=41', 'ROLE_STAFF', 'active', true, true, NOW(), NOW(), NOW(), NULL),
-('10000000-0000-0000-0000-000000000022'::uuid, 'staff2@clinic.com', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0923456790', 'Đặng Văn Quân', 'https://i.pravatar.cc/150?img=42', 'ROLE_STAFF', 'active', true, true, NOW(), NOW(), NOW(), NULL);
+('10000000-0000-0000-0000-000000000021'::uuid, 'staff1@clinic.com', '1992-04-18', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0923456789', 'Võ Thị Phương', 'https://i.pravatar.cc/150?img=41', 'ROLE_STAFF', 'ACTIVE', 'FEMALE', true, true, NOW(), NOW(), NOW(), NULL),
+('10000000-0000-0000-0000-000000000022'::uuid, 'staff2@clinic.com', '1988-09-22', '$2a$10$N.ePdF9JQQYf1gR3Q9gXO.xL3wKXwKzPvw4eKzf9gXO.xL3wKXwKzP', '0923456790', 'Đặng Văn Quân', 'https://i.pravatar.cc/150?img=42', 'ROLE_STAFF', 'ACTIVE', 'MALE', true, true, NOW(), NOW(), NOW(), NULL);
 ```
 
 ## 4. Doctors Table
