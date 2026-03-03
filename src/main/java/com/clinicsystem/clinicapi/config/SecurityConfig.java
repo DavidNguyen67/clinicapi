@@ -52,12 +52,13 @@ public class SecurityConfig {
                         // Public endpoints
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/public/**").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/favicon.ico").permitAll()
 
                         // Swagger/OpenAPI endpoints
                         .requestMatchers("/api/v1/swagger-ui/**", "/api/v1/swagger-ui.html").permitAll()
+                        .requestMatchers("/favicon.ico").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
+                        .requestMatchers("/api-docs/**").permitAll()
 
                         // // Admin endpoints
                         // .requestMatchers("/api/admin/**").hasRole("ADMIN")
