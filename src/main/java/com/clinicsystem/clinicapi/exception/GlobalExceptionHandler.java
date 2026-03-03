@@ -114,6 +114,24 @@ public class GlobalExceptionHandler {
                                 .body(ApiResponse.error(MessageCode.ERROR_FORBIDDEN));
         }
 
+        @ExceptionHandler(NullPointerException.class)
+        public ResponseEntity<ApiResponse<Object>> handleNullPointerException(
+                        NullPointerException ex, WebRequest request) {
+                log.error("Null pointer exception occurred", ex);
+                return ResponseEntity
+                                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body(ApiResponse.error(MessageCode.ERROR_INTERNAL));
+        }
+
+        @ExceptionHandler(IllegalArgumentException.class)
+        public ResponseEntity<ApiResponse<Object>> handleIllegalArgumentException(
+                        IllegalArgumentException ex, WebRequest request) {
+                log.error("Illegal argument: {}", ex.getMessage());
+                return ResponseEntity
+                                .status(HttpStatus.BAD_REQUEST)
+                                .body(ApiResponse.error(MessageCode.ERROR_BAD_REQUEST));
+        }
+
         @ExceptionHandler(Exception.class)
         public ResponseEntity<ApiResponse<Object>> handleGlobalException(
                         Exception ex, WebRequest request) {

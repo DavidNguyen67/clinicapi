@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 @Data
 @Builder
@@ -16,12 +16,7 @@ public class ClinicInfoDto {
     private String address;
     private String phone;
     private String email;
-    private String website;
-    private String description;
-    private String logo;
+    private String pathToImage;
     private String openingHours;
-    private List<String> facilities;
-    private Integer totalDoctors;
-    private Integer totalSpecialties;
-    private Integer totalServices;
+    private BigDecimal averageRating;
 }
