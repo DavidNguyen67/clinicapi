@@ -75,7 +75,7 @@ public class DoctorService {
         return convertToPublicDto(doctor);
     }
 
-    private DoctorProfileDto convertToPublicDto(Doctor doctor) {
+    public DoctorProfileDto convertToPublicDto(Doctor doctor) {
         if (doctor == null) {
             return null;
         }

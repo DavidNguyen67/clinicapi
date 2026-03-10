@@ -9,10 +9,12 @@ import com.clinicsystem.clinicapi.dto.FaqDto;
 import com.clinicsystem.clinicapi.dto.LandingPageDto;
 import com.clinicsystem.clinicapi.dto.PageResponse;
 import com.clinicsystem.clinicapi.dto.PaginationDto;
+import com.clinicsystem.clinicapi.dto.SpecialtyDto;
 import com.clinicsystem.clinicapi.service.ClinicServiceService;
 import com.clinicsystem.clinicapi.service.DoctorService;
 import com.clinicsystem.clinicapi.service.FaqService;
 import com.clinicsystem.clinicapi.service.HomeService;
+import com.clinicsystem.clinicapi.service.SpecialtyService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +32,7 @@ public class HomeController {
         private final DoctorService doctorService;
         private final ClinicServiceService clinicServiceService;
         private final FaqService faqService;
+        private final SpecialtyService specialtyService;
 
         @GetMapping("/clinic-info")
         public ResponseEntity<ApiResponse<ClinicInfoDto>> getClinicInfo() {
@@ -120,4 +123,27 @@ public class HomeController {
                                 .data(services)
                                 .build());
         }
+
+        @GetMapping("/specialties")
+        public ResponseEntity<ApiResponse<PageResponse<SpecialtyDto>>> getAllSpecialties(
+                        @RequestParam(required = false) String lastId,
+                        @RequestParam(defaultValue = "20") int size,
+                        @RequestParam(defaultValue = "createdAt") String sortBy,
+                        @RequestParam(defaultValue = "desc") String sortDirection) {
+
+                PaginationDto paginationDto = PaginationDto.builder()
+                                .lastId(lastId)
+                                .size(size)
+                                .sortBy(sortBy)
+                                .sortDirection(Sort.Direction.fromString(sortDirection))
+                                .build();
+
+                PageResponse<SpecialtyDto> services = specialtyService.getAllSpecialties(paginationDto);
+                return ResponseEntity.ok(ApiResponse.<PageResponse<SpecialtyDto>>builder()
+                                .success(true)
+                                .messageCode(MessageCode.GENERAL_SUCCESS)
+                                .data(services)
+                                .build());
+        }
+
 }

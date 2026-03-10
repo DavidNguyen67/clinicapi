@@ -1,19 +1,19 @@
 package com.clinicsystem.clinicapi.service;
 
 import com.clinicsystem.clinicapi.constant.MessageCode;
+import com.clinicsystem.clinicapi.dto.DoctorProfileDto;
 import com.clinicsystem.clinicapi.dto.PageResponse;
+import com.clinicsystem.clinicapi.dto.PaginationDto;
 import com.clinicsystem.clinicapi.dto.SpecialtyDto;
 import com.clinicsystem.clinicapi.dto.SpecialtyTypeCountDto;
 import com.clinicsystem.clinicapi.exception.ResourceNotFoundException;
 import com.clinicsystem.clinicapi.model.Specialty;
 import com.clinicsystem.clinicapi.model.Specialty.SpecialtyType;
 import com.clinicsystem.clinicapi.repository.SpecialtyRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,52 +29,50 @@ import java.util.stream.Collectors;
 public class SpecialtyService {
 
         private final SpecialtyRepository specialtyRepository;
+        private final DoctorService doctorService;
 
         @Transactional(readOnly = true)
-        public PageResponse<SpecialtyDto> getAllActiveSpecialties(
-                        int page,
-                        int size,
-                        String sortBy,
-                        String sortDirection) {
-                log.info("Getting all active specialties - page: {}, size: {}", page, size);
+        public PageResponse<SpecialtyDto> getAllSpecialties(PaginationDto paginationDto) {
+                int limit = paginationDto.getSize() + 1;
+                PageRequest pageable = PageRequest.of(0, limit, paginationDto.getSortDirection(),
+                                paginationDto.getSortBy());
 
-                Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
-                Pageable pageable = PageRequest.of(page, size, sort);
+                List<Specialty> specialties;
+                if (paginationDto.getLastId() == null || paginationDto.getLastId().isBlank()) {
+                        specialties = specialtyRepository.findActiveForFirstPage(pageable);
+                } else {
+                        UUID lastId = UUID.fromString(paginationDto.getLastId());
+                        Specialty lastSpecialty = specialtyRepository.findById(lastId)
+                                        .orElseThrow(() -> new ResourceNotFoundException(
+                                                        MessageCode.SPECIALTY_NOT_FOUND, "Cursor not found"));
+                        specialties = specialtyRepository.getAllSpecialties(lastSpecialty.getCreatedAt(), pageable);
+                }
 
-                Page<Specialty> specialtyPage = specialtyRepository.findAll(pageable);
+                boolean hasMore = specialties.size() > paginationDto.getSize();
+                if (hasMore) {
+                        specialties = specialties.subList(0, paginationDto.getSize());
+                }
 
-                List<SpecialtyDto> specialtyDtos = specialtyPage.getContent().stream()
-                                .filter(s -> Boolean.TRUE.equals(s.getIsActive()))
+                List<SpecialtyDto> records = specialties.stream()
                                 .map(this::convertToDto)
                                 .collect(Collectors.toList());
 
                 return PageResponse.<SpecialtyDto>builder()
-                                .records(specialtyDtos)
+                                .records(records)
                                 .build();
         }
 
-        @Transactional(readOnly = true)
-        public SpecialtyDto getSpecialtyById(UUID id) {
-                log.info("Getting specialty by id: {}", id);
-                Specialty specialty = specialtyRepository.findById(id)
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                MessageCode.SPECIALTY_NOT_FOUND,
-                                                "Specialty not found with id: " + id));
+        private SpecialtyDto convertToDto(com.clinicsystem.clinicapi.model.Specialty specialty) {
+                List<DoctorProfileDto> doctorDtos = specialty.getDoctors().stream()
+                                .map(doctor -> doctorService.convertToPublicDto(doctor))
+                                .collect(Collectors.toList());
 
-                return convertToDto(specialty);
-        }
-
-        private SpecialtyDto convertToDto(Specialty specialty) {
                 return SpecialtyDto.builder()
                                 .id(specialty.getId())
                                 .name(specialty.getName())
-                                .slug(specialty.getSlug())
                                 .description(specialty.getDescription())
-                                .image(specialty.getImage())
-                                .displayOrder(specialty.getDisplayOrder())
                                 .isActive(specialty.getIsActive())
-                                .createdAt(specialty.getCreatedAt())
-                                .updatedAt(specialty.getUpdatedAt())
+                                .doctors(doctorDtos)
                                 .build();
         }
 
@@ -96,5 +94,4 @@ public class SpecialtyService {
 
                 return map;
         }
-
 }

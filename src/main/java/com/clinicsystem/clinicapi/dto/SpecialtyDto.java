@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -18,8 +19,7 @@ public class SpecialtyDto {
     private String slug;
     private String description;
     private String image;
-    private Integer displayOrder;
     private Boolean isActive;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private List<DoctorProfileDto> doctors;
+
 }

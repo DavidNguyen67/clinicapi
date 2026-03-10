@@ -1,6 +1,10 @@
 package com.clinicsystem.clinicapi.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.clinicsystem.clinicapi.constant.MessageCode;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -47,6 +51,10 @@ public class Specialty extends SoftDeletableEntity {
     @Column(nullable = false, columnDefinition = "VARCHAR(50) DEFAULT 'GENERAL'")
     @Enumerated(EnumType.STRING)
     private SpecialtyType specialtyType;
+
+    @OneToMany(mappedBy = "specialty", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("specialty-items")
+    private List<Doctor> doctors = new ArrayList<>();
 
     public enum SpecialtyType {
         GENERAL,
