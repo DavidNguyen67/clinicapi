@@ -24,85 +24,86 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ServiceManagementService {
 
-    private final ServiceRepository serviceRepository;
+        private final ServiceRepository serviceRepository;
 
-    @Transactional(readOnly = true)
-    public PageResponse<ServicePublicDto> getAllServices(
-            UUID specialtyId,
-            Boolean isFeatured,
-            int page,
-            int size,
-            String sortBy,
-            String sortDirection) {
+        @Transactional(readOnly = true, rollbackFor = Exception.class)
+        public PageResponse<ServicePublicDto> getAllServices(
+                        UUID specialtyId,
+                        Boolean isFeatured,
+                        int page,
+                        int size,
+                        String sortBy,
+                        String sortDirection) {
 
-        log.info("Getting services - specialtyId: {}, isFeatured: {}, page: {}, size: {}",
-                specialtyId, isFeatured, page, size);
+                log.info("Getting services - specialtyId: {}, isFeatured: {}, page: {}, size: {}",
+                                specialtyId, isFeatured, page, size);
 
-        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
-        Pageable pageable = PageRequest.of(page, size, sort);
+                Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+                Pageable pageable = PageRequest.of(page, size, sort);
 
-        Page<com.clinicsystem.clinicapi.model.Service> servicePage = serviceRepository.findAll(pageable);
+                Page<com.clinicsystem.clinicapi.model.Service> servicePage = serviceRepository.findAll(pageable);
 
-        List<ServicePublicDto> serviceDtos = servicePage.getContent().stream()
-                .filter(service -> Boolean.TRUE.equals(service.getIsActive()))
-                .filter(service -> specialtyId == null ||
-                        (service.getSpecialty() != null && service.getSpecialty().getId().equals(specialtyId)))
-                .filter(service -> isFeatured == null || service.getIsFeatured().equals(isFeatured))
-                .map(this::convertToPublicDto)
-                .collect(Collectors.toList());
+                List<ServicePublicDto> serviceDtos = servicePage.getContent().stream()
+                                .filter(service -> Boolean.TRUE.equals(service.getIsActive()))
+                                .filter(service -> specialtyId == null ||
+                                                (service.getSpecialty() != null
+                                                                && service.getSpecialty().getId().equals(specialtyId)))
+                                .filter(service -> isFeatured == null || service.getIsFeatured().equals(isFeatured))
+                                .map(this::convertToPublicDto)
+                                .collect(Collectors.toList());
 
-        return PageResponse.<ServicePublicDto>builder()
-                .records(serviceDtos)
-                .nextCursor(servicePage.hasNext() ? String.valueOf(page + 1) : null)
-                .hasMore(servicePage.hasNext())
-                .pageSize(servicePage.getSize())
-                .pageNumber(servicePage.getNumber())
-                .totalPages(servicePage.getTotalPages())
-                .totalElements(servicePage.getTotalElements())
-                .build();
-    }
-
-    @Transactional(readOnly = true)
-    public ServicePublicDto getServiceById(UUID id) {
-        log.info("Getting service by id: {}", id);
-        com.clinicsystem.clinicapi.model.Service service = serviceRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        MessageCode.SERVICE_NOT_FOUND,
-                        "Service not found with id: " + id));
-
-        if (!Boolean.TRUE.equals(service.getIsActive())) {
-            throw new ResourceNotFoundException(
-                    MessageCode.SERVICE_NOT_FOUND,
-                    "Service is not available");
+                return PageResponse.<ServicePublicDto>builder()
+                                .records(serviceDtos)
+                                .nextCursor(servicePage.hasNext() ? String.valueOf(page + 1) : null)
+                                .hasMore(servicePage.hasNext())
+                                .pageSize(servicePage.getSize())
+                                .pageNumber(servicePage.getNumber())
+                                .totalPages(servicePage.getTotalPages())
+                                .totalElements(servicePage.getTotalElements())
+                                .build();
         }
 
-        return convertToPublicDto(service);
-    }
+        @Transactional(readOnly = true, rollbackFor = Exception.class)
+        public ServicePublicDto getServiceById(UUID id) {
+                log.info("Getting service by id: {}", id);
+                com.clinicsystem.clinicapi.model.Service service = serviceRepository.findById(id)
+                                .orElseThrow(() -> new ResourceNotFoundException(
+                                                MessageCode.SERVICE_NOT_FOUND,
+                                                "Service not found with id: " + id));
 
-    private ServicePublicDto convertToPublicDto(com.clinicsystem.clinicapi.model.Service service) {
-        SpecialtyDto specialtyDto = null;
-        if (service.getSpecialty() != null) {
-            specialtyDto = SpecialtyDto.builder()
-                    .id(service.getSpecialty().getId())
-                    .name(service.getSpecialty().getName())
-                    .slug(service.getSpecialty().getSlug())
-                    .description(service.getSpecialty().getDescription())
-                    .image(service.getSpecialty().getImage())
-                    .build();
+                if (!Boolean.TRUE.equals(service.getIsActive())) {
+                        throw new ResourceNotFoundException(
+                                        MessageCode.SERVICE_NOT_FOUND,
+                                        "Service is not available");
+                }
+
+                return convertToPublicDto(service);
         }
 
-        return ServicePublicDto.builder()
-                .id(service.getId())
-                .name(service.getName())
-                .slug(service.getSlug())
-                .description(service.getDescription())
-                .price(service.getPrice())
-                .promotionalPrice(service.getPromotionalPrice())
-                .duration(service.getDuration())
-                .image(service.getImage())
-                .isFeatured(service.getIsFeatured())
-                .isActive(service.getIsActive())
-                .specialty(specialtyDto)
-                .build();
-    }
+        private ServicePublicDto convertToPublicDto(com.clinicsystem.clinicapi.model.Service service) {
+                SpecialtyDto specialtyDto = null;
+                if (service.getSpecialty() != null) {
+                        specialtyDto = SpecialtyDto.builder()
+                                        .id(service.getSpecialty().getId())
+                                        .name(service.getSpecialty().getName())
+                                        .slug(service.getSpecialty().getSlug())
+                                        .description(service.getSpecialty().getDescription())
+                                        .image(service.getSpecialty().getImage())
+                                        .build();
+                }
+
+                return ServicePublicDto.builder()
+                                .id(service.getId())
+                                .name(service.getName())
+                                .slug(service.getSlug())
+                                .description(service.getDescription())
+                                .price(service.getPrice())
+                                .promotionalPrice(service.getPromotionalPrice())
+                                .duration(service.getDuration())
+                                .image(service.getImage())
+                                .isFeatured(service.getIsFeatured())
+                                .isActive(service.getIsActive())
+                                .specialty(specialtyDto)
+                                .build();
+        }
 }

@@ -30,7 +30,7 @@ public class SpecialtyService {
 
         private final SpecialtyRepository specialtyRepository;
 
-        @Transactional(readOnly = true)
+        @Transactional(readOnly = true, rollbackFor = Exception.class)
         public PageResponse<SpecialtyDto> getAllActiveSpecialties(
                         int page,
                         int size,
@@ -59,7 +59,7 @@ public class SpecialtyService {
                                 .build();
         }
 
-        @Transactional(readOnly = true)
+        @Transactional(readOnly = true, rollbackFor = Exception.class)
         public SpecialtyDto getSpecialtyById(UUID id) {
                 log.info("Getting specialty by id: {}", id);
                 Specialty specialty = specialtyRepository.findById(id)
@@ -84,13 +84,13 @@ public class SpecialtyService {
                                 .build();
         }
 
-        @Transactional(readOnly = true)
+        @Transactional(readOnly = true, rollbackFor = Exception.class)
         public int getTotalSpecialties() {
                 int count = specialtyRepository.countByIsActive(Boolean.TRUE);
                 return count > Integer.MAX_VALUE ? Integer.MAX_VALUE : count;
         }
 
-        @Transactional(readOnly = true)
+        @Transactional(readOnly = true, rollbackFor = Exception.class)
         public Map<SpecialtyType, Integer> getSpecialtiesGroupByType() {
                 List<SpecialtyTypeCountDto> results = specialtyRepository.countGroupByType();
 

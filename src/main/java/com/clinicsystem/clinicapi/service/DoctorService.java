@@ -27,7 +27,7 @@ public class DoctorService {
 
     private final DoctorRepository doctorRepository;
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     public PageResponse<DoctorPublicDto> getAllDoctors(
             UUID specialtyId,
             Boolean isFeatured,
@@ -74,7 +74,7 @@ public class DoctorService {
                 .build();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     public DoctorPublicDto getDoctorById(UUID id) {
         log.info("Getting doctor by id: {}", id);
         Doctor doctor = doctorRepository.findByIdWithRelations(id)
@@ -152,7 +152,7 @@ public class DoctorService {
                 .build();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     public List<DoctorPublicDto> getTopDoctors() {
         List<Doctor> doctors = doctorRepository.getTopDoctors();
         return doctors.stream()
@@ -160,7 +160,7 @@ public class DoctorService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     public int getTotalDoctors() {
         return doctorRepository.countByStatus(Doctor.DoctorStatus.active);
     }

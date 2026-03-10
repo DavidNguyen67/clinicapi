@@ -41,7 +41,7 @@ public class AuthService {
         private final EmailService emailService;
         private final PatientService patientService;
 
-        @Transactional
+        @Transactional(rollbackFor = Exception.class)
         public LoginResponse register(RegisterRequest request) {
                 log.info("Registering new user with email: {}", request.getEmail());
 
@@ -79,7 +79,7 @@ public class AuthService {
                                 .build();
         }
 
-        @Transactional
+        @Transactional(rollbackFor = Exception.class)
         public LoginResponse login(LoginRequest request) {
                 log.info("User login attempt with email: {}", request.getEmail());
 
@@ -122,7 +122,7 @@ public class AuthService {
                                 .build();
         }
 
-        @Transactional
+        @Transactional(rollbackFor = Exception.class)
         public LoginResponse refreshToken(String refreshToken) {
                 log.info("Refresh token request");
 
@@ -173,7 +173,7 @@ public class AuthService {
                                 .build();
         }
 
-        @Transactional
+        @Transactional(rollbackFor = Exception.class)
         public void changePassword(String email, ChangePasswordRequest request) {
                 log.info("Change password request for user: {}", email);
 
@@ -201,7 +201,7 @@ public class AuthService {
                 log.info("Password changed successfully for user: {}", email);
         }
 
-        @Transactional
+        @Transactional(rollbackFor = Exception.class)
         public void forgotPassword(ForgotPasswordRequest request) {
                 log.info("Forgot password request for email: {}", request.getEmail());
 
@@ -236,7 +236,7 @@ public class AuthService {
                 log.info("Reset token for {}: {}", request.getEmail(), resetToken);
         }
 
-        @Transactional
+        @Transactional(rollbackFor = Exception.class)
         public void resetPassword(ResetPasswordRequest request) {
                 log.info("Reset password request with token");
 
