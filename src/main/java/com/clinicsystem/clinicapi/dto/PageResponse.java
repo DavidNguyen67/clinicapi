@@ -13,11 +13,5 @@ import java.util.List;
 @Builder
 public class PageResponse<T> {
     private List<T> records;
-
-    public static <T> PageResponse<T> of(List<T> records, String nextCursor, boolean hasMore, int pageSize,
-            long totalElements) {
-        return PageResponse.<T>builder()
-                .records(records)
-                .build();
-    }
+    private boolean hasMore;
 }

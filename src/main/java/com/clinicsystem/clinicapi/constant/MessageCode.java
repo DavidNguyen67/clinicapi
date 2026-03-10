@@ -194,6 +194,8 @@ public class MessageCode {
     // System messages
     public static final String SYSTEM_ERROR = "SYSTEM_ERROR";
 
+    public static final String FAQ_NOT_FOUND = "FAQ_NOT_FOUND";
+
     private MessageCode() {
         // Private constructor to prevent instantiation
     }

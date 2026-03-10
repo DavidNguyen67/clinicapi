@@ -9,10 +9,7 @@ import com.clinicsystem.clinicapi.exception.ResourceNotFoundException;
 import com.clinicsystem.clinicapi.repository.ServiceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,22 +25,33 @@ public class ClinicServiceService {
         private final ServiceRepository serviceRepository;
 
         @Transactional(readOnly = true)
-        public PageResponse<ClinicServiceDto> getAllServices(
-                        PaginationDto paginationDto) {
+        public PageResponse<ClinicServiceDto> getAllServices(PaginationDto paginationDto) {
+                int limit = paginationDto.getSize() + 1;
+                PageRequest pageable = PageRequest.of(0, limit);
 
-                Sort sort = Sort.by(Sort.Direction.fromString(paginationDto.getSortDirection()),
-                                paginationDto.getSortBy());
-                Pageable pageable = PageRequest.of(paginationDto.getPage(), paginationDto.getSize(), sort);
+                List<com.clinicsystem.clinicapi.model.Service> services;
+                if (paginationDto.getLastId() == null || paginationDto.getLastId().isBlank()) {
+                        services = serviceRepository.findActiveForFirstPage(pageable);
+                } else {
+                        UUID lastId = UUID.fromString(paginationDto.getLastId());
+                        com.clinicsystem.clinicapi.model.Service lastService = serviceRepository.findById(lastId)
+                                        .orElseThrow(() -> new ResourceNotFoundException(
+                                                        MessageCode.SERVICE_NOT_FOUND, "Cursor not found"));
+                        services = serviceRepository.getAllServices(lastService.getCreatedAt(), pageable);
+                }
 
-                Page<com.clinicsystem.clinicapi.model.Service> servicePage = serviceRepository
-                                .getAllActiveServices(pageable);
+                boolean hasMore = services.size() > paginationDto.getSize();
+                if (hasMore) {
+                        services = services.subList(0, paginationDto.getSize());
+                }
 
-                List<ClinicServiceDto> serviceDtos = servicePage.getContent().stream()
+                List<ClinicServiceDto> records = services.stream()
                                 .map(this::convertToPublicDto)
                                 .collect(Collectors.toList());
 
                 return PageResponse.<ClinicServiceDto>builder()
-                                .records(serviceDtos)
+                                .records(records)
+                                .hasMore(hasMore)
                                 .build();
         }
 

@@ -17,11 +17,8 @@ import com.clinicsystem.clinicapi.service.HomeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -57,26 +54,35 @@ public class HomeController {
                                 .build());
         }
 
-        @GetMapping("/top-doctors")
-        public ResponseEntity<ApiResponse<List<DoctorProfileDto>>> getTopDoctors() {
-                List<DoctorProfileDto> topDoctors = doctorService.getTopDoctors();
-                return ResponseEntity.ok(ApiResponse.<List<DoctorProfileDto>>builder()
+        @GetMapping("/doctors")
+        public ResponseEntity<ApiResponse<PageResponse<DoctorProfileDto>>> getAllDoctors(
+                        @RequestParam(required = false) String lastId,
+                        @RequestParam(defaultValue = "10") int size,
+                        @RequestParam(defaultValue = "createdAt") String sortBy,
+                        @RequestParam(defaultValue = "desc") String sortDirection) {
+                PaginationDto paginationDto = PaginationDto.builder()
+                                .lastId(lastId)
+                                .size(size)
+                                .sortBy(sortBy)
+                                .sortDirection(sortDirection)
+                                .build();
+
+                PageResponse<DoctorProfileDto> doctors = doctorService.getAllDoctors(paginationDto);
+                return ResponseEntity.ok(ApiResponse.<PageResponse<DoctorProfileDto>>builder()
                                 .success(true)
                                 .messageCode(MessageCode.GENERAL_SUCCESS)
-                                .data(topDoctors)
+                                .data(doctors)
                                 .build());
         }
 
         @GetMapping("/services")
         public ResponseEntity<ApiResponse<PageResponse<ClinicServiceDto>>> getAllServices(
-                        @RequestParam(defaultValue = "false") Boolean isFeatured,
-                        @RequestParam(defaultValue = "0") int page,
-                        @RequestParam(defaultValue = "10") int size,
+                        @RequestParam(required = false) String lastId,
+                        @RequestParam(defaultValue = "20") int size,
                         @RequestParam(defaultValue = "createdAt") String sortBy,
                         @RequestParam(defaultValue = "desc") String sortDirection) {
                 PaginationDto paginationDto = PaginationDto.builder()
-                                .isFeatured(isFeatured)
-                                .page(page)
+                                .lastId(lastId)
                                 .size(size)
                                 .sortBy(sortBy)
                                 .sortDirection(sortDirection)
@@ -91,21 +97,19 @@ public class HomeController {
         }
 
         @GetMapping("/faq")
-        public ResponseEntity<ApiResponse<PageResponse<FaqDto>>> getAllFaq(
-                        @RequestParam(defaultValue = "false") Boolean isFeatured,
-                        @RequestParam(defaultValue = "0") int page,
+        public ResponseEntity<ApiResponse<PageResponse<FaqDto>>> getAllFaqs(
+                        @RequestParam() String lastId,
                         @RequestParam(defaultValue = "10") int size,
                         @RequestParam(defaultValue = "createdAt") String sortBy,
                         @RequestParam(defaultValue = "desc") String sortDirection) {
                 PaginationDto paginationDto = PaginationDto.builder()
-                                .isFeatured(isFeatured)
-                                .page(page)
+                                .lastId(lastId)
                                 .size(size)
                                 .sortBy(sortBy)
                                 .sortDirection(sortDirection)
                                 .build();
 
-                PageResponse<FaqDto> services = faqService.getAllFaq(paginationDto);
+                PageResponse<FaqDto> services = faqService.getAllFaqs(paginationDto);
                 return ResponseEntity.ok(ApiResponse.<PageResponse<FaqDto>>builder()
                                 .success(true)
                                 .messageCode(MessageCode.GENERAL_SUCCESS)

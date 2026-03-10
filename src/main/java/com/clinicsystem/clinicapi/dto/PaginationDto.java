@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaginationDto {
-    private Boolean isFeatured;
-    private int page;
+    private String lastId;
     private int size;
     private String sortBy;
     private String sortDirection;
