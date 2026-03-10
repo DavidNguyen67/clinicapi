@@ -32,11 +32,20 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
 
         @Query("SELECT d FROM Doctor d LEFT JOIN FETCH d.user LEFT JOIN FETCH d.specialty " +
                         "WHERE d.status = :status ORDER BY d.createdAt DESC, d.id DESC")
-        List<Doctor> findActiveForFirstPage(@Param("status") DoctorStatus status, Pageable pageable);
+        List<Doctor> findActiveForFirstPageDesc(@Param("status") DoctorStatus status, Pageable pageable);
+
+        @Query("SELECT d FROM Doctor d LEFT JOIN FETCH d.user LEFT JOIN FETCH d.specialty " +
+                        "WHERE d.status = :status ORDER BY d.createdAt ASC, d.id ASC")
+        List<Doctor> findActiveForFirstPageAsc(@Param("status") DoctorStatus status, Pageable pageable);
 
         @Query("SELECT d FROM Doctor d LEFT JOIN FETCH d.user LEFT JOIN FETCH d.specialty " +
                         "WHERE d.status = :status AND d.createdAt < :cur ORDER BY d.createdAt DESC, d.id DESC")
-        List<Doctor> getAllDoctors(@Param("status") DoctorStatus status,
+        List<Doctor> findActiveAfterCursorDesc(@Param("status") DoctorStatus status,
+                        @Param("cur") LocalDateTime cur, Pageable pageable);
+
+        @Query("SELECT d FROM Doctor d LEFT JOIN FETCH d.user LEFT JOIN FETCH d.specialty " +
+                        "WHERE d.status = :status AND d.createdAt > :cur ORDER BY d.createdAt ASC, d.id ASC")
+        List<Doctor> findActiveAfterCursorAsc(@Param("status") DoctorStatus status,
                         @Param("cur") LocalDateTime cur, Pageable pageable);
 
 }

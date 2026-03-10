@@ -2,7 +2,6 @@ package com.clinicsystem.clinicapi.service;
 
 import com.clinicsystem.clinicapi.constant.MessageCode;
 import com.clinicsystem.clinicapi.dto.DoctorProfileDto;
-import com.clinicsystem.clinicapi.dto.FaqDto;
 import com.clinicsystem.clinicapi.dto.PageResponse;
 import com.clinicsystem.clinicapi.dto.PaginationDto;
 import com.clinicsystem.clinicapi.dto.SpecialtyDto;
@@ -30,17 +29,23 @@ public class DoctorService {
     public PageResponse<DoctorProfileDto> getAllDoctors(PaginationDto paginationDto) {
         int limit = paginationDto.getSize() + 1;
         PageRequest pageable = PageRequest.of(0, limit);
+        boolean desc = "desc".equalsIgnoreCase(paginationDto.getSortDirection());
 
         List<Doctor> doctors;
         if (paginationDto.getLastId() == null || paginationDto.getLastId().isBlank()) {
-            doctors = doctorRepository.findActiveForFirstPage(Doctor.DoctorStatus.active, pageable);
+            doctors = desc
+                    ? doctorRepository.findActiveForFirstPageDesc(Doctor.DoctorStatus.active, pageable)
+                    : doctorRepository.findActiveForFirstPageAsc(Doctor.DoctorStatus.active, pageable);
         } else {
             UUID lastId = UUID.fromString(paginationDto.getLastId());
             Doctor lastDoctor = doctorRepository.findById(lastId)
                     .orElseThrow(() -> new ResourceNotFoundException(
                             MessageCode.DOCTOR_NOT_FOUND, "Cursor not found"));
-            doctors = doctorRepository.getAllDoctors(
-                    Doctor.DoctorStatus.active, lastDoctor.getCreatedAt(), pageable);
+            doctors = desc
+                    ? doctorRepository.findActiveAfterCursorDesc(
+                            Doctor.DoctorStatus.active, lastDoctor.getCreatedAt(), pageable)
+                    : doctorRepository.findActiveAfterCursorAsc(
+                            Doctor.DoctorStatus.active, lastDoctor.getCreatedAt(), pageable);
         }
 
         boolean hasMore = doctors.size() > paginationDto.getSize();
@@ -54,7 +59,6 @@ public class DoctorService {
 
         return PageResponse.<DoctorProfileDto>builder()
                 .records(records)
-                .hasMore(hasMore)
                 .build();
     }
 

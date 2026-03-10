@@ -53,7 +53,6 @@ public class FaqService {
 
                 return PageResponse.<FaqDto>builder()
                                 .records(records)
-                                .hasMore(hasMore)
                                 .build();
         }
 

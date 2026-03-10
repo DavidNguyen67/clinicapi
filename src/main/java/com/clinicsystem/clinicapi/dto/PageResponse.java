@@ -13,5 +13,4 @@ import java.util.List;
 @Builder
 public class PageResponse<T> {
     private List<T> records;
-    private boolean hasMore;
 }

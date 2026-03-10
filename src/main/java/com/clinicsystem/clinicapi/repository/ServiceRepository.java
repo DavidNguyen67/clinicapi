@@ -17,9 +17,17 @@ public interface ServiceRepository extends JpaRepository<Service, UUID> {
 
     @Query("SELECT s FROM Service s LEFT JOIN FETCH s.specialty " +
             "WHERE s.isActive = true ORDER BY s.createdAt DESC, s.id DESC")
-    List<Service> findActiveForFirstPage(Pageable pageable);
+    List<Service> findActiveForFirstPageDesc(Pageable pageable);
+
+    @Query("SELECT s FROM Service s LEFT JOIN FETCH s.specialty " +
+            "WHERE s.isActive = true ORDER BY s.createdAt ASC, s.id ASC")
+    List<Service> findActiveForFirstPageAsc(Pageable pageable);
 
     @Query("SELECT s FROM Service s LEFT JOIN FETCH s.specialty " +
             "WHERE s.isActive = true AND s.createdAt < :cur ORDER BY s.createdAt DESC, s.id DESC")
-    List<Service> getAllServices(@Param("cur") LocalDateTime cur, Pageable pageable);
+    List<Service> findActiveAfterCursorDesc(@Param("cur") LocalDateTime cur, Pageable pageable);
+
+    @Query("SELECT s FROM Service s LEFT JOIN FETCH s.specialty " +
+            "WHERE s.isActive = true AND s.createdAt > :cur ORDER BY s.createdAt ASC, s.id ASC")
+    List<Service> findActiveAfterCursorAsc(@Param("cur") LocalDateTime cur, Pageable pageable);
 }

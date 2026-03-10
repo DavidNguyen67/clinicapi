@@ -57,7 +57,7 @@ public class HomeController {
         @GetMapping("/doctors")
         public ResponseEntity<ApiResponse<PageResponse<DoctorProfileDto>>> getAllDoctors(
                         @RequestParam(required = false) String lastId,
-                        @RequestParam(defaultValue = "10") int size,
+                        @RequestParam(defaultValue = "20") int size,
                         @RequestParam(defaultValue = "createdAt") String sortBy,
                         @RequestParam(defaultValue = "desc") String sortDirection) {
                 PaginationDto paginationDto = PaginationDto.builder()
@@ -96,10 +96,10 @@ public class HomeController {
                                 .build());
         }
 
-        @GetMapping("/faq")
+        @GetMapping("/faqs")
         public ResponseEntity<ApiResponse<PageResponse<FaqDto>>> getAllFaqs(
-                        @RequestParam() String lastId,
-                        @RequestParam(defaultValue = "10") int size,
+                        @RequestParam(required = false) String lastId,
+                        @RequestParam(defaultValue = "20") int size,
                         @RequestParam(defaultValue = "createdAt") String sortBy,
                         @RequestParam(defaultValue = "desc") String sortDirection) {
                 PaginationDto paginationDto = PaginationDto.builder()

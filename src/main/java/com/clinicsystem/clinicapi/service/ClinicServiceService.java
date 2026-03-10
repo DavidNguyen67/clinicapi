@@ -28,22 +28,30 @@ public class ClinicServiceService {
         public PageResponse<ClinicServiceDto> getAllServices(PaginationDto paginationDto) {
                 int limit = paginationDto.getSize() + 1;
                 PageRequest pageable = PageRequest.of(0, limit);
+                boolean desc = "desc".equalsIgnoreCase(paginationDto.getSortDirection());
 
                 List<com.clinicsystem.clinicapi.model.Service> services;
                 if (paginationDto.getLastId() == null || paginationDto.getLastId().isBlank()) {
-                        services = serviceRepository.findActiveForFirstPage(pageable);
+                        services = desc
+                                        ? serviceRepository.findActiveForFirstPageDesc(pageable)
+                                        : serviceRepository.findActiveForFirstPageAsc(pageable);
                 } else {
                         UUID lastId = UUID.fromString(paginationDto.getLastId());
                         com.clinicsystem.clinicapi.model.Service lastService = serviceRepository.findById(lastId)
                                         .orElseThrow(() -> new ResourceNotFoundException(
                                                         MessageCode.SERVICE_NOT_FOUND, "Cursor not found"));
-                        services = serviceRepository.getAllServices(lastService.getCreatedAt(), pageable);
+                        services = desc
+                                        ? serviceRepository.findActiveAfterCursorDesc(lastService.getCreatedAt(),
+                                                        pageable)
+                                        : serviceRepository.findActiveAfterCursorAsc(lastService.getCreatedAt(),
+                                                        pageable);
                 }
 
                 boolean hasMore = services.size() > paginationDto.getSize();
                 if (hasMore) {
                         services = services.subList(0, paginationDto.getSize());
                 }
+                String nextCursor = hasMore ? services.get(services.size() - 1).getId().toString() : null;
 
                 List<ClinicServiceDto> records = services.stream()
                                 .map(this::convertToPublicDto)
@@ -51,7 +59,6 @@ public class ClinicServiceService {
 
                 return PageResponse.<ClinicServiceDto>builder()
                                 .records(records)
-                                .hasMore(hasMore)
                                 .build();
         }
 
