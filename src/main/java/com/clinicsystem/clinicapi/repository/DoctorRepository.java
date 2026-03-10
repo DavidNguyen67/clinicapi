@@ -30,22 +30,11 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
 
         int countByStatus(DoctorStatus status);
 
-        @Query("SELECT d FROM Doctor d LEFT JOIN FETCH d.user LEFT JOIN FETCH d.specialty " +
-                        "WHERE d.status = :status ORDER BY d.createdAt DESC, d.id DESC")
-        List<Doctor> findActiveForFirstPageDesc(@Param("status") DoctorStatus status, Pageable pageable);
+        @Query("SELECT d FROM Doctor d LEFT JOIN FETCH d.user LEFT JOIN FETCH d.specialty")
+        List<Doctor> findActiveForFirstPage(Pageable pageable);
 
         @Query("SELECT d FROM Doctor d LEFT JOIN FETCH d.user LEFT JOIN FETCH d.specialty " +
-                        "WHERE d.status = :status ORDER BY d.createdAt ASC, d.id ASC")
-        List<Doctor> findActiveForFirstPageAsc(@Param("status") DoctorStatus status, Pageable pageable);
-
-        @Query("SELECT d FROM Doctor d LEFT JOIN FETCH d.user LEFT JOIN FETCH d.specialty " +
-                        "WHERE d.status = :status AND d.createdAt < :cur ORDER BY d.createdAt DESC, d.id DESC")
-        List<Doctor> findActiveAfterCursorDesc(@Param("status") DoctorStatus status,
-                        @Param("cur") LocalDateTime cur, Pageable pageable);
-
-        @Query("SELECT d FROM Doctor d LEFT JOIN FETCH d.user LEFT JOIN FETCH d.specialty " +
-                        "WHERE d.status = :status AND d.createdAt > :cur ORDER BY d.createdAt ASC, d.id ASC")
-        List<Doctor> findActiveAfterCursorAsc(@Param("status") DoctorStatus status,
-                        @Param("cur") LocalDateTime cur, Pageable pageable);
+                        "WHERE d.createdAt < :cur")
+        List<Doctor> getAllDoctors(@Param("cur") LocalDateTime cur, Pageable pageable);
 
 }

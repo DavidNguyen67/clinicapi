@@ -17,6 +17,7 @@ import com.clinicsystem.clinicapi.service.HomeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,11 +61,12 @@ public class HomeController {
                         @RequestParam(defaultValue = "20") int size,
                         @RequestParam(defaultValue = "createdAt") String sortBy,
                         @RequestParam(defaultValue = "desc") String sortDirection) {
+
                 PaginationDto paginationDto = PaginationDto.builder()
                                 .lastId(lastId)
                                 .size(size)
                                 .sortBy(sortBy)
-                                .sortDirection(sortDirection)
+                                .sortDirection(Sort.Direction.fromString(sortDirection))
                                 .build();
 
                 PageResponse<DoctorProfileDto> doctors = doctorService.getAllDoctors(paginationDto);
@@ -81,11 +83,12 @@ public class HomeController {
                         @RequestParam(defaultValue = "20") int size,
                         @RequestParam(defaultValue = "createdAt") String sortBy,
                         @RequestParam(defaultValue = "desc") String sortDirection) {
+
                 PaginationDto paginationDto = PaginationDto.builder()
                                 .lastId(lastId)
                                 .size(size)
                                 .sortBy(sortBy)
-                                .sortDirection(sortDirection)
+                                .sortDirection(Sort.Direction.fromString(sortDirection))
                                 .build();
 
                 PageResponse<ClinicServiceDto> services = clinicServiceService.getAllServices(paginationDto);
@@ -102,11 +105,12 @@ public class HomeController {
                         @RequestParam(defaultValue = "20") int size,
                         @RequestParam(defaultValue = "createdAt") String sortBy,
                         @RequestParam(defaultValue = "desc") String sortDirection) {
+
                 PaginationDto paginationDto = PaginationDto.builder()
                                 .lastId(lastId)
                                 .size(size)
                                 .sortBy(sortBy)
-                                .sortDirection(sortDirection)
+                                .sortDirection(Sort.Direction.fromString(sortDirection))
                                 .build();
 
                 PageResponse<FaqDto> services = faqService.getAllFaqs(paginationDto);

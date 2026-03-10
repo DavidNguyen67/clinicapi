@@ -18,12 +18,10 @@ import java.util.UUID;
 @Repository
 public interface FaqRepository extends JpaRepository<Faq, UUID> {
 
-        @Query("SELECT f FROM Faq f " +
-                        "WHERE f.isActive = :status ORDER BY f.createdAt DESC, f.id DESC")
-        List<Faq> findActiveForFirstPage(@Param("status") Boolean status, Pageable pageable);
+        @Query("SELECT f FROM Faq f ")
+        List<Faq> findActiveForFirstPage(Pageable pageable);
 
         @Query("SELECT f FROM Faq f " +
-                        "WHERE f.isActive = :status AND f.createdAt < :cur ORDER BY f.createdAt DESC, f.id DESC")
-        List<Faq> getAllFaqs(@Param("status") Boolean status,
-                        @Param("cur") LocalDateTime cur, Pageable pageable);
+                        "WHERE f.createdAt < :cur ORDER BY f.createdAt DESC")
+        List<Faq> getAllFaqs(@Param("cur") LocalDateTime cur, Pageable pageable);
 }

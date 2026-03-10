@@ -1,5 +1,7 @@
 package com.clinicsystem.clinicapi.dto;
 
+import org.springframework.data.domain.Sort;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,5 +15,5 @@ public class PaginationDto {
     private String lastId;
     private int size;
     private String sortBy;
-    private String sortDirection;
+    private Sort.Direction sortDirection;
 }

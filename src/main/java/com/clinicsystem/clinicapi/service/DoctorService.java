@@ -2,11 +2,13 @@ package com.clinicsystem.clinicapi.service;
 
 import com.clinicsystem.clinicapi.constant.MessageCode;
 import com.clinicsystem.clinicapi.dto.DoctorProfileDto;
+import com.clinicsystem.clinicapi.dto.FaqDto;
 import com.clinicsystem.clinicapi.dto.PageResponse;
 import com.clinicsystem.clinicapi.dto.PaginationDto;
 import com.clinicsystem.clinicapi.dto.SpecialtyDto;
 import com.clinicsystem.clinicapi.exception.ResourceNotFoundException;
 import com.clinicsystem.clinicapi.model.Doctor;
+import com.clinicsystem.clinicapi.model.Faq;
 import com.clinicsystem.clinicapi.repository.DoctorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,24 +30,18 @@ public class DoctorService {
     @Transactional(readOnly = true)
     public PageResponse<DoctorProfileDto> getAllDoctors(PaginationDto paginationDto) {
         int limit = paginationDto.getSize() + 1;
-        PageRequest pageable = PageRequest.of(0, limit);
-        boolean desc = "desc".equalsIgnoreCase(paginationDto.getSortDirection());
+        PageRequest pageable = PageRequest.of(0, limit, paginationDto.getSortDirection(),
+                paginationDto.getSortBy());
 
         List<Doctor> doctors;
         if (paginationDto.getLastId() == null || paginationDto.getLastId().isBlank()) {
-            doctors = desc
-                    ? doctorRepository.findActiveForFirstPageDesc(Doctor.DoctorStatus.active, pageable)
-                    : doctorRepository.findActiveForFirstPageAsc(Doctor.DoctorStatus.active, pageable);
+            doctors = doctorRepository.findActiveForFirstPage(pageable);
         } else {
             UUID lastId = UUID.fromString(paginationDto.getLastId());
             Doctor lastDoctor = doctorRepository.findById(lastId)
                     .orElseThrow(() -> new ResourceNotFoundException(
                             MessageCode.DOCTOR_NOT_FOUND, "Cursor not found"));
-            doctors = desc
-                    ? doctorRepository.findActiveAfterCursorDesc(
-                            Doctor.DoctorStatus.active, lastDoctor.getCreatedAt(), pageable)
-                    : doctorRepository.findActiveAfterCursorAsc(
-                            Doctor.DoctorStatus.active, lastDoctor.getCreatedAt(), pageable);
+            doctors = doctorRepository.getAllDoctors(lastDoctor.getCreatedAt(), pageable);
         }
 
         boolean hasMore = doctors.size() > paginationDto.getSize();

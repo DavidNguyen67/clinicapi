@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.repository;
 
+import com.clinicsystem.clinicapi.model.Faq;
 import com.clinicsystem.clinicapi.model.Service;
 
 import org.springframework.data.domain.Pageable;
@@ -15,19 +16,11 @@ import java.util.UUID;
 @Repository
 public interface ServiceRepository extends JpaRepository<Service, UUID> {
 
-    @Query("SELECT s FROM Service s LEFT JOIN FETCH s.specialty " +
-            "WHERE s.isActive = true ORDER BY s.createdAt DESC, s.id DESC")
-    List<Service> findActiveForFirstPageDesc(Pageable pageable);
+    @Query("SELECT s FROM Service s LEFT JOIN FETCH s.specialty")
+    List<Service> findActiveForFirstPage(Pageable pageable);
 
     @Query("SELECT s FROM Service s LEFT JOIN FETCH s.specialty " +
-            "WHERE s.isActive = true ORDER BY s.createdAt ASC, s.id ASC")
-    List<Service> findActiveForFirstPageAsc(Pageable pageable);
+            "WHERE s.createdAt < :cur")
+    List<Service> getAllServices(@Param("cur") LocalDateTime cur, Pageable pageable);
 
-    @Query("SELECT s FROM Service s LEFT JOIN FETCH s.specialty " +
-            "WHERE s.isActive = true AND s.createdAt < :cur ORDER BY s.createdAt DESC, s.id DESC")
-    List<Service> findActiveAfterCursorDesc(@Param("cur") LocalDateTime cur, Pageable pageable);
-
-    @Query("SELECT s FROM Service s LEFT JOIN FETCH s.specialty " +
-            "WHERE s.isActive = true AND s.createdAt > :cur ORDER BY s.createdAt ASC, s.id ASC")
-    List<Service> findActiveAfterCursorAsc(@Param("cur") LocalDateTime cur, Pageable pageable);
 }

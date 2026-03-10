@@ -28,18 +28,18 @@ public class FaqService {
         @Transactional(readOnly = true)
         public PageResponse<FaqDto> getAllFaqs(PaginationDto paginationDto) {
                 int limit = paginationDto.getSize() + 1;
-                PageRequest pageable = PageRequest.of(0, limit);
+                PageRequest pageable = PageRequest.of(0, limit, paginationDto.getSortDirection(),
+                                paginationDto.getSortBy());
 
                 List<Faq> faqs;
                 if (paginationDto.getLastId() == null || paginationDto.getLastId().isBlank()) {
-                        faqs = faqRepository.findActiveForFirstPage(true, pageable);
+                        faqs = faqRepository.findActiveForFirstPage(pageable);
                 } else {
                         UUID lastId = UUID.fromString(paginationDto.getLastId());
                         Faq lastFaq = faqRepository.findById(lastId)
                                         .orElseThrow(() -> new ResourceNotFoundException(
                                                         MessageCode.FAQ_NOT_FOUND, "Cursor not found"));
-                        faqs = faqRepository.getAllFaqs(
-                                        true, lastFaq.getCreatedAt(), pageable);
+                        faqs = faqRepository.getAllFaqs(lastFaq.getCreatedAt(), pageable);
                 }
 
                 boolean hasMore = faqs.size() > paginationDto.getSize();

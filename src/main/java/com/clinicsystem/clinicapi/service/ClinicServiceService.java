@@ -4,8 +4,10 @@ import com.clinicsystem.clinicapi.constant.MessageCode;
 import com.clinicsystem.clinicapi.dto.PageResponse;
 import com.clinicsystem.clinicapi.dto.PaginationDto;
 import com.clinicsystem.clinicapi.dto.ClinicServiceDto;
+import com.clinicsystem.clinicapi.dto.FaqDto;
 import com.clinicsystem.clinicapi.dto.SpecialtyDto;
 import com.clinicsystem.clinicapi.exception.ResourceNotFoundException;
+import com.clinicsystem.clinicapi.model.Faq;
 import com.clinicsystem.clinicapi.repository.ServiceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,34 +29,27 @@ public class ClinicServiceService {
         @Transactional(readOnly = true)
         public PageResponse<ClinicServiceDto> getAllServices(PaginationDto paginationDto) {
                 int limit = paginationDto.getSize() + 1;
-                PageRequest pageable = PageRequest.of(0, limit);
-                boolean desc = "desc".equalsIgnoreCase(paginationDto.getSortDirection());
+                PageRequest pageable = PageRequest.of(0, limit, paginationDto.getSortDirection(),
+                                paginationDto.getSortBy());
 
                 List<com.clinicsystem.clinicapi.model.Service> services;
                 if (paginationDto.getLastId() == null || paginationDto.getLastId().isBlank()) {
-                        services = desc
-                                        ? serviceRepository.findActiveForFirstPageDesc(pageable)
-                                        : serviceRepository.findActiveForFirstPageAsc(pageable);
+                        services = serviceRepository.findActiveForFirstPage(pageable);
                 } else {
                         UUID lastId = UUID.fromString(paginationDto.getLastId());
                         com.clinicsystem.clinicapi.model.Service lastService = serviceRepository.findById(lastId)
                                         .orElseThrow(() -> new ResourceNotFoundException(
                                                         MessageCode.SERVICE_NOT_FOUND, "Cursor not found"));
-                        services = desc
-                                        ? serviceRepository.findActiveAfterCursorDesc(lastService.getCreatedAt(),
-                                                        pageable)
-                                        : serviceRepository.findActiveAfterCursorAsc(lastService.getCreatedAt(),
-                                                        pageable);
+                        services = serviceRepository.getAllServices(lastService.getCreatedAt(), pageable);
                 }
 
                 boolean hasMore = services.size() > paginationDto.getSize();
                 if (hasMore) {
                         services = services.subList(0, paginationDto.getSize());
                 }
-                String nextCursor = hasMore ? services.get(services.size() - 1).getId().toString() : null;
 
                 List<ClinicServiceDto> records = services.stream()
-                                .map(this::convertToPublicDto)
+                                .map(this::convertToDto)
                                 .collect(Collectors.toList());
 
                 return PageResponse.<ClinicServiceDto>builder()
@@ -62,24 +57,7 @@ public class ClinicServiceService {
                                 .build();
         }
 
-        @Transactional(readOnly = true)
-        public ClinicServiceDto getServiceById(UUID id) {
-                log.info("Getting service by id: {}", id);
-                com.clinicsystem.clinicapi.model.Service service = serviceRepository.findById(id)
-                                .orElseThrow(() -> new ResourceNotFoundException(
-                                                MessageCode.SERVICE_NOT_FOUND,
-                                                "Service not found with id: " + id));
-
-                if (!Boolean.TRUE.equals(service.getIsActive())) {
-                        throw new ResourceNotFoundException(
-                                        MessageCode.SERVICE_NOT_FOUND,
-                                        "Service is not available");
-                }
-
-                return convertToPublicDto(service);
-        }
-
-        private ClinicServiceDto convertToPublicDto(com.clinicsystem.clinicapi.model.Service service) {
+        private ClinicServiceDto convertToDto(com.clinicsystem.clinicapi.model.Service service) {
                 SpecialtyDto specialtyDto = null;
                 if (service.getSpecialty() != null) {
                         specialtyDto = SpecialtyDto.builder()
