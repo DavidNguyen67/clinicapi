@@ -1,7 +1,7 @@
 package com.clinicsystem.clinicapi.service;
 
 import com.clinicsystem.clinicapi.constant.MessageCode;
-import com.clinicsystem.clinicapi.dto.DoctorPublicDto;
+import com.clinicsystem.clinicapi.dto.DoctorProfileDto;
 import com.clinicsystem.clinicapi.dto.PageResponse;
 import com.clinicsystem.clinicapi.dto.SpecialtyDto;
 import com.clinicsystem.clinicapi.exception.ResourceNotFoundException;
@@ -28,7 +28,7 @@ public class DoctorService {
     private final DoctorRepository doctorRepository;
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public PageResponse<DoctorPublicDto> getAllDoctors(
+    public PageResponse<DoctorProfileDto> getAllDoctors(
             UUID specialtyId,
             Boolean isFeatured,
             int page,
@@ -58,12 +58,12 @@ public class DoctorService {
             doctorPage = doctorRepository.findAll(pageable);
         }
 
-        List<DoctorPublicDto> doctorDtos = doctorPage.getContent().stream()
+        List<DoctorProfileDto> doctorDtos = doctorPage.getContent().stream()
                 .filter(doctor -> doctor != null && doctor.getStatus() == Doctor.DoctorStatus.active)
                 .map(this::convertToPublicDto)
                 .collect(Collectors.toList());
 
-        return PageResponse.<DoctorPublicDto>builder()
+        return PageResponse.<DoctorProfileDto>builder()
                 .records(doctorDtos)
                 .nextCursor(doctorPage.hasNext() ? String.valueOf(page + 1) : null)
                 .hasMore(doctorPage.hasNext())
@@ -75,7 +75,7 @@ public class DoctorService {
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public DoctorPublicDto getDoctorById(UUID id) {
+    public DoctorProfileDto getDoctorById(UUID id) {
         log.info("Getting doctor by id: {}", id);
         Doctor doctor = doctorRepository.findByIdWithRelations(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -115,7 +115,7 @@ public class DoctorService {
         return null;
     }
 
-    private DoctorPublicDto convertToPublicDto(Doctor doctor) {
+    private DoctorProfileDto convertToPublicDto(Doctor doctor) {
         if (doctor == null) {
             return null;
         }
@@ -132,7 +132,7 @@ public class DoctorService {
                     .build();
         }
 
-        return DoctorPublicDto.builder()
+        return DoctorProfileDto.builder()
                 .id(doctor.getId())
                 .doctorCode(doctor.getDoctorCode())
                 .fullName(doctor.getUser().getFullName())
@@ -153,7 +153,7 @@ public class DoctorService {
     }
 
     @Transactional(readOnly = true, rollbackFor = Exception.class)
-    public List<DoctorPublicDto> getTopDoctors() {
+    public List<DoctorProfileDto> getTopDoctors() {
         List<Doctor> doctors = doctorRepository.getTopDoctors();
         return doctors.stream()
                 .map(this::convertToPublicDto)

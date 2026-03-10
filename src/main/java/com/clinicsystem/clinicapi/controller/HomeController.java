@@ -3,10 +3,10 @@ package com.clinicsystem.clinicapi.controller;
 import com.clinicsystem.clinicapi.constant.MessageCode;
 import com.clinicsystem.clinicapi.dto.ApiResponse;
 import com.clinicsystem.clinicapi.dto.ClinicInfoDto;
-import com.clinicsystem.clinicapi.dto.DoctorPublicDto;
-import com.clinicsystem.clinicapi.dto.HomePublicDto;
+import com.clinicsystem.clinicapi.dto.DoctorProfileDto;
+import com.clinicsystem.clinicapi.dto.LandingPageDto;
 import com.clinicsystem.clinicapi.service.DoctorService;
-import com.clinicsystem.clinicapi.service.PublicService;
+import com.clinicsystem.clinicapi.service.HomeService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,17 +17,17 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/public")
+@RequestMapping("/api/v1/home")
 @RequiredArgsConstructor
-public class PublicController {
-        private final PublicService publicService;
+public class HomeController {
+        private final HomeService homeService;
         private final DoctorService doctorService;
 
         @GetMapping("/clinic-info")
         public ResponseEntity<ApiResponse<ClinicInfoDto>> getClinicInfo() {
-                log.info("GET /api/v1/public/clinic-info - Get clinic information");
+                log.info("GET /api/v1/home/clinic-info - Get clinic information");
 
-                ClinicInfoDto clinicInfo = publicService.getClinicInfo();
+                ClinicInfoDto clinicInfo = homeService.getClinicInfo();
 
                 return ResponseEntity.ok(ApiResponse.<ClinicInfoDto>builder()
                                 .success(true)
@@ -37,20 +37,20 @@ public class PublicController {
         }
 
         @GetMapping("/landing-page")
-        public ResponseEntity<ApiResponse<HomePublicDto>> getLandingPage() {
-                HomePublicDto homePublicDto = publicService.getHomePublicData();
+        public ResponseEntity<ApiResponse<LandingPageDto>> getLandingPage() {
+                LandingPageDto landingPageDto = homeService.getHomePublicData();
 
-                return ResponseEntity.ok(ApiResponse.<HomePublicDto>builder()
+                return ResponseEntity.ok(ApiResponse.<LandingPageDto>builder()
                                 .success(true)
                                 .messageCode(MessageCode.GENERAL_SUCCESS)
-                                .data(homePublicDto)
+                                .data(landingPageDto)
                                 .build());
         }
 
         @GetMapping("/top-doctors")
-        public ResponseEntity<ApiResponse<List<DoctorPublicDto>>> getTopDoctors() {
-                List<DoctorPublicDto> topDoctors = doctorService.getTopDoctors();
-                return ResponseEntity.ok(ApiResponse.<List<DoctorPublicDto>>builder()
+        public ResponseEntity<ApiResponse<List<DoctorProfileDto>>> getTopDoctors() {
+                List<DoctorProfileDto> topDoctors = doctorService.getTopDoctors();
+                return ResponseEntity.ok(ApiResponse.<List<DoctorProfileDto>>builder()
                                 .success(true)
                                 .messageCode(MessageCode.GENERAL_SUCCESS)
                                 .data(topDoctors)

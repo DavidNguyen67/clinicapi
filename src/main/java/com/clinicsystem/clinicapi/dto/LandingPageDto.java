@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class HomePublicDto {
+public class LandingPageDto {
     private int totalPatients;
     private int totalDoctors;
     private int totalSpecialties;

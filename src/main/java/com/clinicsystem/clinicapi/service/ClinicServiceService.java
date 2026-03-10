@@ -2,7 +2,7 @@ package com.clinicsystem.clinicapi.service;
 
 import com.clinicsystem.clinicapi.constant.MessageCode;
 import com.clinicsystem.clinicapi.dto.PageResponse;
-import com.clinicsystem.clinicapi.dto.ServicePublicDto;
+import com.clinicsystem.clinicapi.dto.ClinicServiceDto;
 import com.clinicsystem.clinicapi.dto.SpecialtyDto;
 import com.clinicsystem.clinicapi.exception.ResourceNotFoundException;
 import com.clinicsystem.clinicapi.repository.ServiceRepository;
@@ -22,12 +22,12 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ServiceManagementService {
+public class ClinicServiceService {
 
         private final ServiceRepository serviceRepository;
 
         @Transactional(readOnly = true, rollbackFor = Exception.class)
-        public PageResponse<ServicePublicDto> getAllServices(
+        public PageResponse<ClinicServiceDto> getAllServices(
                         UUID specialtyId,
                         Boolean isFeatured,
                         int page,
@@ -43,7 +43,7 @@ public class ServiceManagementService {
 
                 Page<com.clinicsystem.clinicapi.model.Service> servicePage = serviceRepository.findAll(pageable);
 
-                List<ServicePublicDto> serviceDtos = servicePage.getContent().stream()
+                List<ClinicServiceDto> serviceDtos = servicePage.getContent().stream()
                                 .filter(service -> Boolean.TRUE.equals(service.getIsActive()))
                                 .filter(service -> specialtyId == null ||
                                                 (service.getSpecialty() != null
@@ -52,7 +52,7 @@ public class ServiceManagementService {
                                 .map(this::convertToPublicDto)
                                 .collect(Collectors.toList());
 
-                return PageResponse.<ServicePublicDto>builder()
+                return PageResponse.<ClinicServiceDto>builder()
                                 .records(serviceDtos)
                                 .nextCursor(servicePage.hasNext() ? String.valueOf(page + 1) : null)
                                 .hasMore(servicePage.hasNext())
@@ -64,7 +64,7 @@ public class ServiceManagementService {
         }
 
         @Transactional(readOnly = true, rollbackFor = Exception.class)
-        public ServicePublicDto getServiceById(UUID id) {
+        public ClinicServiceDto getServiceById(UUID id) {
                 log.info("Getting service by id: {}", id);
                 com.clinicsystem.clinicapi.model.Service service = serviceRepository.findById(id)
                                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -80,7 +80,7 @@ public class ServiceManagementService {
                 return convertToPublicDto(service);
         }
 
-        private ServicePublicDto convertToPublicDto(com.clinicsystem.clinicapi.model.Service service) {
+        private ClinicServiceDto convertToPublicDto(com.clinicsystem.clinicapi.model.Service service) {
                 SpecialtyDto specialtyDto = null;
                 if (service.getSpecialty() != null) {
                         specialtyDto = SpecialtyDto.builder()
@@ -92,7 +92,7 @@ public class ServiceManagementService {
                                         .build();
                 }
 
-                return ServicePublicDto.builder()
+                return ClinicServiceDto.builder()
                                 .id(service.getId())
                                 .name(service.getName())
                                 .slug(service.getSlug())

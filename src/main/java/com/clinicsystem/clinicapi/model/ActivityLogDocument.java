@@ -25,7 +25,7 @@ public class ActivityLogDocument {
 
     @Indexed
     @NotNull(message = MessageCode.VALIDATION_USER_REQUIRED)
-    private String userId; // Reference to User UUID
+    private String userId;
 
     @NotBlank(message = MessageCode.VALIDATION_ACTIVITY_TYPE_REQUIRED)
     @Indexed

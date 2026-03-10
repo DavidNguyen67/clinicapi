@@ -7,27 +7,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.clinicsystem.clinicapi.dto.ClinicInfoDto;
-import com.clinicsystem.clinicapi.dto.HomePublicDto;
+import com.clinicsystem.clinicapi.dto.LandingPageDto;
 import com.clinicsystem.clinicapi.model.Specialty.SpecialtyType;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class PublicService {
+public class HomeService {
         private final PatientService patientService;
         private final DoctorService doctorService;
         private final SpecialtyService specialtyService;
         private final SystemSettingService systemSettingService;
 
         @Transactional(readOnly = true, rollbackFor = Exception.class)
-        public HomePublicDto getHomePublicData() {
+        public LandingPageDto getHomePublicData() {
                 int totalPatients = patientService.getTotalPatients();
                 int totalDoctors = doctorService.getTotalDoctors();
                 int totalSpecialties = specialtyService.getTotalSpecialties();
                 Map<SpecialtyType, Integer> doctorMap = specialtyService.getSpecialtiesGroupByType();
 
-                return HomePublicDto.builder()
+                return LandingPageDto.builder()
                                 .totalPatients(totalPatients)
                                 .totalDoctors(totalDoctors)
                                 .totalSpecialties(totalSpecialties)
