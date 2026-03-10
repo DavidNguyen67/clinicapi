@@ -20,36 +20,38 @@ public class HomeService {
         private final SpecialtyService specialtyService;
         private final SystemSettingService systemSettingService;
 
-        @Transactional(readOnly = true, rollbackFor = Exception.class)
+        @Transactional(readOnly = true)
         public LandingPageDto getHomePublicData() {
                 int totalPatients = patientService.getTotalPatients();
                 int totalDoctors = doctorService.getTotalDoctors();
                 int totalSpecialties = specialtyService.getTotalSpecialties();
                 Map<SpecialtyType, Integer> doctorMap = specialtyService.getSpecialtiesGroupByType();
+                BigDecimal averageRating = new BigDecimal(
+                                systemSettingService.getSettingValue("clinic.averageRating", "0.0"));
 
                 return LandingPageDto.builder()
                                 .totalPatients(totalPatients)
                                 .totalDoctors(totalDoctors)
                                 .totalSpecialties(totalSpecialties)
                                 .doctorsMap(doctorMap)
+                                .averageRating(averageRating)
                                 .build();
         }
 
-        @Transactional(readOnly = true, rollbackFor = Exception.class)
+        @Transactional(readOnly = true)
         public ClinicInfoDto getClinicInfo() {
                 return ClinicInfoDto.builder()
-                                .clinicName(systemSettingService.getSettingValue("clinic.name", "ABC Medical Clinic"))
-                                .address(systemSettingService.getSettingValue("clinic.address",
-                                                "123 Main Street, District 1, Ho Chi Minh City, Vietnam"))
-                                .phone(systemSettingService.getSettingValue("clinic.phone", "+84 28 1234 5678"))
-                                .email(systemSettingService.getSettingValue("clinic.email", "info@abcclinic.com"))
-                                .pathToImage(systemSettingService.getSettingValue("clinic.logo", "/assets/logo.png"))
-                                .openingHours(systemSettingService.getSettingValue("clinic.openingHours",
-                                                "Monday - Friday: 8:00 AM - 8:00 PM | Saturday - Sunday: 8:00 AM - 5:00 PM"))
+                                .clinicName(systemSettingService.getSettingValue("clinic.name"))
+                                .address(systemSettingService.getSettingValue("clinic.address"))
+                                .phone(systemSettingService.getSettingValue("clinic.phone"))
+                                .email(systemSettingService.getSettingValue("clinic.email"))
+                                .pathToImage(systemSettingService.getSettingValue("clinic.logo"))
+                                .openingHours(systemSettingService.getSettingValue("clinic.openingHours"))
                                 .averageRating(
                                                 new BigDecimal(
                                                                 systemSettingService.getSettingValue(
-                                                                                "clinic.averageRating", "0.0")))
+                                                                                "clinic.averageRating")))
+                                .description(systemSettingService.getSettingValue("clinic.description"))
                                 .build();
         }
 

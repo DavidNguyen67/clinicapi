@@ -19,4 +19,5 @@ public class ClinicInfoDto {
     private String pathToImage;
     private String openingHours;
     private BigDecimal averageRating;
+    private String description;
 }

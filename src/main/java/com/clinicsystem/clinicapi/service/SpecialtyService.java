@@ -30,7 +30,7 @@ public class SpecialtyService {
 
         private final SpecialtyRepository specialtyRepository;
 
-        @Transactional(readOnly = true, rollbackFor = Exception.class)
+        @Transactional(readOnly = true)
         public PageResponse<SpecialtyDto> getAllActiveSpecialties(
                         int page,
                         int size,
@@ -50,16 +50,10 @@ public class SpecialtyService {
 
                 return PageResponse.<SpecialtyDto>builder()
                                 .records(specialtyDtos)
-                                .nextCursor(specialtyPage.hasNext() ? String.valueOf(page + 1) : null)
-                                .hasMore(specialtyPage.hasNext())
-                                .pageSize(specialtyPage.getSize())
-                                .pageNumber(specialtyPage.getNumber())
-                                .totalPages(specialtyPage.getTotalPages())
-                                .totalElements(specialtyPage.getTotalElements())
                                 .build();
         }
 
-        @Transactional(readOnly = true, rollbackFor = Exception.class)
+        @Transactional(readOnly = true)
         public SpecialtyDto getSpecialtyById(UUID id) {
                 log.info("Getting specialty by id: {}", id);
                 Specialty specialty = specialtyRepository.findById(id)
@@ -84,13 +78,13 @@ public class SpecialtyService {
                                 .build();
         }
 
-        @Transactional(readOnly = true, rollbackFor = Exception.class)
+        @Transactional(readOnly = true)
         public int getTotalSpecialties() {
                 int count = specialtyRepository.countByIsActive(Boolean.TRUE);
                 return count > Integer.MAX_VALUE ? Integer.MAX_VALUE : count;
         }
 
-        @Transactional(readOnly = true, rollbackFor = Exception.class)
+        @Transactional(readOnly = true)
         public Map<SpecialtyType, Integer> getSpecialtiesGroupByType() {
                 List<SpecialtyTypeCountDto> results = specialtyRepository.countGroupByType();
 

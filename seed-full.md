@@ -389,19 +389,19 @@ VALUES
 ```sql
 INSERT INTO faqs (id, category, question, answer, display_order, is_active, created_at, updated_at, deleted_at)
 VALUES
-('N0000000-0000-0000-0000-000000000001'::uuid, 'Đặt lịch khám', 'Làm thế nào để đặt lịch khám?', 'Bạn có thể đặt lịch khám qua website, ứng dụng di động hoặc gọi điện trực tiếp đến tổng đài 1900-xxxx. Chọn chuyên khoa, bác sĩ, ngày giờ phù hợp và điền thông tin cá nhân.', 1, true, NOW(), NOW(), NULL),
+('10000000-0000-0000-0000-000000000001'::uuid, 'Đặt lịch khám', 'Làm thế nào để đặt lịch khám?', 'Bạn có thể đặt lịch khám qua website, ứng dụng di động hoặc gọi điện trực tiếp đến tổng đài 1900-xxxx. Chọn chuyên khoa, bác sĩ, ngày giờ phù hợp và điền thông tin cá nhân.', 1, true, NOW(), NOW(), NULL),
 
-('N0000000-0000-0000-0000-000000000002'::uuid, 'Đặt lịch khám', 'Tôi có thể hủy lịch khám không?', 'Có, bạn có thể hủy lịch khám trước giờ hẹn ít nhất 2 tiếng. Vui lòng liên hệ tổng đài hoặc hủy trực tiếp trên ứng dụng.', 2, true, NOW(), NOW(), NULL),
+('10000000-0000-0000-0000-000000000002'::uuid, 'Đặt lịch khám', 'Tôi có thể hủy lịch khám không?', 'Có, bạn có thể hủy lịch khám trước giờ hẹn ít nhất 2 tiếng. Vui lòng liên hệ tổng đài hoặc hủy trực tiếp trên ứng dụng.', 2, true, NOW(), NOW(), NULL),
 
-('N0000000-0000-0000-0000-000000000003'::uuid, 'Thanh toán', 'Phòng khám chấp nhận hình thức thanh toán nào?', 'Chúng tôi chấp nhận thanh toán bằng tiền mặt, thẻ ATM/Credit, chuyển khoản ngân hàng, Momo và VNPay.', 1, true, NOW(), NOW(), NULL),
+('10000000-0000-0000-0000-000000000003'::uuid, 'Thanh toán', 'Phòng khám chấp nhận hình thức thanh toán nào?', 'Chúng tôi chấp nhận thanh toán bằng tiền mặt, thẻ ATM/Credit, chuyển khoản ngân hàng, Momo và VNPay.', 1, true, NOW(), NOW(), NULL),
 
-('N0000000-0000-0000-0000-000000000004'::uuid, 'Thanh toán', 'Tôi có được hoàn tiền khi hủy lịch không?', 'Nếu hủy trước 24 giờ, bạn sẽ được hoàn 100% phí đặt lịch. Hủy trong vòng 24 giờ sẽ được hoàn 50%.', 2, true, NOW(), NOW(), NULL),
+('10000000-0000-0000-0000-000000000004'::uuid, 'Thanh toán', 'Tôi có được hoàn tiền khi hủy lịch không?', 'Nếu hủy trước 24 giờ, bạn sẽ được hoàn 100% phí đặt lịch. Hủy trong vòng 24 giờ sẽ được hoàn 50%.', 2, true, NOW(), NOW(), NULL),
 
-('N0000000-0000-0000-0000-000000000005'::uuid, 'Bảo hiểm', 'Phòng khám có chấp nhận bảo hiểm y tế không?', 'Có, chúng tôi chấp nhận bảo hiểm y tế. Vui lòng mang theo thẻ BHYT khi đến khám.', 1, true, NOW(), NOW(), NULL),
+('10000000-0000-0000-0000-000000000005'::uuid, 'Bảo hiểm', 'Phòng khám có chấp nhận bảo hiểm y tế không?', 'Có, chúng tôi chấp nhận bảo hiểm y tế. Vui lòng mang theo thẻ BHYT khi đến khám.', 1, true, NOW(), NOW(), NULL),
 
-('N0000000-0000-0000-0000-000000000006'::uuid, 'Chung', 'Giờ làm việc của phòng khám?', 'Phòng khám làm việc từ thứ 2 đến thứ 7, từ 8:00 - 20:00. Chủ nhật và ngày lễ nghỉ.', 1, true, NOW(), NOW(), NULL),
+('10000000-0000-0000-0000-000000000006'::uuid, 'Chung', 'Giờ làm việc của phòng khám?', 'Phòng khám làm việc từ thứ 2 đến thứ 7, từ 8:00 - 20:00. Chủ nhật và ngày lễ nghỉ.', 1, true, NOW(), NOW(), NULL),
 
-('N0000000-0000-0000-0000-000000000007'::uuid, 'Chung', 'Tôi có cần mang theo gì khi đến khám?', 'Vui lòng mang theo CMND/CCCD, thẻ BHYT (nếu có), kết quả xét nghiệm/chẩn đoán cũ (nếu có).', 2, true, NOW(), NOW(), NULL);
+('10000000-0000-0000-0000-000000000007'::uuid, 'Chung', 'Tôi có cần mang theo gì khi đến khám?', 'Vui lòng mang theo CMND/CCCD, thẻ BHYT (nếu có), kết quả xét nghiệm/chẩn đoán cũ (nếu có).', 2, true, NOW(), NOW(), NULL);
 ```
 
 ## 26. Doctor Performance Table

@@ -167,7 +167,6 @@ public class AuthController {
                                                 .build());
         }
 
-        // Helper methods for cookie management
         private void setRefreshTokenCookie(HttpServletResponse response, String refreshToken) {
                 Cookie cookie = new Cookie(jwtUtil.getRefreshCookieName(), refreshToken);
                 cookie.setHttpOnly(true);

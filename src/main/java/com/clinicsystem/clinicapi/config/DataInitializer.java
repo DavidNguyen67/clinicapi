@@ -81,5 +81,12 @@ public class DataInitializer {
                     "Clinic average rating", true);
             log.info("Initialized clinic.averageRating setting");
         }
+
+        if (!systemSettingService.settingExists("clinic.description")) {
+            systemSettingService.saveSetting("clinic.description",
+                    "Phòng khám Đa khoa MedCare - Chăm sóc sức khỏe toàn diện",
+                    "Clinic description", true);
+            log.info("Initialized clinic.description setting");
+        }
     }
 }

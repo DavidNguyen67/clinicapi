@@ -2,6 +2,7 @@ package com.clinicsystem.clinicapi.service;
 
 import com.clinicsystem.clinicapi.constant.MessageCode;
 import com.clinicsystem.clinicapi.dto.PageResponse;
+import com.clinicsystem.clinicapi.dto.PaginationDto;
 import com.clinicsystem.clinicapi.dto.ClinicServiceDto;
 import com.clinicsystem.clinicapi.dto.SpecialtyDto;
 import com.clinicsystem.clinicapi.exception.ResourceNotFoundException;
@@ -26,44 +27,27 @@ public class ClinicServiceService {
 
         private final ServiceRepository serviceRepository;
 
-        @Transactional(readOnly = true, rollbackFor = Exception.class)
+        @Transactional(readOnly = true)
         public PageResponse<ClinicServiceDto> getAllServices(
-                        UUID specialtyId,
-                        Boolean isFeatured,
-                        int page,
-                        int size,
-                        String sortBy,
-                        String sortDirection) {
+                        PaginationDto paginationDto) {
 
-                log.info("Getting services - specialtyId: {}, isFeatured: {}, page: {}, size: {}",
-                                specialtyId, isFeatured, page, size);
+                Sort sort = Sort.by(Sort.Direction.fromString(paginationDto.getSortDirection()),
+                                paginationDto.getSortBy());
+                Pageable pageable = PageRequest.of(paginationDto.getPage(), paginationDto.getSize(), sort);
 
-                Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
-                Pageable pageable = PageRequest.of(page, size, sort);
-
-                Page<com.clinicsystem.clinicapi.model.Service> servicePage = serviceRepository.findAll(pageable);
+                Page<com.clinicsystem.clinicapi.model.Service> servicePage = serviceRepository
+                                .getAllActiveServices(pageable);
 
                 List<ClinicServiceDto> serviceDtos = servicePage.getContent().stream()
-                                .filter(service -> Boolean.TRUE.equals(service.getIsActive()))
-                                .filter(service -> specialtyId == null ||
-                                                (service.getSpecialty() != null
-                                                                && service.getSpecialty().getId().equals(specialtyId)))
-                                .filter(service -> isFeatured == null || service.getIsFeatured().equals(isFeatured))
                                 .map(this::convertToPublicDto)
                                 .collect(Collectors.toList());
 
                 return PageResponse.<ClinicServiceDto>builder()
                                 .records(serviceDtos)
-                                .nextCursor(servicePage.hasNext() ? String.valueOf(page + 1) : null)
-                                .hasMore(servicePage.hasNext())
-                                .pageSize(servicePage.getSize())
-                                .pageNumber(servicePage.getNumber())
-                                .totalPages(servicePage.getTotalPages())
-                                .totalElements(servicePage.getTotalElements())
                                 .build();
         }
 
-        @Transactional(readOnly = true, rollbackFor = Exception.class)
+        @Transactional(readOnly = true)
         public ClinicServiceDto getServiceById(UUID id) {
                 log.info("Getting service by id: {}", id);
                 com.clinicsystem.clinicapi.model.Service service = serviceRepository.findById(id)

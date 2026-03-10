@@ -18,7 +18,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         private final UserRepository userRepository;
 
         @Override
-        @Transactional(readOnly = true, rollbackFor = Exception.class)
+        @Transactional(readOnly = true)
         public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
                 User user = userRepository.findByEmail(email)
                                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));

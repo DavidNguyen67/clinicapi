@@ -45,7 +45,7 @@ public class PatientService {
         return patient;
     }
 
-    @Transactional(readOnly = true, rollbackFor = Exception.class)
+    @Transactional(readOnly = true)
     public int getTotalPatients() {
         long count = patientRepository.count();
         return count > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) count;

@@ -13,21 +13,11 @@ import java.util.List;
 @Builder
 public class PageResponse<T> {
     private List<T> records;
-    private String nextCursor;
-    private boolean hasMore;
-    private int pageSize;
-    private int pageNumber;
-    private int totalPages;
-    private long totalElements;
 
     public static <T> PageResponse<T> of(List<T> records, String nextCursor, boolean hasMore, int pageSize,
             long totalElements) {
         return PageResponse.<T>builder()
                 .records(records)
-                .nextCursor(nextCursor)
-                .hasMore(hasMore)
-                .pageSize(pageSize)
-                .totalElements(totalElements)
                 .build();
     }
 }

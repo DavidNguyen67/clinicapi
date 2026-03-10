@@ -1,5 +1,6 @@
 package com.clinicsystem.clinicapi.dto;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import com.clinicsystem.clinicapi.model.Specialty.SpecialtyType;
@@ -18,4 +19,5 @@ public class LandingPageDto {
     private int totalDoctors;
     private int totalSpecialties;
     private Map<SpecialtyType, Integer> doctorsMap;
+    private BigDecimal averageRating;
 }
