@@ -35,4 +35,5 @@ public class CustomUserDetailsService implements UserDetailsService {
                                 .disabled(user.getStatus() != User.UserStatus.ACTIVE)
                                 .build();
         }
+
 }

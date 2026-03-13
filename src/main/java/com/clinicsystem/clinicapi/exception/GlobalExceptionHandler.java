@@ -4,7 +4,6 @@ import com.clinicsystem.clinicapi.constant.MessageCode;
 import com.clinicsystem.clinicapi.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -23,9 +22,6 @@ import java.util.Map;
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class GlobalExceptionHandler {
-
-        @SuppressWarnings("unused")
-        private final MessageSource messageSource;
 
         @ExceptionHandler(InvalidApiKeyException.class)
         public ResponseEntity<ApiResponse<Object>> handleInvalidApiKeyException(
