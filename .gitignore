@@ -46,3 +46,6 @@ keys/
 deployment-logs/
 *.pem
 *.key
+
+
+*.docx
