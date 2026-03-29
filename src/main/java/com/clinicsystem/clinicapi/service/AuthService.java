@@ -50,6 +50,7 @@ public class AuthService {
                 user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
                 user.setPhone(request.getPhone());
                 user.setFullName(request.getFullName());
+                user.setDateOfBirth(request.getDateOfBirth());
                 user.setPathAvatar(request.getPathAvatar());
                 user.setRole(RoleName.ROLE_PATIENT);
                 user.setStatus(User.UserStatus.ACTIVE);

@@ -43,6 +43,10 @@ public class RegisterRequest {
     @Normalize({ TRIM, COLLAPSE_WHITESPACE })
     private String fullName;
 
+    @NotBlank(message = MessageCode.VALIDATION_DOB_REQUIRED)
+    @Normalize(TRIM)
+    private String dateOfBirth;
+
     @Normalize(TRIM)
     private String pathAvatar;
 }
