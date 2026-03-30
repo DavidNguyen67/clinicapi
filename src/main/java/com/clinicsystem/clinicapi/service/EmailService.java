@@ -1,5 +1,7 @@
 package com.clinicsystem.clinicapi.service;
 
+import com.clinicsystem.clinicapi.dto.AppointmentEventDto;
+import com.clinicsystem.clinicapi.dto.ClinicInfoDto;
 import com.clinicsystem.clinicapi.util.EmailCssInliner;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -17,7 +19,7 @@ import org.thymeleaf.context.Context;
 @Service
 @RequiredArgsConstructor
 public class EmailService {
-
+    private final HomeService homeService;
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
 
@@ -112,5 +114,27 @@ public class EmailService {
 
         sendHtmlEmail(to, subject, htmlContent);
         log.info("Welcome email sent to: {} ({})", to, fullName);
+    }
+
+    public void sendAppointmentNotification(String to, AppointmentEventDto event) {
+        String subject = "Appointment Confirmation";
+
+        // Create Thymeleaf context with variables
+        ClinicInfoDto clinicInfo = homeService.getClinicInfo();
+
+        Context context = new Context();
+        context.setVariable("appName", appName);
+        context.setVariable("patientName", to);
+        context.setVariable("appointmentId", event.getAppointmentId());
+        context.setVariable("scheduledAt", event.getScheduledAt());
+        context.setVariable("doctorName", event.getDoctorId());
+        context.setVariable("department", clinicInfo.getDescription());
+        context.setVariable("clinicAddress", clinicInfo.getAddress());
+
+        // Process template
+        String htmlContent = templateEngine.process("email/appointment-confirmation", context);
+
+        sendHtmlEmail(to, subject, htmlContent);
+        log.info("Appointment confirmation email sent to: {}", to);
     }
 }

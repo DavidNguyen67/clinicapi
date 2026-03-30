@@ -2,13 +2,11 @@ package com.clinicsystem.clinicapi.service;
 
 import com.clinicsystem.clinicapi.constant.MessageCode;
 import com.clinicsystem.clinicapi.dto.DoctorProfileDto;
-import com.clinicsystem.clinicapi.dto.FaqDto;
 import com.clinicsystem.clinicapi.dto.PageResponse;
 import com.clinicsystem.clinicapi.dto.PaginationDto;
 import com.clinicsystem.clinicapi.dto.SpecialtyDto;
 import com.clinicsystem.clinicapi.exception.ResourceNotFoundException;
 import com.clinicsystem.clinicapi.model.Doctor;
-import com.clinicsystem.clinicapi.model.Faq;
 import com.clinicsystem.clinicapi.repository.DoctorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

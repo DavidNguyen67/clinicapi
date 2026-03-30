@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "appointments", indexes = {
@@ -56,11 +56,11 @@ public class Appointment extends SoftDeletableEntity {
 
     @NotNull(message = MessageCode.VALIDATION_START_TIME_REQUIRED)
     @Column(name = "start_time", nullable = false)
-    private LocalTime startTime;
+    private LocalDateTime startTime;
 
     @NotNull(message = MessageCode.VALIDATION_END_TIME_REQUIRED)
     @Column(name = "end_time", nullable = false)
-    private LocalTime endTime;
+    private LocalDateTime endTime;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)

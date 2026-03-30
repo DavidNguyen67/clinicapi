@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xác nhận lịch hẹn</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ── Design Tokens ── */
+      :root {
+        --navy: #0f1f3d;
+        --teal: #0ea5a0;
+        --teal-lt: #e6f7f7;
+        --amber: #f59e0b;
+        --text: #1e293b;
+        --muted: #64748b;
+        --border: #e2e8f0;
+        --bg: #f8fafc;
+        --white: #ffffff;
+        --radius: 12px;
+        --shadow: 0 4px 24px rgba(15, 31, 61, 0.1);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        font-size: 15px;
+        line-height: 1.7;
+        color: var(--text);
+        background-color: var(--bg);
+        padding: 32px 16px;
+      }
+
+      .email-wrapper {
+        max-width: 580px;
+        margin: 0 auto;
+        background: var(--white);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border);
+      }
+
+      /* ── Header ── */
+      .header {
+        background: var(--navy);
+        padding: 44px 32px 36px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .header::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(
+            circle at 20% 50%,
+            rgba(14, 165, 160, 0.18) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(14, 165, 160, 0.12) 0%,
+            transparent 40%
+          );
+      }
+      .header-inner {
+        position: relative;
+        z-index: 1;
+      }
+      .header-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(14, 165, 160, 0.2);
+        border: 1px solid rgba(14, 165, 160, 0.4);
+        color: #7ee8e4;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 4px 12px;
+        border-radius: 999px;
+        margin-bottom: 14px;
+      }
+      .header h1 {
+        font-family: "DM Serif Display", serif;
+        font-size: 30px;
+        font-weight: 400;
+        color: var(--white);
+        letter-spacing: -0.3px;
+        margin-bottom: 6px;
+      }
+      .header .subtitle {
+        color: rgba(255, 255, 255, 0.65);
+        font-size: 14px;
+        margin-top: 6px;
+      }
+
+      /* ── Content ── */
+      .content {
+        padding: 36px 32px 28px;
+      }
+      .content h2 {
+        font-family: "DM Serif Display", serif;
+        font-size: 22px;
+        font-weight: 400;
+        color: var(--navy);
+        margin-bottom: 16px;
+      }
+      .content p {
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+
+      /* ── Confirmation Box ── */
+      .confirm-box {
+        background: var(--teal-lt);
+        border: 1px solid #a7e8e6;
+        border-radius: var(--radius);
+        padding: 18px 20px;
+        margin: 20px 0 28px;
+        color: #0c6b68;
+        font-size: 14.5px;
+      }
+      .confirm-box strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 15px;
+        color: var(--navy);
+      }
+
+      /* ── Appointment Detail List ── */
+      .section-title {
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 14px;
+      }
+      .detail-list {
+        list-style: none;
+        padding: 0;
+        display: grid;
+        gap: 8px;
+      }
+      .detail-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px 16px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 14px;
+        color: var(--text);
+      }
+      .detail-label {
+        min-width: 110px;
+        color: var(--muted);
+        font-weight: 500;
+      }
+      .detail-value {
+        color: var(--navy);
+        font-weight: 600;
+        word-break: break-word;
+      }
+
+      /* ── CTA ── */
+      .btn-wrap {
+        text-align: center;
+        margin: 26px 0 6px;
+      }
+      .btn {
+        display: inline-block;
+        padding: 12px 28px;
+        background: var(--teal);
+        color: var(--white) !important;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      /* ── Sign off ── */
+      .sign-off {
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      /* ── Divider ── */
+      .divider {
+        height: 1px;
+        background: var(--border);
+        margin: 0 32px;
+      }
+
+      /* ── Footer ── */
+      .footer {
+        padding: 20px 32px 24px;
+        text-align: center;
+        font-size: 12px;
+        color: var(--muted);
+        background: var(--bg);
+      }
+
+      @media (max-width: 640px) {
+        body {
+          padding: 16px 8px;
+        }
+        .content {
+          padding: 24px 18px 20px;
+        }
+        .header {
+          padding: 32px 18px 28px;
+        }
+        .divider {
+          margin: 0 18px;
+        }
+        .footer {
+          padding: 16px 18px 20px;
+        }
+        .detail-list li {
+          flex-direction: column;
+          gap: 6px;
+        }
+        .detail-label {
+          min-width: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-wrapper">
+      <div class="header">
+        <div class="header-inner">
+          <div class="header-badge">Đã xác nhận lịch hẹn</div>
+          <h1>Lịch hẹn của bạn đã được xác nhận</h1>
+          <p class="subtitle">
+            Cảm ơn bạn đã chọn
+            <span th:text="${appName}">Clinic System</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="content">
+        <h2>Xin chào, <span th:text="${patientName}">Bệnh nhân</span></h2>
+
+        <div class="confirm-box">
+          <strong>Thông tin lịch hẹn</strong>
+          Chúng tôi đã xác nhận lịch khám của bạn. Vui lòng kiểm tra thông tin
+          bên dưới và đến sớm 10 đến 15 phút trước giờ hẹn.
+        </div>
+
+        <p class="section-title">Chi tiết lịch hẹn</p>
+        <ul class="detail-list">
+          <li>
+            <span class="detail-label">Mã lịch hẹn</span>
+            <span class="detail-value" th:text="${appointmentId}"
+              >APT-20260331-001</span
+            >
+          </li>
+          <li>
+            <span class="detail-label">Ngày giờ khám</span>
+            <span class="detail-value" th:text="${scheduledAt}"
+              >31 Mar 2026, 09:30 AM</span
+            >
+          </li>
+          <li>
+            <span class="detail-label">Bác sĩ</span>
+            <span class="detail-value" th:text="${doctorName}">Dr. Nguyen</span>
+          </li>
+          <li>
+            <span class="detail-label">Chuyên khoa</span>
+            <span class="detail-value" th:text="${department}"
+              >General Medicine</span
+            >
+          </li>
+          <li>
+            <span class="detail-label">Địa chỉ phòng khám</span>
+            <span class="detail-value" th:text="${clinicAddress}"
+              >123 Health Street</span
+            >
+          </li>
+        </ul>
+
+        <div class="btn-wrap">
+          <a th:href="${appointmentLink}" class="btn">Xem lịch hẹn</a>
+        </div>
+
+        <div class="sign-off">
+          <p>
+            Nếu bạn cần đổi lịch hoặc hủy lịch, vui lòng liên hệ với chúng tôi
+            sớm nhất có thể.
+          </p>
+          <p style="margin-top: 10px">
+            Trân trọng,<br /><strong style="color: var(--navy)"
+              >Đội ngũ <span th:text="${appName}">Clinic System</span></strong
+            >
+          </p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="footer">
+        <p>Đây là email tự động, vui lòng không trả lời.</p>
+        <p style="margin-top: 6px">
+          &copy; 2026 <span th:text="${appName}">Clinic System</span>. All Bảo
+          lưu mọi quyền.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

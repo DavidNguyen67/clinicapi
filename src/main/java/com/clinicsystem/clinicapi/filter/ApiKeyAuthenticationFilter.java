@@ -3,6 +3,7 @@ package com.clinicsystem.clinicapi.filter;
 import com.clinicsystem.clinicapi.constant.MessageCode;
 import com.clinicsystem.clinicapi.dto.ApiResponse;
 import com.clinicsystem.clinicapi.exception.InvalidApiKeyException;
+import com.clinicsystem.clinicapi.util.EndpointSecurityUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,6 +31,7 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
     private static final String API_KEY_HEADER = "X-API-Key";
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
     private final ObjectMapper objectMapper;
+    private final EndpointSecurityUtil endpointSecurityUtil;
 
     @Value("${api.security.keys}")
     private String[] validApiKeys;
@@ -56,6 +58,11 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
 
         // Skip validation if API key security is disabled
         if (!apiKeyEnabled) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        if (endpointSecurityUtil.isPublic(request)) {
             filterChain.doFilter(request, response);
             return;
         }

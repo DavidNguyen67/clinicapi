@@ -104,15 +104,15 @@ VALUES
 ```sql
 INSERT INTO patients (id, user_id, patient_code, date_of_birth, gender, address, insurance_number, blood_type, allergies, chronic_diseases, loyalty_points, total_visits, created_at, updated_at, deleted_at)
 VALUES
-('30000000-0000-0000-0000-000000000001'::uuid, '10000000-0000-0000-0000-000000000011'::uuid, 'PAT001', '1990-05-15', 'male', '123 Nguyễn Huệ, Q1, TP.HCM', 'BH123456789', 'O_POSITIVE', 'Không có', 'Không có', 100, 5, NOW(), NOW(), NULL),
+('30000000-0000-0000-0000-000000000001'::uuid, '10000000-0000-0000-0000-000000000011'::uuid, 'PAT001', '1990-05-15', 'male', '123 Nguyễn Huệ, Q1, TP.HCM', 'BH123456789', 'O-', 'Không có', 'Không có', 100, 5, NOW(), NOW(), NULL),
 
-('30000000-0000-0000-0000-000000000002'::uuid, '10000000-0000-0000-0000-000000000012'::uuid, 'PAT002', '1985-08-20', 'female', '456 Lê Lợi, Q1, TP.HCM', 'BH987654321', 'A_POSITIVE', 'Dị ứng penicillin', 'Cao huyết áp', 250, 12, NOW(), NOW(), NULL),
+('30000000-0000-0000-0000-000000000002'::uuid, '10000000-0000-0000-0000-000000000012'::uuid, 'PAT002', '1985-08-20', 'female', '456 Lê Lợi, Q1, TP.HCM', 'BH987654321', 'A+', 'Dị ứng penicillin', 'Cao huyết áp', 250, 12, NOW(), NOW(), NULL),
 
-('30000000-0000-0000-0000-000000000003'::uuid, '10000000-0000-0000-0000-000000000013'::uuid, 'PAT003', '1995-03-10', 'male', '789 Trần Hưng Đạo, Q5, TP.HCM', NULL, 'B_POSITIVE', 'Không có', 'Không có', 50, 3, NOW(), NOW(), NULL),
+('30000000-0000-0000-0000-000000000003'::uuid, '10000000-0000-0000-0000-000000000013'::uuid, 'PAT003', '1995-03-10', 'male', '789 Trần Hưng Đạo, Q5, TP.HCM', NULL, 'B+', 'Không có', 'Không có', 50, 3, NOW(), NOW(), NULL),
 
-('30000000-0000-0000-0000-000000000004'::uuid, '10000000-0000-0000-0000-000000000014'::uuid, 'PAT004', '1988-12-25', 'female', '321 Võ Thị Sáu, Q3, TP.HCM', 'BH555666777', 'AB_POSITIVE', 'Dị ứng hải sản', 'Tiểu đường type 2', 180, 8, NOW(), NOW(), NULL),
+('30000000-0000-0000-0000-000000000004'::uuid, '10000000-0000-0000-0000-000000000014'::uuid, 'PAT004', '1988-12-25', 'female', '321 Võ Thị Sáu, Q3, TP.HCM', 'BH555666777', 'AB+', 'Dị ứng hải sản', 'Tiểu đường type 2', 180, 8, NOW(), NOW(), NULL),
 
-('30000000-0000-0000-0000-000000000005'::uuid, '10000000-0000-0000-0000-000000000015'::uuid, 'PAT005', '2000-07-08', 'male', '654 Pasteur, Q1, TP.HCM', NULL, 'O_NEGATIVE', 'Không có', 'Không có', 0, 1, NOW(), NOW(), NULL);
+('30000000-0000-0000-0000-000000000005'::uuid, '10000000-0000-0000-0000-000000000015'::uuid, 'PAT005', '2000-07-08', 'male', '654 Pasteur, Q1, TP.HCM', NULL, 'A-', 'Không có', 'Không có', 0, 1, NOW(), NOW(), NULL);
 ```
 
 ## 6. Staff Table

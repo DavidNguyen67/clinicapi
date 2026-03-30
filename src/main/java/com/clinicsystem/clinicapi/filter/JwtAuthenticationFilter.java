@@ -1,6 +1,7 @@
 package com.clinicsystem.clinicapi.filter;
 
 import com.clinicsystem.clinicapi.service.CustomUserDetailsService;
+import com.clinicsystem.clinicapi.util.EndpointSecurityUtil;
 import com.clinicsystem.clinicapi.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -25,12 +26,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final CustomUserDetailsService customUserDetailsService;
+    private final EndpointSecurityUtil endpointSecurityUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
         try {
+            if (endpointSecurityUtil.isPublic(request)) {
+                log.debug("Public endpoint accessed: {}", request.getRequestURI());
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             String jwt = getJwtFromRequest(request);
 
             if (StringUtils.hasText(jwt) && jwtUtil.validateToken(jwt)) {
