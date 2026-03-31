@@ -1,5 +1,7 @@
 package com.clinicsystem.clinicapi.service;
 
+import com.clinicsystem.clinicapi.constant.AppointmentEventType;
+import com.clinicsystem.clinicapi.constant.KafkaTopics;
 import com.clinicsystem.clinicapi.dto.AppointmentEventDto;
 import com.clinicsystem.clinicapi.dto.ClinicInfoDto;
 import com.clinicsystem.clinicapi.util.EmailCssInliner;
@@ -8,6 +10,7 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -136,5 +139,12 @@ public class EmailService {
 
         sendHtmlEmail(to, subject, htmlContent);
         log.info("Appointment confirmation email sent to: {}", to);
+    }
+
+    @KafkaListener(topics = KafkaTopics.APPOINTMENTS, groupId = "email-service-group")
+    public void handleAppointmentEvent(AppointmentEventDto event) {
+        if (AppointmentEventType.CREATED.equals(event.getEventType())) {
+            sendAppointmentNotification(event.getEmail(), event);
+        }
     }
 }

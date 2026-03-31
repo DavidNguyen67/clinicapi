@@ -10,7 +10,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -49,4 +48,7 @@ public class CreateAppointmentRequest {
 
     @Normalize(TRIM)
     private String notes;
+
+    @NotNull(message = MessageCode.VALIDATION_QUEUE_NUMBER_REQUIRED)
+    private Integer queueNumber;
 }

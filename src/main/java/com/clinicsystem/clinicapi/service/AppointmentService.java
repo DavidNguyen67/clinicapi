@@ -46,7 +46,7 @@ public class AppointmentService {
                 appointment.setReason(createAppointmentRequest.getReason());
                 appointment.setSymptoms(createAppointmentRequest.getSymptoms());
                 appointment.setNotes(createAppointmentRequest.getNotes());
-                appointment.setQueueNumber(1);
+                appointment.setQueueNumber(createAppointmentRequest.getQueueNumber());
                 appointment.setStatus(AppointmentStatus.pending);
                 appointment.setAppointmentCode(generateUniqueAppointmentCode());
 
