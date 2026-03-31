@@ -1,21 +1,27 @@
 package com.clinicsystem.clinicapi.service;
 
 import com.clinicsystem.clinicapi.constant.AppointmentEventType;
-import com.clinicsystem.clinicapi.constant.AuthEventType;
 import com.clinicsystem.clinicapi.constant.KafkaTopics;
 import com.clinicsystem.clinicapi.dto.AppointmentEventDto;
 import com.clinicsystem.clinicapi.dto.AuthEventDto;
 import com.clinicsystem.clinicapi.dto.ClinicInfoDto;
 import com.clinicsystem.clinicapi.util.EmailCssInliner;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -28,6 +34,7 @@ public class EmailService {
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
     private final NotificationService notificationService;
+    private final ObjectMapper objectMapper;
 
     @Value("${spring.mail.username}")
     private String fromEmail;
@@ -144,18 +151,26 @@ public class EmailService {
         log.info("Appointment confirmation email sent to: {}", to);
     }
 
-    @KafkaListener(topics = KafkaTopics.APPOINTMENTS, groupId = "email-service-group", containerFactory = "appointmentKafkaListenerContainerFactory")
+    @KafkaListener(topics = KafkaTopics.APPOINTMENTS, groupId = "email-service-group")
     public void handleAppointmentEvent(AppointmentEventDto event) {
-        if (AppointmentEventType.CREATED.equals(event.getEventType())) {
+        if (AppointmentEventType.CREATED.equals(event.getEventType())
+                || AppointmentEventType.UPDATED.equals(event.getEventType())) {
             sendAppointmentNotification(event.getEmail(), event);
-            notificationService.sendNotification(event.getPatientId().toString(), event);
         }
     }
 
-    @KafkaListener(topics = KafkaTopics.AUTH_EVENTS, groupId = "email-service-group", containerFactory = "authKafkaListenerContainerFactory")
-    public void handleAuthEvent(AuthEventDto event) {
-        if (AuthEventType.REGISTER.equals(event.getEventType())) {
-            sendWelcomeEmail(event.getEmail(), event.getFullName());
+    @KafkaListener(topics = { KafkaTopics.APPOINTMENTS, KafkaTopics.AUTH_EVENTS }, groupId = "in-app-service-group")
+    public void handleForInApp(
+            @Payload String rawPayload,
+            @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) throws JsonMappingException, JsonProcessingException {
+        if (topic.equals(KafkaTopics.APPOINTMENTS)) {
+            log.info("Received appointment event for in-app notification: {}", rawPayload);
+            AppointmentEventDto event = objectMapper.readValue(rawPayload, AppointmentEventDto.class);
+            notificationService.sendNotification(event.getPatientId().toString(), event);
+        }
+        if (topic.equals(KafkaTopics.AUTH_EVENTS)) {
+            log.info("Received auth event for in-app notification: {}", rawPayload);
+            AuthEventDto event = objectMapper.readValue(rawPayload, AuthEventDto.class);
             notificationService.sendNotification(event.getUserId().toString(), event);
         }
     }

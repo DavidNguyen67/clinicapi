@@ -3,7 +3,6 @@ package com.clinicsystem.clinicapi.dto;
 import com.clinicsystem.clinicapi.constant.MessageCode;
 import com.clinicsystem.clinicapi.model.Appointment;
 import com.clinicsystem.clinicapi.validation.Normalize;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

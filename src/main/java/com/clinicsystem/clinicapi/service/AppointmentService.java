@@ -3,6 +3,7 @@ package com.clinicsystem.clinicapi.service;
 import org.springframework.stereotype.Service;
 
 import com.clinicsystem.clinicapi.dto.CreateAppointmentRequest;
+import com.clinicsystem.clinicapi.dto.UpdateAppointmentRequest;
 import com.clinicsystem.clinicapi.model.Appointment;
 import com.clinicsystem.clinicapi.model.Doctor;
 import com.clinicsystem.clinicapi.model.Patient;
@@ -49,6 +50,17 @@ public class AppointmentService {
                 appointment.setQueueNumber(createAppointmentRequest.getQueueNumber());
                 appointment.setStatus(AppointmentStatus.pending);
                 appointment.setAppointmentCode(generateUniqueAppointmentCode());
+
+                return appointmentRepository.save(appointment);
+        }
+
+        @Transactional(rollbackFor = Exception.class)
+        public Appointment updateAppointment(UpdateAppointmentRequest updateAppointmentRequest) {
+                Appointment appointment = appointmentRepository.findById(updateAppointmentRequest.getAppointmentId())
+                                .orElseThrow(() -> new IllegalArgumentException("Appointment not found"));
+
+                if (updateAppointmentRequest.getStatus() != null)
+                        appointment.setStatus(updateAppointmentRequest.getStatus());
 
                 return appointmentRepository.save(appointment);
         }

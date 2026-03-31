@@ -12,6 +12,7 @@ import com.clinicsystem.clinicapi.constant.KafkaTopics;
 import com.clinicsystem.clinicapi.dto.AppointmentEventDto;
 import com.clinicsystem.clinicapi.dto.AppointmentResponseDto;
 import com.clinicsystem.clinicapi.dto.CreateAppointmentRequest;
+import com.clinicsystem.clinicapi.dto.UpdateAppointmentRequest;
 import com.clinicsystem.clinicapi.model.Appointment;
 
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,29 @@ public class BookingService {
     @Transactional
     public AppointmentResponseDto publishAppointmentEvent(CreateAppointmentRequest request) {
         Appointment appointment = appointmentService.createAppointment(request);
-        AppointmentEventDto event = buildEvent(appointment);
+        AppointmentEventDto event = buildEvent(appointment, AppointmentEventType.CREATED);
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                appointmentEventKafkaTemplate.send(KafkaTopics.APPOINTMENTS,
+                        event.getPatientId().toString(),
+                        event)
+                        .whenComplete((result, ex) -> {
+                            if (ex != null)
+                                log.error("Kafka publish failed", ex);
+                            else
+                                log.info("Kafka published appointmentId={}", event.getAppointmentId());
+                        });
+            }
+        });
+
+        return toResponseDto(appointment);
+    }
+
+    @Transactional
+    public AppointmentResponseDto updateAppointment(UpdateAppointmentRequest request) {
+        Appointment appointment = appointmentService.updateAppointment(request);
+        AppointmentEventDto event = buildEvent(appointment, AppointmentEventType.UPDATED);
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
             @Override
             public void afterCommit() {
@@ -66,13 +89,13 @@ public class BookingService {
                 .build();
     }
 
-    private AppointmentEventDto buildEvent(Appointment appointment) {
+    private AppointmentEventDto buildEvent(Appointment appointment, AppointmentEventType eventType) {
         AppointmentEventDto event = new AppointmentEventDto();
         event.setAppointmentId(appointment.getId());
         event.setPatientId(appointment.getPatient().getId());
         event.setDoctorId(appointment.getDoctor().getId());
         event.setScheduledAt(appointment.getAppointmentDate());
-        event.setEventType(AppointmentEventType.CREATED);
+        event.setEventType(eventType);
         event.setEmail(appointment.getPatient().getUser().getEmail());
         return event;
     }

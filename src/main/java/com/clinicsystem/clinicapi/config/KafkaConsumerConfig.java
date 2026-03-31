@@ -51,6 +51,19 @@ public class KafkaConsumerConfig {
                 return factory;
         }
 
+        @Bean
+        public ConsumerFactory<String, AuthEventDto> auditLogConsumerFactory() {
+                return new DefaultKafkaConsumerFactory<>(buildConfigProps(AuthEventDto.class), new StringDeserializer(),
+                                new JsonDeserializer<>(AuthEventDto.class, false));
+        }
+
+        @Bean(name = "auditLogKafkaListenerContainerFactory")
+        public ConcurrentKafkaListenerContainerFactory<String, AuthEventDto> auditLogKafkaListenerContainerFactory() {
+                ConcurrentKafkaListenerContainerFactory<String, AuthEventDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
+                factory.setConsumerFactory(auditLogConsumerFactory());
+                return factory;
+        }
+
         private Map<String, Object> buildConfigProps(Class<?> valueType) {
                 Map<String, Object> configProps = new HashMap<>();
                 configProps.put(

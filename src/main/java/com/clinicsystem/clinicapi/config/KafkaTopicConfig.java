@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.common.config.TopicConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +35,8 @@ public class KafkaTopicConfig {
         return TopicBuilder.name(KafkaTopics.APPOINTMENTS)
                 .partitions(3)
                 .replicas(1)
+                .config(TopicConfig.RETENTION_MS_CONFIG, String.valueOf(7L * 24 * 60 * 60 * 1000))
+                .config(TopicConfig.CLEANUP_POLICY_CONFIG, TopicConfig.CLEANUP_POLICY_DELETE)
                 .build();
     }
 
@@ -41,7 +44,19 @@ public class KafkaTopicConfig {
     public NewTopic authTopic() {
         return TopicBuilder.name(KafkaTopics.AUTH_EVENTS)
                 .partitions(3)
+                .replicas(1).config(TopicConfig.RETENTION_MS_CONFIG, String.valueOf(7L * 24 * 60 * 60 * 1000))
+                .config(TopicConfig.CLEANUP_POLICY_CONFIG, TopicConfig.CLEANUP_POLICY_DELETE)
+                .build();
+    }
+
+    @Bean
+    public NewTopic auditLog() {
+        return TopicBuilder.name(KafkaTopics.AUDIT_LOG)
+                .partitions(6)
                 .replicas(1)
+                .config(TopicConfig.RETENTION_MS_CONFIG, String.valueOf(365L * 24 * 60 * 60 * 1000))
+                .config(TopicConfig.CLEANUP_POLICY_CONFIG, TopicConfig.CLEANUP_POLICY_DELETE)
+                .config(TopicConfig.MIN_IN_SYNC_REPLICAS_CONFIG, "1")
                 .build();
     }
 
