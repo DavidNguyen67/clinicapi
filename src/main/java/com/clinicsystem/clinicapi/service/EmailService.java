@@ -25,6 +25,7 @@ public class EmailService {
     private final HomeService homeService;
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
+    private final NotificationService notificationService;
 
     @Value("${spring.mail.username}")
     private String fromEmail;
@@ -145,6 +146,7 @@ public class EmailService {
     public void handleAppointmentEvent(AppointmentEventDto event) {
         if (AppointmentEventType.CREATED.equals(event.getEventType())) {
             sendAppointmentNotification(event.getEmail(), event);
+            notificationService.sendNotification(event.getPatientId().toString(), event);
         }
     }
 }
