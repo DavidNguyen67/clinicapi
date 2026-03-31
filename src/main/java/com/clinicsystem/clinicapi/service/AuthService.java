@@ -1,6 +1,9 @@
 package com.clinicsystem.clinicapi.service;
 
+import com.clinicsystem.clinicapi.constant.AuthEventType;
+import com.clinicsystem.clinicapi.constant.KafkaTopics;
 import com.clinicsystem.clinicapi.constant.MessageCode;
+import com.clinicsystem.clinicapi.dto.AuthEventDto;
 import com.clinicsystem.clinicapi.dto.ChangePasswordRequest;
 import com.clinicsystem.clinicapi.dto.ForgotPasswordRequest;
 import com.clinicsystem.clinicapi.dto.LoginRequest;
@@ -17,6 +20,9 @@ import com.clinicsystem.clinicapi.repository.UserRepository;
 import com.clinicsystem.clinicapi.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,6 +30,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -42,6 +50,8 @@ public class AuthService {
         private final PatientService patientService;
         private final EmailBloomFilter emailBloomFilter;
         private final PhoneBloomFilter phoneBloomFilter;
+        @Qualifier("authEventKafkaTemplate")
+        private final KafkaTemplate<String, AuthEventDto> authEventKafkaTemplate;
 
         @Transactional(rollbackFor = Exception.class)
         public LoginResponse register(RegisterRequest request) {
@@ -73,7 +83,23 @@ public class AuthService {
                                 user);
                 String refreshToken = jwtUtil.generateRefreshToken(user.getId());
 
-                emailService.sendWelcomeEmail(user.getEmail(), user.getFullName());
+                AuthEventDto event = buildEvent(user);
+
+                TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                        @Override
+                        public void afterCommit() {
+                                authEventKafkaTemplate.send(KafkaTopics.AUTH_EVENTS,
+                                                event.getUserId().toString(),
+                                                event)
+                                                .whenComplete((result, ex) -> {
+                                                        if (ex != null)
+                                                                log.error("Kafka publish failed", ex);
+                                                        else
+                                                                log.info("Kafka published auth event for email={}",
+                                                                                event.getEmail());
+                                                });
+                        }
+                });
 
                 return LoginResponse.builder()
                                 .accessToken(accessToken)
@@ -272,5 +298,14 @@ public class AuthService {
                 passwordResetTokenRepository.save(resetToken);
 
                 log.info("Password reset successfully for user: {}", user.getEmail());
+        }
+
+        private AuthEventDto buildEvent(User user) {
+                AuthEventDto event = new AuthEventDto();
+                event.setEventType(AuthEventType.REGISTER);
+                event.setEmail(user.getEmail());
+                event.setFullName(user.getFullName());
+                event.setUserId(user.getId());
+                return event;
         }
 }

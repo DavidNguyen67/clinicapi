@@ -37,4 +37,12 @@ public class KafkaTopicConfig {
                 .build();
     }
 
+    @Bean
+    public NewTopic authTopic() {
+        return TopicBuilder.name(KafkaTopics.AUTH_EVENTS)
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
+
 }

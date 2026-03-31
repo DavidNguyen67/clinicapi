@@ -1,8 +1,10 @@
 package com.clinicsystem.clinicapi.service;
 
 import com.clinicsystem.clinicapi.constant.AppointmentEventType;
+import com.clinicsystem.clinicapi.constant.AuthEventType;
 import com.clinicsystem.clinicapi.constant.KafkaTopics;
 import com.clinicsystem.clinicapi.dto.AppointmentEventDto;
+import com.clinicsystem.clinicapi.dto.AuthEventDto;
 import com.clinicsystem.clinicapi.dto.ClinicInfoDto;
 import com.clinicsystem.clinicapi.util.EmailCssInliner;
 import jakarta.mail.MessagingException;
@@ -142,11 +144,19 @@ public class EmailService {
         log.info("Appointment confirmation email sent to: {}", to);
     }
 
-    @KafkaListener(topics = KafkaTopics.APPOINTMENTS, groupId = "email-service-group")
+    @KafkaListener(topics = KafkaTopics.APPOINTMENTS, groupId = "email-service-group", containerFactory = "appointmentKafkaListenerContainerFactory")
     public void handleAppointmentEvent(AppointmentEventDto event) {
         if (AppointmentEventType.CREATED.equals(event.getEventType())) {
             sendAppointmentNotification(event.getEmail(), event);
             notificationService.sendNotification(event.getPatientId().toString(), event);
+        }
+    }
+
+    @KafkaListener(topics = KafkaTopics.AUTH_EVENTS, groupId = "email-service-group", containerFactory = "authKafkaListenerContainerFactory")
+    public void handleAuthEvent(AuthEventDto event) {
+        if (AuthEventType.REGISTER.equals(event.getEventType())) {
+            sendWelcomeEmail(event.getEmail(), event.getFullName());
+            notificationService.sendNotification(event.getUserId().toString(), event);
         }
     }
 }

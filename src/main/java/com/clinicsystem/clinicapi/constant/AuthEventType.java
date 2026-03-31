@@ -1,0 +1,18 @@
+package com.clinicsystem.clinicapi.constant;
+
+import com.fasterxml.jackson.annotation.JsonValue;
+
+public enum AuthEventType {
+    REGISTER("auth.register");
+
+    private final String value;
+
+    AuthEventType(String value) {
+        this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+        return value;
+    }
+}

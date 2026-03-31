@@ -14,6 +14,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
 import com.clinicsystem.clinicapi.dto.AppointmentEventDto;
+import com.clinicsystem.clinicapi.dto.AuthEventDto;
 
 @Configuration
 public class KafkaProducerConfig {
@@ -22,15 +23,29 @@ public class KafkaProducerConfig {
 
     @Bean
     public ProducerFactory<String, AppointmentEventDto> appointmentEventProducerFactory() {
-        Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
-        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        return new DefaultKafkaProducerFactory<>(configProps);
+        return new DefaultKafkaProducerFactory<>(buildConfigProps());
     }
 
     @Bean(name = "appointmentEventKafkaTemplate")
     public KafkaTemplate<String, AppointmentEventDto> appointmentEventKafkaTemplate() {
         return new KafkaTemplate<>(appointmentEventProducerFactory());
+    }
+
+    @Bean
+    public ProducerFactory<String, AuthEventDto> authEventProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(buildConfigProps());
+    }
+
+    @Bean(name = "authEventKafkaTemplate")
+    public KafkaTemplate<String, AuthEventDto> authEventKafkaTemplate() {
+        return new KafkaTemplate<>(authEventProducerFactory());
+    }
+
+    private Map<String, Object> buildConfigProps() {
+        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
+        configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        return configProps;
     }
 }
