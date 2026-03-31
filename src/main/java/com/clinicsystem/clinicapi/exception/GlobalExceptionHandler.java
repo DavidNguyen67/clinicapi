@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
                                 : MessageCode.API_KEY_INVALID;
                 return ResponseEntity
                                 .status(HttpStatus.UNAUTHORIZED)
-                                .body(ApiResponse.error(messageCode, buildClientError(ex, request)));
+                                .body(ApiResponse.error(messageCode, buildClientError(ex)));
         }
 
         @ExceptionHandler(ResourceNotFoundException.class)
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
                 log.error("Resource not found: {}", ex.getMessage());
                 String messageCode = ex.getMessageCode() != null ? ex.getMessageCode() : MessageCode.ERROR_NOT_FOUND;
 
-                Map<String, Object> errors = buildClientError(ex, request);
+                Map<String, Object> errors = buildClientError(ex);
                 if (ex.getResourceName() != null) {
                         errors.put("resource", ex.getResourceName());
                         errors.put("field", ex.getFieldName());
@@ -60,7 +60,7 @@ public class GlobalExceptionHandler {
                 String messageCode = ex.getMessageCode() != null ? ex.getMessageCode() : MessageCode.ERROR_BAD_REQUEST;
                 return ResponseEntity
                                 .status(HttpStatus.BAD_REQUEST)
-                                .body(ApiResponse.error(messageCode, buildClientError(ex, request)));
+                                .body(ApiResponse.error(messageCode, buildClientError(ex)));
         }
 
         @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -74,7 +74,7 @@ public class GlobalExceptionHandler {
 
                 log.error("Validation failed: {}", fieldErrors);
 
-                Map<String, Object> errors = buildClientError(ex, request);
+                Map<String, Object> errors = buildClientError(ex);
                 errors.put("fields", fieldErrors);
                 errors.put("totalErrors", fieldErrors.size());
 
@@ -89,7 +89,7 @@ public class GlobalExceptionHandler {
                 log.error("Illegal argument: {}", ex.getMessage());
                 return ResponseEntity
                                 .status(HttpStatus.BAD_REQUEST)
-                                .body(ApiResponse.error(MessageCode.ERROR_BAD_REQUEST, buildClientError(ex, request)));
+                                .body(ApiResponse.error(MessageCode.ERROR_BAD_REQUEST, buildClientError(ex)));
         }
 
         @ExceptionHandler(UsernameNotFoundException.class)
@@ -98,7 +98,7 @@ public class GlobalExceptionHandler {
                 log.error("Username not found: {}", ex.getMessage());
                 return ResponseEntity
                                 .status(HttpStatus.NOT_FOUND)
-                                .body(ApiResponse.error(MessageCode.USER_NOT_FOUND, buildSafeError(request)));
+                                .body(ApiResponse.error(MessageCode.USER_NOT_FOUND, buildClientError(ex)));
         }
 
         @ExceptionHandler(BadCredentialsException.class)
@@ -107,7 +107,7 @@ public class GlobalExceptionHandler {
                 log.error("Bad credentials: {}", ex.getMessage());
                 return ResponseEntity
                                 .status(HttpStatus.UNAUTHORIZED)
-                                .body(ApiResponse.error(MessageCode.ERROR_BAD_CREDENTIALS, buildSafeError(request)));
+                                .body(ApiResponse.error(MessageCode.ERROR_BAD_CREDENTIALS, buildClientError(ex)));
         }
 
         @ExceptionHandler(AccessDeniedException.class)
@@ -116,7 +116,7 @@ public class GlobalExceptionHandler {
                 log.error("Access denied: {}", ex.getMessage());
                 return ResponseEntity
                                 .status(HttpStatus.FORBIDDEN)
-                                .body(ApiResponse.error(MessageCode.ERROR_FORBIDDEN, buildSafeError(request)));
+                                .body(ApiResponse.error(MessageCode.ERROR_FORBIDDEN, buildClientError(ex)));
         }
 
         @ExceptionHandler(NullPointerException.class)
@@ -125,7 +125,7 @@ public class GlobalExceptionHandler {
                 log.error("Null pointer exception occurred", ex);
                 return ResponseEntity
                                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body(ApiResponse.error(MessageCode.ERROR_INTERNAL, buildSafeError(request)));
+                                .body(ApiResponse.error(MessageCode.ERROR_INTERNAL, buildClientError(ex)));
         }
 
         @ExceptionHandler(Exception.class)
@@ -134,21 +134,12 @@ public class GlobalExceptionHandler {
                 log.error("Unexpected error occurred", ex);
                 return ResponseEntity
                                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body(ApiResponse.error(MessageCode.ERROR_INTERNAL, buildSafeError(request)));
+                                .body(ApiResponse.error(MessageCode.ERROR_INTERNAL, buildClientError(ex)));
         }
 
-        private Map<String, Object> buildClientError(Exception ex, WebRequest request) {
+        private Map<String, Object> buildClientError(Exception ex) {
                 Map<String, Object> errors = new HashMap<>();
-                errors.put("path", extractPath(request));
                 errors.put("message", ex.getMessage());
                 return errors;
-        }
-
-        private Map<String, Object> buildSafeError(WebRequest request) {
-                return new HashMap<>(Map.of("path", extractPath(request)));
-        }
-
-        private String extractPath(WebRequest request) {
-                return request.getDescription(false).replace("uri=", "");
         }
 }
