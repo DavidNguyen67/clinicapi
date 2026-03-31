@@ -40,6 +40,8 @@ public class AuthService {
         private final AuthenticationManager authenticationManager;
         private final EmailService emailService;
         private final PatientService patientService;
+        private final EmailBloomFilter emailBloomFilter;
+        private final PhoneBloomFilter phoneBloomFilter;
 
         @Transactional(rollbackFor = Exception.class)
         public LoginResponse register(RegisterRequest request) {
@@ -58,6 +60,8 @@ public class AuthService {
                 user.setPhoneVerified(false);
 
                 user = userRepository.save(user);
+                emailBloomFilter.add(user.getEmail());
+                phoneBloomFilter.add(user.getPhone());
                 log.info("Successfully registered user with ID: {}", user.getId());
 
                 // Automatically create Patient for new user

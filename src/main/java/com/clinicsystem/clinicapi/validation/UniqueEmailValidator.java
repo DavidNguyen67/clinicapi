@@ -1,6 +1,8 @@
 package com.clinicsystem.clinicapi.validation;
 
 import com.clinicsystem.clinicapi.repository.UserRepository;
+import com.clinicsystem.clinicapi.service.EmailBloomFilter;
+
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Component;
 public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, String> {
 
     private final UserRepository userRepository;
+    private final EmailBloomFilter emailBloomFilter;
 
     @Override
     public void initialize(UniqueEmail constraintAnnotation) {
@@ -19,9 +22,10 @@ public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, St
 
     @Override
     public boolean isValid(String email, ConstraintValidatorContext context) {
-        if (email == null || email.isBlank()) {
-            return true; // Let @NotBlank handle this
-        }
+        if (email == null || email.isBlank())
+            return true;
+        if (!emailBloomFilter.mightExist(email))
+            return true;
         return !userRepository.existsByEmail(email);
     }
 }
