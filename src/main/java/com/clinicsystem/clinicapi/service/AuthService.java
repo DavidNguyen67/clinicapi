@@ -34,6 +34,7 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -46,7 +47,6 @@ public class AuthService {
         private final PasswordEncoder passwordEncoder;
         private final JwtUtil jwtUtil;
         private final AuthenticationManager authenticationManager;
-        private final EmailService emailService;
         private final PatientService patientService;
         private final EmailBloomFilter emailBloomFilter;
         private final PhoneBloomFilter phoneBloomFilter;
@@ -83,14 +83,14 @@ public class AuthService {
                                 user);
                 String refreshToken = jwtUtil.generateRefreshToken(user.getId());
 
-                AuthEventDto event = buildEvent(user);
+                AuthEventDto event = buildEvent(user, AuthEventType.REGISTER, Optional.empty(), Optional.empty());
                 log.info("Publishing auth event to Kafka for user: {}", user.getEmail());
 
                 TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
                         @Override
                         public void afterCommit() {
                                 authEventKafkaTemplate.send(KafkaTopics.AUTH_EVENTS,
-                                                event.getUserId().toString(),
+                                                event.getUser().getId().toString(),
                                                 event)
                                                 .whenComplete((result, ex) -> {
                                                         if (ex != null)
@@ -144,14 +144,14 @@ public class AuthService {
 
                 log.info("User logged in successfully with email: {}", request.getEmail());
 
-                AuthEventDto event = buildEvent(user);
+                AuthEventDto event = buildEvent(user, AuthEventType.LOGIN, Optional.empty(), Optional.empty());
                 log.info("Publishing auth event to Kafka for user: {}", user.getEmail());
 
                 TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
                         @Override
                         public void afterCommit() {
                                 authEventKafkaTemplate.send(KafkaTopics.AUTH_EVENTS,
-                                                event.getUserId().toString(),
+                                                event.getUser().getId().toString(),
                                                 event)
                                                 .whenComplete((result, ex) -> {
                                                         if (ex != null)
@@ -278,8 +278,25 @@ public class AuthService {
 
                 passwordResetTokenRepository.save(passwordResetToken);
 
-                // TODO: Send email with reset token
-                emailService.sendPasswordResetEmail(user.getEmail(), resetToken, expiryHours);
+                AuthEventDto event = buildEvent(user, AuthEventType.FORGOT_PASSWORD, Optional.of(expiryHours),
+                                Optional.of(resetToken));
+
+                TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                        @Override
+                        public void afterCommit() {
+                                authEventKafkaTemplate.send(KafkaTopics.AUTH_EVENTS,
+                                                event.getUser().getId().toString(),
+                                                event)
+                                                .whenComplete((result, ex) -> {
+                                                        if (ex != null)
+                                                                log.error("Kafka publish failed", ex);
+                                                        else
+                                                                log.info("Kafka published auth event for email={}",
+                                                                                event.getEmail());
+                                                });
+                        }
+                });
+
                 log.info("Password reset token generated for user: {}", user.getEmail());
 
                 // For development/testing purposes, log the token
@@ -319,12 +336,16 @@ public class AuthService {
                 log.info("Password reset successfully for user: {}", user.getEmail());
         }
 
-        private AuthEventDto buildEvent(User user) {
+        private AuthEventDto buildEvent(User user, AuthEventType eventType, Optional<Integer> expiryHours,
+                        Optional<String> resetToken) {
                 AuthEventDto event = new AuthEventDto();
-                event.setEventType(AuthEventType.REGISTER);
+                event.setEventType(eventType);
                 event.setEmail(user.getEmail());
                 event.setFullName(user.getFullName());
-                event.setUserId(user.getId());
+                event.setUser(user);
+                event.setExpiryHours(expiryHours.orElse(null));
+                event.setResetToken(resetToken.orElse(null));
+
                 return event;
         }
 }
