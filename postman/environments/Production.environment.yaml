@@ -1,11 +1,12 @@
 name: Production
 values:
   - key: baseUrl
-    value: "http://47.129.48.184:8080"
+    value: http://47.129.48.184:8080
     enabled: true
   - key: apiKey
-    value: "vJDR15gscU/EoSxvCsmpvAPv5iHn3hPfnsKOkSNEvXw="
+    value: vJDR15gscU/EoSxvCsmpvAPv5iHn3hPfnsKOkSNEvXw=
     enabled: true
   - key: accessToken
     value: ""
     enabled: true
+color: null

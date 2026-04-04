@@ -1,12 +1,8 @@
 $kind: http-request
-name: Get Health News
+url: "{{baseUrl}}/api/v1/home/health-news?lang=vi&country=vn&max=10"
 method: GET
-url: "{{baseUrl}}/api/v1/home/health-news"
-order: 7000
 queryParams:
-  - key: lang
-    value: vi
-  - key: country
-    value: vn
-  - key: max
-    value: "10"
+  lang: vi
+  country: vn
+  max: "10"
+order: 7000

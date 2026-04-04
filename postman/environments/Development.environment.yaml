@@ -1,11 +1,12 @@
 name: Development
 values:
   - key: baseUrl
-    value: "http://localhost:8080"
+    value: http://localhost:8080
     enabled: true
   - key: apiKey
-    value: "vJDR15gscU/EoSxvCsmpvAPv5iHn3hPfnsKOkSNEvXw="
+    value: vJDR15gscU/EoSxvCsmpvAPv5iHn3hPfnsKOkSNEvXw=
     enabled: true
   - key: accessToken
     value: ""
     enabled: true
+color: null

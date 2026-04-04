@@ -1,11 +1,8 @@
 $kind: http-request
-name: Create Appointment
-method: POST
 url: "{{baseUrl}}/api/v1/booking/appointments"
-order: 1000
+method: POST
 headers:
-  - key: Content-Type
-    value: application/json
+  Content-Type: application/json
 body:
   type: json
   content: |-
@@ -22,3 +19,4 @@ body:
       "notes": "First visit",
       "queueNumber": 1
     }
+order: 1000

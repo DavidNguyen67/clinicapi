@@ -1,8 +1,7 @@
 $kind: http-request
-name: Get All Specialties
+url: "{{baseUrl}}/api/v1/home/specialties?size=20&sortBy=createdAt&sortDirectio\
+  n=desc"
 method: GET
-url: "{{baseUrl}}/api/v1/home/specialties"
-order: 6000
 queryParams:
   - key: lastId
     value: ""
@@ -13,3 +12,4 @@ queryParams:
     value: createdAt
   - key: sortDirection
     value: desc
+order: 6000

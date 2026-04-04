@@ -1,11 +1,8 @@
 $kind: http-request
-name: Login
-method: POST
 url: "{{baseUrl}}/api/v1/auth/login"
-order: 2000
+method: POST
 headers:
-  - key: Content-Type
-    value: application/json
+  Content-Type: application/json
 body:
   type: json
   content: |-
@@ -15,9 +12,10 @@ body:
     }
 scripts:
   - type: afterResponse
-    language: text/javascript
     code: |-
       var jsonData = pm.response.json();
       if (jsonData.data && jsonData.data.accessToken) {
           pm.environment.set("accessToken", jsonData.data.accessToken);
       }
+    language: text/javascript
+order: 2000

@@ -1,5 +1,4 @@
 $kind: http-request
-name: Get Landing Page
-method: GET
 url: "{{baseUrl}}/api/v1/home/landing-page"
+method: GET
 order: 2000

@@ -1,8 +1,9 @@
 $kind: collection
-name: Clinic API
 description: RESTful API for clinic management system built with Spring Boot
   3.2.3 and Java 21.
 auth:
-  type: bearer
-  credentials:
-    token: "{{accessToken}}"
+  - id: 9649924a-3ee1-4eac-b28f-b9ea9174de43
+    type: bearer
+    name: bearer auth
+    credentials:
+      token: "{{accessToken}}"
