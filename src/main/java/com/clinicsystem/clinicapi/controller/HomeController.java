@@ -6,6 +6,7 @@ import com.clinicsystem.clinicapi.dto.ClinicInfoDto;
 import com.clinicsystem.clinicapi.dto.ClinicServiceDto;
 import com.clinicsystem.clinicapi.dto.DoctorProfileDto;
 import com.clinicsystem.clinicapi.dto.FaqDto;
+import com.clinicsystem.clinicapi.dto.HealthNewsResponseDto;
 import com.clinicsystem.clinicapi.dto.LandingPageDto;
 import com.clinicsystem.clinicapi.dto.PageResponse;
 import com.clinicsystem.clinicapi.dto.PaginationDto;
@@ -13,6 +14,7 @@ import com.clinicsystem.clinicapi.dto.SpecialtyDto;
 import com.clinicsystem.clinicapi.service.ClinicServiceService;
 import com.clinicsystem.clinicapi.service.DoctorService;
 import com.clinicsystem.clinicapi.service.FaqService;
+import com.clinicsystem.clinicapi.service.HealthNewsService;
 import com.clinicsystem.clinicapi.service.HomeService;
 import com.clinicsystem.clinicapi.service.SpecialtyService;
 
@@ -33,6 +35,7 @@ public class HomeController {
         private final ClinicServiceService clinicServiceService;
         private final FaqService faqService;
         private final SpecialtyService specialtyService;
+        private final HealthNewsService healthNewsService;
 
         @GetMapping("/clinic-info")
         public ResponseEntity<ApiResponse<ClinicInfoDto>> getClinicInfo() {
@@ -143,6 +146,20 @@ public class HomeController {
                                 .success(true)
                                 .messageCode(MessageCode.GENERAL_SUCCESS)
                                 .data(services)
+                                .build());
+        }
+
+        @GetMapping("/health-news")
+        public ResponseEntity<ApiResponse<HealthNewsResponseDto>> getHealthNews(
+                        @RequestParam(defaultValue = "vi") String lang,
+                        @RequestParam(defaultValue = "vn") String country,
+                        @RequestParam(defaultValue = "10") int max) {
+                HealthNewsResponseDto news = healthNewsService.getTopHealthNews(lang, country, max);
+
+                return ResponseEntity.ok(ApiResponse.<HealthNewsResponseDto>builder()
+                                .success(true)
+                                .messageCode(MessageCode.GENERAL_SUCCESS)
+                                .data(news)
                                 .build());
         }
 

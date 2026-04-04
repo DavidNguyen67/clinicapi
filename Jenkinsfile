@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_CREDENTIALS = credentials('docker-hub-credentials')
         VPS_HOST         = credentials('vps-host')
-        VPS_USER         = credentials('vps-clinic-api')
+        VPS_USER         = credentials('vps-nova-nestjs')
         
         GIT_COMMIT_SHORT = sh(
             script: "git rev-parse --short HEAD",
@@ -12,8 +12,7 @@ pipeline {
         ).trim()
         
         IMAGE_TAG = "${GIT_COMMIT_SHORT}"
-        APP_DIR = "/opt/clinic-api/app"
-        APP_NAME = "clinic-api-backend"
+        APP_DIR = "/opt/nova-app/app"
     }
 
     stages {
@@ -35,12 +34,12 @@ pipeline {
                 echo "Building image with tag: ${IMAGE_TAG}"
                 sh """
                     docker build \
-                      -t "${DOCKER_CREDENTIALS_USR}/${APP_NAME}:${IMAGE_TAG}" \
-                      -t "${DOCKER_CREDENTIALS_USR}/${APP_NAME}:latest" \
+                      -t "${DOCKER_CREDENTIALS_USR}/nova-app-backend:${IMAGE_TAG}" \
+                      -t "${DOCKER_CREDENTIALS_USR}/nova-app-backend:latest" \
                       .
 
-                    docker push "${DOCKER_CREDENTIALS_USR}/${APP_NAME}:${IMAGE_TAG}"
-                    docker push "${DOCKER_CREDENTIALS_USR}/${APP_NAME}:latest"
+                    docker push "${DOCKER_CREDENTIALS_USR}/nova-app-backend:${IMAGE_TAG}"
+                    docker push "${DOCKER_CREDENTIALS_USR}/nova-app-backend:latest"
                 """
             }
         }
@@ -49,26 +48,25 @@ pipeline {
             steps {
                 echo 'Deploying to VPS...'
                 script {
-                    sshagent(credentials: ['vps-clinic-api-ssh-key']) {
+                    sshagent(credentials: ['vps-nova-nestjs-ssh-key']) {
                         sh """
                             ssh -o StrictHostKeyChecking=no ${VPS_USER}@${VPS_HOST} \
-                                "mkdir -p /tmp/clinic-api/backend"
+                                "mkdir -p /tmp/nova-app/backend"
                             
                             scp -o StrictHostKeyChecking=no \
                                 scripts/deploy.sh \
-                                ${VPS_USER}@${VPS_HOST}:/tmp/clinic-api/backend/deploy.sh
+                                ${VPS_USER}@${VPS_HOST}:/tmp/nova-app/backend/deploy.sh
                         """
                     }
                     
-                    sshagent(credentials: ['vps-clinic-api-ssh-key']) {
+                    sshagent(credentials: ['vps-nova-nestjs-ssh-key']) {
                         sh """
                             ssh -o StrictHostKeyChecking=no ${VPS_USER}@${VPS_HOST} \
                                 "DOCKER_USERNAME=${DOCKER_CREDENTIALS_USR} \
                                  DOCKER_PASSWORD=${DOCKER_CREDENTIALS_PSW} \
                                  IMAGE_TAG=${IMAGE_TAG} \
-                                 APP_NAME=${APP_NAME} \
                                  APP_DIR=${APP_DIR} \
-                                 bash /tmp/clinic-api/backend/deploy.sh"
+                                 bash /tmp/nova-app/backend/deploy.sh"
                         """
                     }
                 }
@@ -79,21 +77,21 @@ pipeline {
             steps {
                 echo 'Checking application health...'
                 script {
-                    sshagent(credentials: ['vps-clinic-api-ssh-key']) {
+                    sshagent(credentials: ['vps-nova-nestjs-ssh-key']) {
                         sh """
                             ssh -o StrictHostKeyChecking=no ${VPS_USER}@${VPS_HOST} \
-                                "mkdir -p /tmp/clinic-api/backend"
+                                "mkdir -p /tmp/nova-app/backend"
                             
                             scp -o StrictHostKeyChecking=no \
                                 scripts/health-check.sh \
-                                ${VPS_USER}@${VPS_HOST}:/tmp/clinic-api/backend/health-check.sh
+                                ${VPS_USER}@${VPS_HOST}:/tmp/nova-app/backend/health-check.sh
                         """
                     }
                     
-                    sshagent(credentials: ['vps-clinic-api-ssh-key']) {
+                    sshagent(credentials: ['vps-nova-nestjs-ssh-key']) {
                         sh """
                             ssh -o StrictHostKeyChecking=no ${VPS_USER}@${VPS_HOST} \
-                                "APP_DIR=${APP_DIR} bash /tmp/clinic-api/backend/health-check.sh"
+                                "APP_DIR=${APP_DIR} bash /tmp/nova-app/backend/health-check.sh"
                         """
                     }
                 }
@@ -104,21 +102,21 @@ pipeline {
             steps {
                 echo 'Cleaning up old Docker images...'
                 script {
-                    sshagent(credentials: ['vps-clinic-api-ssh-key']) {
+                    sshagent(credentials: ['vps-nova-nestjs-ssh-key']) {
                         sh """
                             ssh -o StrictHostKeyChecking=no ${VPS_USER}@${VPS_HOST} \
-                                "mkdir -p /tmp/clinic-api/backend"
+                                "mkdir -p /tmp/nova-app/backend"
                             
                             scp -o StrictHostKeyChecking=no \
                                 scripts/cleanup.sh \
-                                ${VPS_USER}@${VPS_HOST}:/tmp/clinic-api/backend/cleanup.sh
+                                ${VPS_USER}@${VPS_HOST}:/tmp/nova-app/backend/cleanup.sh
                         """
                     }
                     
-                    sshagent(credentials: ['vps-clinic-api-ssh-key']) {
+                    sshagent(credentials: ['vps-nova-nestjs-ssh-key']) {
                         sh """
                             ssh -o StrictHostKeyChecking=no ${VPS_USER}@${VPS_HOST} \
-                                "APP_DIR=${APP_DIR} bash /tmp/clinic-api/backend/cleanup.sh"
+                                "APP_DIR=${APP_DIR} bash /tmp/nova-app/backend/cleanup.sh"
                         """
                     }
                 }
@@ -129,7 +127,7 @@ pipeline {
     post {
         success {
             echo "Build & Deploy successful!"
-            echo "Image: ${DOCKER_CREDENTIALS_USR}/${APP_NAME}:${IMAGE_TAG}"
+            echo "Image: ${DOCKER_CREDENTIALS_USR}/nova-app-backend:${IMAGE_TAG}"
             echo "Deployed to: ${VPS_HOST}"
         }
 
@@ -137,25 +135,24 @@ pipeline {
             echo "Build or deploy failed. Rolling back..."
             
             script {
-                sshagent(credentials: ['vps-clinic-api-ssh-key']) {
+                sshagent(credentials: ['vps-nova-nestjs-ssh-key']) {
                     sh """
                         ssh -o StrictHostKeyChecking=no ${VPS_USER}@${VPS_HOST} \
-                            "mkdir -p /tmp/clinic-api/backend"
+                            "mkdir -p /tmp/nova-app/backend"
                         
                         scp -o StrictHostKeyChecking=no \
                             scripts/rollback.sh \
-                            ${VPS_USER}@${VPS_HOST}:/tmp/clinic-api/backend/rollback.sh
+                            ${VPS_USER}@${VPS_HOST}:/tmp/nova-app/backend/rollback.sh
                     """
                 }
                 
-                sshagent(credentials: ['vps-clinic-api-ssh-key']) {
+                sshagent(credentials: ['vps-nova-nestjs-ssh-key']) {
                     sh """
                         ssh -o StrictHostKeyChecking=no ${VPS_USER}@${VPS_HOST} \
                             "DOCKER_USERNAME=${DOCKER_CREDENTIALS_USR} \
                              IMAGE_TAG=${IMAGE_TAG} \
-                             APP_NAME=${APP_NAME} \
                              APP_DIR=${APP_DIR} \
-                             bash /tmp/clinic-api/backend/rollback.sh"
+                             bash /tmp/nova-app/backend/rollback.sh"
                     """
                 }
             }

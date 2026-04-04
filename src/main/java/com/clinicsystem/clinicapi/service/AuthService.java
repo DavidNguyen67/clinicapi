@@ -84,6 +84,7 @@ public class AuthService {
                 String refreshToken = jwtUtil.generateRefreshToken(user.getId());
 
                 AuthEventDto event = buildEvent(user);
+                log.info("Publishing auth event to Kafka for user: {}", user.getEmail());
 
                 TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
                         @Override
@@ -143,6 +144,24 @@ public class AuthService {
 
                 log.info("User logged in successfully with email: {}", request.getEmail());
 
+                AuthEventDto event = buildEvent(user);
+                log.info("Publishing auth event to Kafka for user: {}", user.getEmail());
+
+                TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                        @Override
+                        public void afterCommit() {
+                                authEventKafkaTemplate.send(KafkaTopics.AUTH_EVENTS,
+                                                event.getUserId().toString(),
+                                                event)
+                                                .whenComplete((result, ex) -> {
+                                                        if (ex != null)
+                                                                log.error("Kafka publish failed", ex);
+                                                        else
+                                                                log.info("Kafka published auth event for email={}",
+                                                                                event.getEmail());
+                                                });
+                        }
+                });
                 // Build response
                 return LoginResponse.builder()
                                 .accessToken(accessToken)
