@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -29,7 +28,7 @@ public class CreateAppointmentRequest {
     private UUID serviceId;
 
     @NotNull(message = MessageCode.VALIDATION_APPOINTMENT_DATE_REQUIRED)
-    private LocalDate appointmentDate;
+    private LocalDateTime appointmentDate;
 
     @NotNull(message = MessageCode.VALIDATION_START_TIME_REQUIRED)
     private LocalDateTime startTime;

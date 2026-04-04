@@ -1,0 +1,15 @@
+$kind: http-request
+name: Get All Services
+method: GET
+url: "{{baseUrl}}/api/v1/home/services"
+order: 4000
+queryParams:
+  - key: lastId
+    value: ""
+    disabled: true
+  - key: size
+    value: "20"
+  - key: sortBy
+    value: createdAt
+  - key: sortDirection
+    value: desc

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "revenue_reports", indexes = {
@@ -31,15 +31,15 @@ public class RevenueReport extends SoftDeletableEntity {
 
     @NotNull(message = MessageCode.VALIDATION_REPORT_DATE_REQUIRED)
     @Column(name = "report_date", nullable = false)
-    private LocalDate reportDate;
+    private LocalDateTime reportDate;
 
     @NotNull(message = MessageCode.VALIDATION_START_DATE_REQUIRED)
     @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
+    private LocalDateTime startDate;
 
     @NotNull(message = MessageCode.VALIDATION_END_DATE_REQUIRED)
     @Column(name = "end_date", nullable = false)
-    private LocalDate endDate;
+    private LocalDateTime endDate;
 
     @Column(name = "total_revenue", nullable = false, precision = 12, scale = 2)
     private BigDecimal totalRevenue = BigDecimal.ZERO;

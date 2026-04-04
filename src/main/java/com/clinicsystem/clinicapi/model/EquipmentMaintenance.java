@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "equipment_maintenance", indexes = {
@@ -36,10 +36,10 @@ public class EquipmentMaintenance extends SoftDeletableEntity {
     private MaintenanceType maintenanceType;
 
     @Column(name = "scheduled_date")
-    private LocalDate scheduledDate;
+    private LocalDateTime scheduledDate;
 
     @Column(name = "completed_date")
-    private LocalDate completedDate;
+    private LocalDateTime completedDate;
 
     @Column(name = "performed_by", length = 255)
     private String performedBy;

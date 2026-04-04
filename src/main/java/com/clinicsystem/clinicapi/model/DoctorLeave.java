@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -32,7 +31,7 @@ public class DoctorLeave extends SoftDeletableEntity {
 
     @NotNull(message = MessageCode.VALIDATION_LEAVE_DATE_REQUIRED)
     @Column(name = "leave_date", nullable = false)
-    private LocalDate leaveDate;
+    private LocalDateTime leaveDate;
 
     @Column(name = "start_time")
     private LocalDateTime startTime;

@@ -1,0 +1,15 @@
+$kind: http-request
+name: Get All FAQs
+method: GET
+url: "{{baseUrl}}/api/v1/home/faqs"
+order: 5000
+queryParams:
+  - key: lastId
+    value: ""
+    disabled: true
+  - key: size
+    value: "20"
+  - key: sortBy
+    value: createdAt
+  - key: sortDirection
+    value: desc

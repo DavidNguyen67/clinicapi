@@ -1,5 +1,7 @@
 package com.clinicsystem.clinicapi.model;
 
+import java.time.LocalDateTime;
+
 import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -8,8 +10,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "inventory", indexes = {
@@ -38,7 +38,7 @@ public class Inventory extends SoftDeletableEntity {
     private Integer quantity = 0;
 
     @Column(name = "expiry_date")
-    private LocalDate expiryDate;
+    private LocalDateTime expiryDate;
 
     @Column(length = 255)
     private String supplier;
@@ -56,7 +56,7 @@ public class Inventory extends SoftDeletableEntity {
 
     // Helper method to update status based on quantity and expiry
     public void updateStatus() {
-        if (expiryDate != null && expiryDate.isBefore(LocalDate.now())) {
+        if (expiryDate != null && expiryDate.isBefore(LocalDateTime.now())) {
             this.status = InventoryStatus.expired;
         } else if (quantity == 0) {
             this.status = InventoryStatus.out_of_stock;

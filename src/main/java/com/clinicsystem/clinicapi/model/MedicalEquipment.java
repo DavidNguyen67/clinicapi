@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "medical_equipment", indexes = {
@@ -46,13 +46,13 @@ public class MedicalEquipment extends SoftDeletableEntity {
     private String serialNumber;
 
     @Column(name = "purchase_date")
-    private LocalDate purchaseDate;
+    private LocalDateTime purchaseDate;
 
     @Column(name = "purchase_price", precision = 12, scale = 2)
     private BigDecimal purchasePrice;
 
     @Column(name = "warranty_expiry")
-    private LocalDate warrantyExpiry;
+    private LocalDateTime warrantyExpiry;
 
     @Column(length = 255)
     private String location;
@@ -62,10 +62,10 @@ public class MedicalEquipment extends SoftDeletableEntity {
     private EquipmentStatus status = EquipmentStatus.operational;
 
     @Column(name = "last_maintenance_date")
-    private LocalDate lastMaintenanceDate;
+    private LocalDateTime lastMaintenanceDate;
 
     @Column(name = "next_maintenance_date")
-    private LocalDate nextMaintenanceDate;
+    private LocalDateTime nextMaintenanceDate;
 
     @Column(name = "maintenance_interval_days", nullable = false)
     private Integer maintenanceIntervalDays = 90;

@@ -1,0 +1,5 @@
+$kind: http-request
+name: Get Clinic Info
+method: GET
+url: "{{baseUrl}}/api/v1/home/clinic-info"
+order: 1000

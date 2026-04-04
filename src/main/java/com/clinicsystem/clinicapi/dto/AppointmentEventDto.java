@@ -1,6 +1,6 @@
 package com.clinicsystem.clinicapi.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.clinicsystem.clinicapi.constant.AppointmentEventType;
@@ -19,6 +19,6 @@ public class AppointmentEventDto {
     private UUID appointmentId;
     private UUID patientId;
     private UUID doctorId;
-    private LocalDate scheduledAt;
+    private LocalDateTime scheduledAt;
     private String email;
 }

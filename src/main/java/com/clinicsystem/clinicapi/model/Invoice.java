@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +50,7 @@ public class Invoice extends SoftDeletableEntity {
 
     @NotNull(message = MessageCode.VALIDATION_INVOICE_DATE_REQUIRED)
     @Column(name = "invoice_date", nullable = false)
-    private LocalDate invoiceDate;
+    private LocalDateTime invoiceDate;
 
     @NotNull(message = MessageCode.VALIDATION_SUBTOTAL_REQUIRED)
     @Column(nullable = false, precision = 10, scale = 2)

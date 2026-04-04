@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -52,7 +51,7 @@ public class Appointment extends SoftDeletableEntity {
 
     @NotNull(message = MessageCode.VALIDATION_APPOINTMENT_DATE_REQUIRED)
     @Column(name = "appointment_date", nullable = false)
-    private LocalDate appointmentDate;
+    private LocalDateTime appointmentDate;
 
     @NotNull(message = MessageCode.VALIDATION_START_TIME_REQUIRED)
     @Column(name = "start_time", nullable = false)

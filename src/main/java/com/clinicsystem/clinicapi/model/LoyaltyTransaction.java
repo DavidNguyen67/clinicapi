@@ -1,5 +1,7 @@
 package com.clinicsystem.clinicapi.model;
 
+import java.time.LocalDateTime;
+
 import com.clinicsystem.clinicapi.constant.MessageCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -8,8 +10,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "loyalty_transactions", indexes = {
@@ -52,7 +52,7 @@ public class LoyaltyTransaction extends SoftDeletableEntity {
     private Integer balanceAfter;
 
     @Column(name = "expires_at")
-    private LocalDate expiresAt;
+    private LocalDateTime expiresAt;
 
     public enum TransactionType {
         earn, redeem, expire, adjustment

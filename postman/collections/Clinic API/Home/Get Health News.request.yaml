@@ -1,0 +1,12 @@
+$kind: http-request
+name: Get Health News
+method: GET
+url: "{{baseUrl}}/api/v1/home/health-news"
+order: 7000
+queryParams:
+  - key: lang
+    value: vi
+  - key: country
+    value: vn
+  - key: max
+    value: "10"

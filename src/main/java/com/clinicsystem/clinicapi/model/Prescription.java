@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +51,7 @@ public class Prescription extends SoftDeletableEntity {
 
     @NotNull(message = MessageCode.VALIDATION_PRESCRIPTION_DATE_REQUIRED)
     @Column(name = "prescription_date", nullable = false)
-    private LocalDate prescriptionDate;
+    private LocalDateTime prescriptionDate;
 
     @Column(columnDefinition = "TEXT")
     private String notes;

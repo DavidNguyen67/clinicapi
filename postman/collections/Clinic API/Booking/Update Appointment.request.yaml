@@ -1,0 +1,17 @@
+$kind: http-request
+name: Update Appointment
+method: PUT
+url: "{{baseUrl}}/api/v1/booking/appointments"
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+  - key: Authorization
+    value: "Bearer {{accessToken}}"
+body:
+  type: json
+  content: |-
+    {
+      "appointmentId": "{{appointmentId}}",
+      "status": "confirmed"
+    }

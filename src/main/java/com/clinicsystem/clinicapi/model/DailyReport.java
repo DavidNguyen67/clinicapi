@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "daily_reports", uniqueConstraints = @UniqueConstraint(name = "unique_report_date", columnNames = "report_date"), indexes = {
@@ -25,7 +25,7 @@ public class DailyReport extends SoftDeletableEntity {
 
     @NotNull(message = MessageCode.VALIDATION_REPORT_DATE_REQUIRED)
     @Column(name = "report_date", unique = true, nullable = false)
-    private LocalDate reportDate;
+    private LocalDateTime reportDate;
 
     @Column(name = "total_appointments", nullable = false)
     private Integer totalAppointments = 0;

@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -20,7 +19,7 @@ public class AppointmentResponseDto {
     private UUID patientId;
     private UUID doctorId;
     private UUID serviceId;
-    private LocalDate appointmentDate;
+    private LocalDateTime appointmentDate;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Appointment.AppointmentStatus status;

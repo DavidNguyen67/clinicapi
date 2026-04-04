@@ -1,0 +1,24 @@
+$kind: http-request
+name: Create Appointment
+method: POST
+url: "{{baseUrl}}/api/v1/booking/appointments"
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "patientId": "{{patientId}}",
+      "doctorId": "{{doctorId}}",
+      "serviceId": "{{serviceId}}",
+      "appointmentDate": "2026-04-10T09:00:00",
+      "startTime": "2026-04-10T09:00:00",
+      "endTime": "2026-04-10T09:30:00",
+      "bookingType": "online",
+      "reason": "Regular checkup",
+      "symptoms": "Headache, fever",
+      "notes": "First visit",
+      "queueNumber": 1
+    }

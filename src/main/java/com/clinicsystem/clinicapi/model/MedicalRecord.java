@@ -12,7 +12,7 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Entity
@@ -66,7 +66,7 @@ public class MedicalRecord extends SoftDeletableEntity {
     private String treatmentPlan;
 
     @Column(name = "follow_up_date")
-    private LocalDate followUpDate;
+    private LocalDateTime followUpDate;
 
     @Column(name = "doctor_notes", columnDefinition = "TEXT")
     private String doctorNotes;
