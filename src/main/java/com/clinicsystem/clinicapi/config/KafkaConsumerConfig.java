@@ -64,6 +64,23 @@ public class KafkaConsumerConfig {
                 return factory;
         }
 
+        @Bean
+        public ConsumerFactory<String, String> stringConsumerFactory() {
+                Map<String, Object> configProps = new HashMap<>();
+                configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
+                configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+                configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+                return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
+                                new StringDeserializer());
+        }
+
+        @Bean(name = "stringKafkaListenerContainerFactory")
+        public ConcurrentKafkaListenerContainerFactory<String, String> stringKafkaListenerContainerFactory() {
+                ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
+                factory.setConsumerFactory(stringConsumerFactory());
+                return factory;
+        }
+
         private Map<String, Object> buildConfigProps(Class<?> valueType) {
                 Map<String, Object> configProps = new HashMap<>();
                 configProps.put(

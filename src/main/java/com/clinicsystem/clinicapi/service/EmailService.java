@@ -153,15 +153,16 @@ public class EmailService {
         log.info("Appointment confirmation email sent to: {}", to);
     }
 
-    @KafkaListener(topics = KafkaTopics.APPOINTMENTS, groupId = "email-service-group")
+    @KafkaListener(topics = KafkaTopics.APPOINTMENTS, groupId = "email-service-group", containerFactory = "appointmentKafkaListenerContainerFactory")
     public void handleAppointmentEvent(AppointmentEventDto event) {
         if (AppointmentEventType.CREATED.equals(event.getEventType())
                 || AppointmentEventType.UPDATED.equals(event.getEventType())) {
+            log.info("Handling appointment event for email notification: {}", event);
             sendAppointmentNotification(event.getEmail(), event);
         }
     }
 
-    @KafkaListener(topics = KafkaTopics.AUTH_EVENTS, groupId = "email-service-group")
+    @KafkaListener(topics = KafkaTopics.AUTH_EVENTS, groupId = "email-service-group", containerFactory = "authKafkaListenerContainerFactory")
     public void handleAuthEvent(AuthEventDto event) {
         if (AuthEventType.REGISTER.equals(event.getEventType())) {
             sendWelcomeEmail(event.getEmail(), event.getFullName());
@@ -177,7 +178,8 @@ public class EmailService {
         }
     }
 
-    @KafkaListener(topics = { KafkaTopics.APPOINTMENTS, KafkaTopics.AUTH_EVENTS }, groupId = "in-app-service-group")
+    @KafkaListener(topics = { KafkaTopics.APPOINTMENTS,
+            KafkaTopics.AUTH_EVENTS }, groupId = "in-app-service-group", containerFactory = "stringKafkaListenerContainerFactory")
     public void handleForInApp(
             @Payload String rawPayload,
             @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) throws JsonMappingException, JsonProcessingException {
