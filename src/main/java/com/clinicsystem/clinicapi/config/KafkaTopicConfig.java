@@ -49,15 +49,4 @@ public class KafkaTopicConfig {
                 .build();
     }
 
-    @Bean
-    public NewTopic auditLog() {
-        return TopicBuilder.name(KafkaTopics.AUDIT_LOG)
-                .partitions(6)
-                .replicas(1)
-                .config(TopicConfig.RETENTION_MS_CONFIG, String.valueOf(365L * 24 * 60 * 60 * 1000))
-                .config(TopicConfig.CLEANUP_POLICY_CONFIG, TopicConfig.CLEANUP_POLICY_DELETE)
-                .config(TopicConfig.MIN_IN_SYNC_REPLICAS_CONFIG, "1")
-                .build();
-    }
-
 }

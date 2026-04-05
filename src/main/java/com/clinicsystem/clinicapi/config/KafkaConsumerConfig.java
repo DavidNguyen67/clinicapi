@@ -40,7 +40,8 @@ public class KafkaConsumerConfig {
 
         @Bean
         public ConsumerFactory<String, AuthEventDto> authEventConsumerFactory() {
-                return new DefaultKafkaConsumerFactory<>(buildConfigProps(AuthEventDto.class), new StringDeserializer(),
+                return new DefaultKafkaConsumerFactory<>(buildConfigProps(AuthEventDto.class),
+                                new StringDeserializer(),
                                 new JsonDeserializer<>(AuthEventDto.class, false));
         }
 
@@ -52,25 +53,9 @@ public class KafkaConsumerConfig {
         }
 
         @Bean
-        public ConsumerFactory<String, AuthEventDto> auditLogConsumerFactory() {
-                return new DefaultKafkaConsumerFactory<>(buildConfigProps(AuthEventDto.class), new StringDeserializer(),
-                                new JsonDeserializer<>(AuthEventDto.class, false));
-        }
-
-        @Bean(name = "auditLogKafkaListenerContainerFactory")
-        public ConcurrentKafkaListenerContainerFactory<String, AuthEventDto> auditLogKafkaListenerContainerFactory() {
-                ConcurrentKafkaListenerContainerFactory<String, AuthEventDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
-                factory.setConsumerFactory(auditLogConsumerFactory());
-                return factory;
-        }
-
-        @Bean
         public ConsumerFactory<String, String> stringConsumerFactory() {
-                Map<String, Object> configProps = new HashMap<>();
-                configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
-                configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-                configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-                return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
+                return new DefaultKafkaConsumerFactory<>(buildConfigProps(String.class),
+                                new StringDeserializer(),
                                 new StringDeserializer());
         }
 
@@ -83,15 +68,11 @@ public class KafkaConsumerConfig {
 
         private Map<String, Object> buildConfigProps(Class<?> valueType) {
                 Map<String, Object> configProps = new HashMap<>();
-                configProps.put(
-                                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
-                                bootstrapAddress);
-                configProps.put(
-                                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
-                                StringDeserializer.class);
-                configProps.put(
-                                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-                                JsonDeserializer.class);
+                configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
+                configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "clinic-api-group");
+                configProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+                configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+                configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
                 configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "com.clinicsystem.clinicapi.dto");
                 configProps.put(JsonDeserializer.VALUE_DEFAULT_TYPE, valueType.getName());
                 configProps.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
