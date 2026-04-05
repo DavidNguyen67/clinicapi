@@ -25,9 +25,12 @@ public class AppointmentService {
         private final PatientRepository patientRepository;
         private final DoctorRepository doctorRepository;
         private final ServiceRepository serviceRepository;
+        private final QueueNumberService queueNumberService;
 
         @Transactional(rollbackFor = Exception.class)
         public Appointment createAppointment(CreateAppointmentRequest createAppointmentRequest) {
+                int queueNumber = queueNumberService.getNextQueueNumber();
+
                 Appointment appointment = new Appointment();
                 Patient patient = patientRepository.findById(createAppointmentRequest.getPatientId())
                                 .orElseThrow(() -> new IllegalArgumentException("Patient not found"));
@@ -47,7 +50,7 @@ public class AppointmentService {
                 appointment.setReason(createAppointmentRequest.getReason());
                 appointment.setSymptoms(createAppointmentRequest.getSymptoms());
                 appointment.setNotes(createAppointmentRequest.getNotes());
-                appointment.setQueueNumber(createAppointmentRequest.getQueueNumber());
+                appointment.setQueueNumber(queueNumber);
                 appointment.setStatus(AppointmentStatus.pending);
                 appointment.setAppointmentCode(generateUniqueAppointmentCode());
 

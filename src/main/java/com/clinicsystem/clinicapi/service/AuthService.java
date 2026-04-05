@@ -345,6 +345,7 @@ public class AuthService {
                 event.setUser(user);
                 event.setExpiryHours(expiryHours.orElse(null));
                 event.setResetToken(resetToken.orElse(null));
+                event.setTopic(KafkaTopics.AUTH_EVENTS);
 
                 return event;
         }

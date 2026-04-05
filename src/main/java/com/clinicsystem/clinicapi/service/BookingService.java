@@ -12,6 +12,7 @@ import com.clinicsystem.clinicapi.constant.KafkaTopics;
 import com.clinicsystem.clinicapi.dto.AppointmentEventDto;
 import com.clinicsystem.clinicapi.dto.AppointmentResponseDto;
 import com.clinicsystem.clinicapi.dto.CreateAppointmentRequest;
+import com.clinicsystem.clinicapi.dto.QueueEventDto;
 import com.clinicsystem.clinicapi.dto.UpdateAppointmentRequest;
 import com.clinicsystem.clinicapi.model.Appointment;
 
@@ -24,23 +25,45 @@ import lombok.extern.slf4j.Slf4j;
 public class BookingService {
     @Qualifier("appointmentEventKafkaTemplate")
     private final KafkaTemplate<String, AppointmentEventDto> appointmentEventKafkaTemplate;
+    @Qualifier("queueEventKafkaTemplate")
+    private final KafkaTemplate<String, QueueEventDto> queueEventKafkaTemplate;
     private final AppointmentService appointmentService;
 
     @Transactional
     public AppointmentResponseDto publishAppointmentEvent(CreateAppointmentRequest request) {
         Appointment appointment = appointmentService.createAppointment(request);
-        AppointmentEventDto event = buildEvent(appointment, AppointmentEventType.CREATED);
+        AppointmentEventDto appointmentEvent = buildEvent(appointment, AppointmentEventType.CREATED);
+
+        QueueEventDto queueEvent = QueueEventDto.builder()
+                .patientId(appointmentEvent.getPatientId())
+                .patientName(appointment.getPatient().getUser().getFullName())
+                .queueNumber(appointment.getQueueNumber())
+                .status(appointment.getStatus())
+                .doctorId(appointmentEvent.getDoctorId())
+                .scheduledAt(appointmentEvent.getScheduledAt())
+                .topic(KafkaTopics.QUEUE_EVENTS)
+                .build();
+
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
             @Override
             public void afterCommit() {
-                appointmentEventKafkaTemplate.send(KafkaTopics.APPOINTMENTS,
-                        event.getPatientId().toString(),
-                        event)
+                queueEventKafkaTemplate.send(KafkaTopics.QUEUE_EVENTS,
+                        queueEvent.getPatientId().toString(),
+                        queueEvent)
                         .whenComplete((result, ex) -> {
                             if (ex != null)
                                 log.error("Kafka publish failed", ex);
                             else
-                                log.info("Kafka published appointmentId={}", event.getAppointmentId());
+                                log.info("Kafka published appointmentId={}", appointmentEvent.getAppointmentId());
+                        });
+                appointmentEventKafkaTemplate.send(KafkaTopics.APPOINTMENTS,
+                        appointmentEvent.getPatientId().toString(),
+                        appointmentEvent)
+                        .whenComplete((result, ex) -> {
+                            if (ex != null)
+                                log.error("Kafka publish failed", ex);
+                            else
+                                log.info("Kafka published appointmentId={}", appointmentEvent.getAppointmentId());
                         });
             }
         });
@@ -95,8 +118,9 @@ public class BookingService {
         event.setPatientId(appointment.getPatient().getId());
         event.setDoctorId(appointment.getDoctor().getId());
         event.setScheduledAt(appointment.getAppointmentDate());
-        event.setEventType(eventType);
+        event.setType(eventType);
         event.setEmail(appointment.getPatient().getUser().getEmail());
+        event.setTopic(KafkaTopics.APPOINTMENTS);
         return event;
     }
 }

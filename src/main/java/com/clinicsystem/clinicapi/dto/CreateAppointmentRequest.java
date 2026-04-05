@@ -47,6 +47,4 @@ public class CreateAppointmentRequest {
     @Normalize(TRIM)
     private String notes;
 
-    @NotNull(message = MessageCode.VALIDATION_QUEUE_NUMBER_REQUIRED)
-    private Integer queueNumber;
 }

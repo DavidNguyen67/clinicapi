@@ -41,6 +41,16 @@ public class KafkaProducerConfig {
         return new KafkaTemplate<>(authEventProducerFactory());
     }
 
+    @Bean
+    public ProducerFactory<String, AuthEventDto> queueEventProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(buildConfigProps());
+    }
+
+    @Bean(name = "queueEventKafkaTemplate")
+    public KafkaTemplate<String, AuthEventDto> queueEventKafkaTemplate() {
+        return new KafkaTemplate<>(queueEventProducerFactory());
+    }
+
     private Map<String, Object> buildConfigProps() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);

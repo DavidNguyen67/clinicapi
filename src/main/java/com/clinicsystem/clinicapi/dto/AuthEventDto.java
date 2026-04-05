@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthEventDto {
+    private String topic;
+
     private User user;
 
     private AuthEventType eventType;

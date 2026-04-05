@@ -49,4 +49,13 @@ public class KafkaTopicConfig {
                 .build();
     }
 
+    @Bean
+    public NewTopic queueTopic() {
+        return TopicBuilder.name(KafkaTopics.QUEUE_EVENTS)
+                .partitions(10)
+                .replicas(1)
+                .config(TopicConfig.MIN_IN_SYNC_REPLICAS_CONFIG, "1")
+                .build();
+    }
+
 }

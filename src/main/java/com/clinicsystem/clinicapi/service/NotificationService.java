@@ -16,7 +16,7 @@ public class NotificationService {
     public void sendNotification(String userId, Object data) {
         log.info("Sending notification to user: {}", userId);
 
-        messagingTemplate.convertAndSendToUser(userId, "/queue/notifications", data);
+        messagingTemplate.convertAndSendToUser(userId, "/notifications", data);
     }
 
 }

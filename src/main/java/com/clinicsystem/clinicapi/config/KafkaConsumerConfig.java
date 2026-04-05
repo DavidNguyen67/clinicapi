@@ -16,6 +16,7 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import com.clinicsystem.clinicapi.dto.AppointmentEventDto;
 import com.clinicsystem.clinicapi.dto.AuthEventDto;
+import com.clinicsystem.clinicapi.dto.QueueEventDto;
 
 @EnableKafka
 @Configuration
@@ -49,6 +50,20 @@ public class KafkaConsumerConfig {
         public ConcurrentKafkaListenerContainerFactory<String, AuthEventDto> authKafkaListenerContainerFactory() {
                 ConcurrentKafkaListenerContainerFactory<String, AuthEventDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
                 factory.setConsumerFactory(authEventConsumerFactory());
+                return factory;
+        }
+
+        @Bean
+        public ConsumerFactory<String, QueueEventDto> queueEventConsumerFactory() {
+                return new DefaultKafkaConsumerFactory<>(buildConfigProps(QueueEventDto.class),
+                                new StringDeserializer(),
+                                new JsonDeserializer<>(QueueEventDto.class, false));
+        }
+
+        @Bean(name = "queueKafkaListenerContainerFactory")
+        public ConcurrentKafkaListenerContainerFactory<String, QueueEventDto> queueKafkaListenerContainerFactory() {
+                ConcurrentKafkaListenerContainerFactory<String, QueueEventDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
+                factory.setConsumerFactory(queueEventConsumerFactory());
                 return factory;
         }
 
