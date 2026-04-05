@@ -1,4 +1,6 @@
 $kind: http-request
 url: "{{baseUrl}}/api/v1/home/landing-page"
 method: GET
+headers:
+  x-api-key: "{{apiKey}}"
 order: 2000

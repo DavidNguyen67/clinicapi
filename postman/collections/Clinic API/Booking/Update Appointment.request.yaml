@@ -4,6 +4,7 @@ method: PUT
 headers:
   Content-Type: application/json
   Authorization: Bearer {{accessToken}}
+  x-api-key: "{{apiKey}}"
 body:
   type: json
   content: |-

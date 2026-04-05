@@ -2,6 +2,8 @@ $kind: http-request
 url: "{{baseUrl}}/api/v1/home/specialties?size=20&sortBy=createdAt&sortDirectio\
   n=desc"
 method: GET
+headers:
+  x-api-key: "{{apiKey}}"
 queryParams:
   - key: lastId
     value: ""

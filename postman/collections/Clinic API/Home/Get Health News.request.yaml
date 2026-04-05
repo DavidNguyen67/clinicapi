@@ -1,6 +1,8 @@
 $kind: http-request
 url: "{{baseUrl}}/api/v1/home/health-news?lang=vi&country=vn&max=10"
 method: GET
+headers:
+  x-api-key: "{{apiKey}}"
 queryParams:
   lang: vi
   country: vn
