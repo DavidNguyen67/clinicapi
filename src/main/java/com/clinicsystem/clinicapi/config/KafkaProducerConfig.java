@@ -15,6 +15,7 @@ import org.springframework.kafka.core.ProducerFactory;
 
 import com.clinicsystem.clinicapi.dto.AppointmentEventDto;
 import com.clinicsystem.clinicapi.dto.AuthEventDto;
+import com.clinicsystem.clinicapi.dto.QueueEventDto;
 
 @Configuration
 public class KafkaProducerConfig {
@@ -42,12 +43,12 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public ProducerFactory<String, AuthEventDto> queueEventProducerFactory() {
+    public ProducerFactory<String, QueueEventDto> queueEventProducerFactory() {
         return new DefaultKafkaProducerFactory<>(buildConfigProps());
     }
 
     @Bean(name = "queueEventKafkaTemplate")
-    public KafkaTemplate<String, AuthEventDto> queueEventKafkaTemplate() {
+    public KafkaTemplate<String, QueueEventDto> queueEventKafkaTemplate() {
         return new KafkaTemplate<>(queueEventProducerFactory());
     }
 

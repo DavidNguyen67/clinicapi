@@ -1,7 +1,7 @@
 package com.clinicsystem.clinicapi.service;
 
 import java.time.Duration;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -16,7 +16,7 @@ public class QueueNumberService {
     private final StringRedisTemplate redisTemplate;
 
     private String getTodayKey() {
-        String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String today = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         return "queue:number:" + today;
     }
 
