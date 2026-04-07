@@ -9,9 +9,9 @@ body:
   type: json
   content: |-
     {
-        "patientId": "{{patientId}}",
-        "doctorId": "{{doctorId}}",
-        "serviceId": "{{serviceId}}",
+        "patientId": "08bd1362-2f22-474d-a96b-2e2ce1a25395",
+        "doctorId": "20000000-0000-0000-0000-000000000001",
+        "serviceId": "50000000-0000-0000-0000-000000000001",
         "appointmentDate": "2026-04-10T09:00:00",
         "startTime": "2026-04-10T09:00:00",
         "endTime": "2026-04-10T09:30:00",

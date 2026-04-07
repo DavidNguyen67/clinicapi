@@ -20,8 +20,13 @@ spring:
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
     consumer:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       auto-offset-reset: earliest
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: com.clinicsystem.clinicapi.dto
 
   jpa:
     hibernate:
@@ -88,6 +93,13 @@ spring:
       include-binding-errors: always
       include-stacktrace: on_param
       include-exception: false
+
+camel:
+  springboot:
+    main-run-controller: true
+  component:
+    kafka:
+      brokers: ${KAFKA_BOOTSTRAP_SERVERS}
 
 server:
   port: ${SERVER_PORT}

@@ -1,7 +1,6 @@
 package com.clinicsystem.clinicapi.service;
 
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.apache.camel.ProducerTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -19,15 +18,14 @@ import com.clinicsystem.clinicapi.model.Appointment;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Map;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookingService {
-    @Qualifier("appointmentEventKafkaTemplate")
-    private final KafkaTemplate<String, AppointmentEventDto> appointmentEventKafkaTemplate;
-    @Qualifier("queueEventKafkaTemplate")
-    private final KafkaTemplate<String, QueueEventDto> queueEventKafkaTemplate;
     private final AppointmentService appointmentService;
+    private final ProducerTemplate producerTemplate;
 
     @Transactional
     public AppointmentResponseDto publishAppointmentEvent(CreateAppointmentRequest request) {
@@ -44,29 +42,22 @@ public class BookingService {
                 .topic(KafkaTopics.QUEUE_EVENTS)
                 .build();
 
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-            @Override
-            public void afterCommit() {
-                queueEventKafkaTemplate.send(KafkaTopics.QUEUE_EVENTS,
-                        queueEvent.getPatientId().toString(),
-                        queueEvent)
-                        .whenComplete((result, ex) -> {
-                            if (ex != null)
-                                log.error("Kafka publish failed", ex);
-                            else
-                                log.info("Kafka published appointmentId={}", appointmentEvent.getAppointmentId());
-                        });
-                appointmentEventKafkaTemplate.send(KafkaTopics.APPOINTMENTS,
-                        appointmentEvent.getPatientId().toString(),
-                        appointmentEvent)
-                        .whenComplete((result, ex) -> {
-                            if (ex != null)
-                                log.error("Kafka publish failed", ex);
-                            else
-                                log.info("Kafka published appointmentId={}", appointmentEvent.getAppointmentId());
-                        });
-            }
-        });
+        TransactionSynchronizationManager.registerSynchronization(
+                new TransactionSynchronization() {
+                    @Override
+                    public void afterCommit() {
+                        producerTemplate.sendBodyAndHeaders(
+                                "direct:publishAppointmentEvent",
+                                appointmentEvent,
+                                Map.of(
+                                        "queueEvent", queueEvent,
+                                        "patientId", appointmentEvent.getPatientId().toString(),
+                                        "appointmentId", appointmentEvent.getAppointmentId()
+                                )
+                        );
+                    }
+                }
+        );
 
         return toResponseDto(appointment);
     }
@@ -74,21 +65,22 @@ public class BookingService {
     @Transactional
     public AppointmentResponseDto updateAppointment(UpdateAppointmentRequest request) {
         Appointment appointment = appointmentService.updateAppointment(request);
-        AppointmentEventDto event = buildEvent(appointment, AppointmentEventType.UPDATED);
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-            @Override
-            public void afterCommit() {
-                appointmentEventKafkaTemplate.send(KafkaTopics.APPOINTMENTS,
-                        event.getPatientId().toString(),
-                        event)
-                        .whenComplete((result, ex) -> {
-                            if (ex != null)
-                                log.error("Kafka publish failed", ex);
-                            else
-                                log.info("Kafka published appointmentId={}", event.getAppointmentId());
-                        });
-            }
-        });
+        AppointmentEventDto appointmentEvent = buildEvent(appointment, AppointmentEventType.UPDATED);
+        TransactionSynchronizationManager.registerSynchronization(
+                new TransactionSynchronization() {
+                    @Override
+                    public void afterCommit() {
+                        producerTemplate.sendBodyAndHeaders(
+                                "direct:sendAppointmentEvent",
+                                appointmentEvent,
+                                Map.of(
+                                        "patientId", appointmentEvent.getPatientId().toString(),
+                                        "appointmentId", appointmentEvent.getAppointmentId()
+                                )
+                        );
+                    }
+                }
+        );
 
         return toResponseDto(appointment);
     }
