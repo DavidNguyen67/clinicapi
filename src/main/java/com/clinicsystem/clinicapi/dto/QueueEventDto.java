@@ -5,17 +5,14 @@ import java.util.UUID;
 
 import com.clinicsystem.clinicapi.model.Appointment;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class QueueEventDto {
-    private String topic;
+public class QueueEventDto extends BaseEventDto {
     private UUID patientId;
     private String patientName;
     private int queueNumber;

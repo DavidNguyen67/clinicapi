@@ -1,9 +1,9 @@
 package com.clinicsystem.clinicapi.service.appointment;
 
+import com.clinicsystem.clinicapi.constant.AppointmentEventType;
 import com.clinicsystem.clinicapi.constant.KafkaTopics;
 import com.clinicsystem.clinicapi.dto.AppointmentEventDto;
 import com.clinicsystem.clinicapi.dto.QueueEventDto;
-import com.clinicsystem.clinicapi.service.AppointmentService;
 import com.clinicsystem.clinicapi.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.apache.camel.builder.RouteBuilder;
@@ -19,6 +19,10 @@ public class AppointmentRoutes extends RouteBuilder {
 
     @Override
     public void configure() {
+        onException(Exception.class)
+                .log("ERROR in route ${routeId}: ${exception.message}")
+                .log("Caused by: ${exception.stacktrace}")
+                .handled(true);
 
         from("direct:publishAppointmentEvent")
                 .transacted()
@@ -37,30 +41,35 @@ public class AppointmentRoutes extends RouteBuilder {
                 .end();
 
         from("direct:sendQueueEvent")
-                .marshal(jacksonDataFormat)
                 .setHeader(KafkaConstants.KEY,
                         simple("${header.patientId}"))
                 .setHeader(KafkaConstants.TOPIC,
                         constant(KafkaTopics.QUEUE_EVENTS))
+                .marshal(jacksonDataFormat)
                 .to("kafka:" + KafkaTopics.QUEUE_EVENTS)
-                .log("Kafka published queueEvent patientId=${header.patientId}");
+                .log("Kafka published queueEvent patientId=${header.appointmentId}");
 
         from("direct:sendAppointmentEvent")
-                .marshal(jacksonDataFormat)
                 .setHeader(KafkaConstants.KEY,
                         simple("${header.patientId}"))
                 .setHeader(KafkaConstants.TOPIC,
-                        constant(KafkaTopics.APPOINTMENTS))
-                .to("kafka:" + KafkaTopics.APPOINTMENTS)
+                        constant(KafkaTopics.APPOINTMENT_EVENT))
+                .marshal(jacksonDataFormat)
+                .to("kafka:" + KafkaTopics.APPOINTMENT_EVENT)
                 .log("Kafka published appointmentId=${header.appointmentId}");
 
-        from("kafka:" + KafkaTopics.APPOINTMENTS +
-                "?groupId=email-service-group")
+        from("kafka:" + KafkaTopics.APPOINTMENT_EVENT + "?groupId=email-service-group")
                 .unmarshal(jacksonDataFormat)
-                .convertBodyTo(AppointmentEventDto.class)
-                .filter(simple(
-                        "${body.type} == 'CREATED' || ${body.type} == 'UPDATED'"))
+                .filter(exchange -> {
+                    AppointmentEventType type = exchange.getIn().getBody(AppointmentEventDto.class).getType();
+                    return type == AppointmentEventType.CREATED || type == AppointmentEventType.UPDATED;
+                })
                 .log("Handling appointment event: ${body}")
+                .to("direct:sendEmailNotification");
+
+        from("kafka:" + KafkaTopics.QUEUE_EVENTS + "?groupId=email-service-group")
+                .unmarshal(jacksonDataFormat)
+                .log("Handling queue event: ${body}")
                 .to("direct:sendEmailNotification");
 
         from("direct:sendEmailNotification")

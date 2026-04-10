@@ -52,7 +52,7 @@ public class BookingService {
                                 Map.of(
                                         "queueEvent", queueEvent,
                                         "patientId", appointmentEvent.getPatientId().toString(),
-                                        "appointmentId", appointmentEvent.getAppointmentId()
+                                        "appointmentId", appointmentEvent.getAppointmentId().toString()
                                 )
                         );
                     }
@@ -112,7 +112,7 @@ public class BookingService {
         event.setScheduledAt(appointment.getAppointmentDate());
         event.setType(eventType);
         event.setEmail(appointment.getPatient().getUser().getEmail());
-        event.setTopic(KafkaTopics.APPOINTMENTS);
+        event.setTopic(KafkaTopics.APPOINTMENT_EVENT);
         return event;
     }
 }

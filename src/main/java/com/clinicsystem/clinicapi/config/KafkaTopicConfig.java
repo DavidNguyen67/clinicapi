@@ -32,7 +32,7 @@ public class KafkaTopicConfig {
 
     @Bean
     public NewTopic appointmentsTopic() {
-        return TopicBuilder.name(KafkaTopics.APPOINTMENTS)
+        return TopicBuilder.name(KafkaTopics.APPOINTMENT_EVENT)
                 .partitions(3)
                 .replicas(1)
                 .config(TopicConfig.RETENTION_MS_CONFIG, String.valueOf(7L * 24 * 60 * 60 * 1000))
